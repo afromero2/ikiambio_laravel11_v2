@@ -280,34 +280,6 @@ class OccurrenceController extends Controller
         ));
     }
 
-
-    public function edit2(Occurrence $occurrence)
-    {
-        // …los mismos loads que arriba…
-        $recordLevels   = RecordLevel::orderBy('record_level_id','desc')->get(['record_level_id','datasetName']);
-        $oqtypes        = Organismquantitytype::orderBy('oqtype_value')->get(['oqtype_id','oqtype_value','description']);
-        $sexes          = Sex::orderBy('sex_value')->get(['sex_id','sex_value']);
-        $lifeStages     = LifeStage::orderBy('lifestage_value')->get(['lifestage_id','lifestage_value']);
-        $reproConds     = ReproductiveCondition::orderBy('reprocond_value')->get(['reprocond_id','reprocond_value']);
-        $estabMeans     = EstablishmentMeans::orderBy('estabmeans_value')->get(['estabmeans_id','estabmeans_value']);
-        $dispositions   = Disposition::orderBy('disposition_value')->get(['disposition_id','disposition_value']);
-
-        // NUEVO
-        $continents     = Continent::orderBy('continent_value')->get(['continent_id','continent_value']);
-        $verbatimSrs    = VerbatimSrs::orderBy('verbatimSRS_value')->get(['verbatimSRS_id','verbatimSRS_value']);
-        $georefStatuses = GeorefStatus::orderBy('georef_status_value')->get(['georef_status_id','georef_status_value']);
-
-        $item = $occurrence;
-
-        return view('pages.occurrence.edit', compact(
-            'item',
-            'recordLevels','oqtypes','sexes','lifeStages','reproConds','estabMeans','dispositions',
-            'continents','verbatimSrs','georefStatuses'
-        ));
-
-        
-    }
-
     public function update(Request $request, \App\Models\Occurrence $occurrence)
     {
         $data = $request->validate([

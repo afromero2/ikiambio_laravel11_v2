@@ -7,6 +7,7 @@ import '../css/custom.css'; */
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../css/custom.css'; 
+import './theme.js';
 
 
 document.addEventListener('DOMContentLoaded', () => {
