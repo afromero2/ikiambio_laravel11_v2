@@ -27,21 +27,19 @@ class TblmultimediaController extends Controller
     }
 
 
-
-
     public function store(Request $request)
     {
         $data = $request->validate([
             // Si no envías idMultimedia, lo generamos
             'idMultimedia' => ['nullable','string','max:255','unique:TblMultimedia,idMultimedia'],
-            'id_occ_bd'  => ['nullable','string','max:255'],
+            'id_occ_bd'  => ['required','string','max:255'],
             'type'         => ['nullable','string','max:255'],
             'format'       => ['nullable','string','max:255'],
             'identifier'   => ['nullable','string'],
             'title'        => ['nullable','string','max:255'],
             'description'  => ['nullable','string'],
-            'created'      => ['nullable','date'],
-            'creator'      => ['nullable','string','max:255'],
+            'created'      => ['required','date'],
+            'creator'      => ['required','string','max:255'],
             'contributor'  => ['nullable','string','max:255'],
             'publisher'    => ['nullable','string','max:255'],
             'license'      => ['nullable','string','max:255'],
@@ -82,14 +80,14 @@ class TblmultimediaController extends Controller
         $item = TblMultimedia::findOrFail($id);
 
         $data = $request->validate([
-            'id_occ_bd'  => ['nullable','string','max:255'],
+            'id_occ_bd'  => ['required','string','max:255'],
             'type'         => ['nullable','string','max:255'],
             'format'       => ['nullable','string','max:255'],
             'identifier'   => ['nullable','string'],
             'title'        => ['nullable','string','max:255'],
             'description'  => ['nullable','string'],
-            'created'      => ['nullable','date'],
-            'creator'      => ['nullable','string','max:255'],
+            'created'      => ['required','date'],
+            'creator'      => ['required','string','max:255'],
             'contributor'  => ['nullable','string','max:255'],
             'publisher'    => ['nullable','string','max:255'],
             'license'      => ['nullable','string','max:255'],

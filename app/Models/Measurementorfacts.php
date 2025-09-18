@@ -24,4 +24,9 @@ class Measurementorfacts extends Model
         'measurementMethod',
         'measurementRemarks',
     ];
+
+    public function occurrence()
+    {
+        return $this->belongsTo(\App\Models\Occurrence::class, 'id_occ_bd', 'id_occ_bd');
+    }
 }

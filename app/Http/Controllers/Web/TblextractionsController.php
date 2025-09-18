@@ -15,7 +15,7 @@ class TblextractionsController extends Controller
     public function index()
     {
         
-         $pk = (new Tblextractions)->getKeyName(); // 'idExtracciones'
+        $pk = (new Tblextractions)->getKeyName(); // 'idExtracciones'
         $items = Tblextractions::orderByDesc($pk)->paginate(15);
         
         return view('pages.tblextractions.index', compact('items'));
@@ -31,7 +31,8 @@ class TblextractionsController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
+        /* $data = $request->all(); */
+        $data = $this->validateData($request);
         try {
             $item = $this->tx(fn () => Tblextractions::create($data));
             return redirect()->route('tbl-extractions.index')->with('ok','Creado');
@@ -52,7 +53,8 @@ class TblextractionsController extends Controller
 
     public function update(Request $request, Tblextractions $tblextractions)
     {
-        $data = $request->all();
+        /* $data = $request->all(); */
+        $data = $this->validateData($request, true, $tblextractions);
         try {
             $this->tx(fn () => $tblextractions->update($data));
             return redirect()->route('tbl-extractions.index')->with('ok','Actualizado');
@@ -70,4 +72,51 @@ class TblextractionsController extends Controller
             return back()->withErrors('No se pudo eliminar (posibles FKs).');
         }
     }
+
+    private function validateData(Request $request, bool $isUpdate = false, ?Tblextractions $current = null): array
+    {
+        // Para update usamos 'sometimes' (solo valida lo enviado)
+        $req = $isUpdate ? 'sometimes' : 'nullable';
+
+        return $request->validate([
+            // Si no envías idExtracciones, el modelo puede generarlo en booted()
+            'idExtracciones' => [$req, 'string', 'max:255'],
+
+            // Si id_occ_bd referencia occurrence.id_occ_bd (varchar):
+            'id_occ_bd'      => [$req, 'string', 'max:255'], // agrega Rule::exists si quieres forzar FK
+
+            'materialSampleType' => [$req, 'string', 'max:255'],
+            'idRegistros'        => [$req, 'string', 'max:255'],
+
+            'fechaExtraccion'    => [$req, 'date'],
+
+            'purificationMethod' => [$req, 'string'],
+            'methodDeterminationConcentrationAndRatios' => [$req, 'string'],
+
+            // Boolean en Postgres
+            'adn_enSTOCK'        => [$req, 'boolean'],
+
+            // Numéricos / decimales
+            'volume'                   => [$req, 'numeric'],
+            'volumeUnit'               => [$req, 'string', 'max:50'],
+            'concentration'            => [$req, 'numeric'],
+            'concentrationUnit'        => [$req, 'string', 'max:50'],
+            'ratioOfAbsorbance260_280' => [$req, 'numeric'],
+            'ratioOfAbsorbance260_230' => [$req, 'numeric'],
+
+            'preservationType'        => [$req, 'string', 'max:255'],
+            'preservationTemperature' => [$req, 'string', 'max:255'],
+            'preservationDateBegin'   => [$req, 'date'],
+
+            'quality'                 => [$req, 'string', 'max:255'],
+            'qualityCheckDate'        => [$req, 'date'],
+            'sieving'                 => [$req, 'string', 'max:255'],
+            'codigoMuestraBiobanco'   => [$req, 'string', 'max:255'],
+            'codigoADNBiobanco'       => [$req, 'string', 'max:255'],
+            'codigoGermoplasmaBiobanco'=> [$req, 'string', 'max:255'],
+            'extractionStaff'         => [$req, 'string', 'max:255'],
+            'qualityRemarks'          => [$req, 'string'],
+        ]);
+    }
+
 }

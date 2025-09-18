@@ -359,16 +359,7 @@ class OccurrenceController extends Controller
         }
     }
 
-   /*  public function destroy(Occurrence $occurrence)
-    {
-        DB::transaction(function () use ($occurrence) {
-            $occurrence->delete();
-        });
-
-        return back()->with('ok','Eliminado');
-    } */
-
-    public function destroy(Occurrence $occurrence)
+    /* public function destroy(Occurrence $occurrence)
     {
         DB::transaction(function () use ($occurrence) {
             // Guarda llaves antes del delete de occurrence
@@ -376,25 +367,51 @@ class OccurrenceController extends Controller
             $ident  = $occurrence->identificationID;        // varchar
             $idOcc  = (string) $occurrence->id_occ_bd;      // PK (int) -> para tablas con varchar
 
+            // === A) Dependientes por idExtracciones -> TblRegistrosLaboratorio ===
+            // 1. Obtén los idExtracciones vinculados a esta occurrence
+            $extrIds = DB::table('TblExtracciones')
+                ->where('id_occ_bd', $idOcc)
+                ->pluck('idExtracciones')
+                ->filter()
+                ->values()
+                ->all();
+
+            // 2. Borra primero registros de laboratorio que dependan de esas extracciones
+            if (!empty($extrIds)) {
+                DB::table('TblRegistrosLaboratorio')
+                ->whereIn('idExtracciones', $extrIds)
+                ->delete();
+            }
+
             // 1) Borra la occurrence primero (evita FKs hacia record_level)
             $occurrence->delete();
 
-            // 2) Borra record_level 1–a–1 (si existe)
             if ($rid) {
-                RecordLevel::where('record_level_id', $rid)->delete();
+                DB::table('record_level')->where('record_level_id', $rid)->delete();
             }
 
-            // 3) Borra identificación vinculada (siempre, según tu regla)
             if ($ident) {
-                Identification::where('identificationID', $ident)->delete();
+                DB::table('identification')->where('identificationID', $ident)->delete();
             }
 
             // 4) Borra dependientes por id_occ_bd
             DB::table('TblExtracciones')->where('id_occ_bd', $idOcc)->delete();
             DB::table('measurementorfacts')->where('id_occ_bd', $idOcc)->delete();
+            DB::table('TblMultimedia')->where('id_occ_bd', $idOcc)->delete();
+
         });
 
         return back()->with('ok', 'Occurrence y sus dependencias fueron eliminadas.');
+    }  */ 
+        
+    public function destroy(\App\Models\Occurrence $occurrence)
+    {
+        // El evento deleting() del modelo hará el barrido en cadena.
+        $occurrence->delete();
+
+        return redirect()
+            ->route('occurrence.index')
+            ->with('ok','Occurrence y sus datos relacionados fueron eliminados.');
     }    
 
     // ================= Helpers =================

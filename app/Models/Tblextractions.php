@@ -33,6 +33,11 @@ class Tblextractions extends Model
         });
     }
 
+    public function occurrence()
+    {
+        return $this->belongsTo(\App\Models\Occurrence::class, 'id_occ_bd', 'id_occ_bd');
+    }
+
     // Para route model binding en recursos web/api:
     public function getRouteKeyName()
     {
