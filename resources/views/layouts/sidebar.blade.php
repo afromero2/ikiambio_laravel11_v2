@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>@yield('title','Inicio — IKIAM')</title>
-  @vite(['resources/css/custom.css','resources/js/app.js'])
+  @vite(['resources/css/custom.css','resources/css/users.css','resources/js/app.js'])
 </head>
 <body class="app">
   {{-- Sidebar --}}
@@ -57,12 +57,12 @@
           @include('svg.users')
           <span>OCCURRENCE</span>
       </a>     
-      <a class="item {{ request()->routeIs('ikiambio-users.*') ? 'active' : '' }}" href="{{ route('ikiambio-users.index') }}">
+      <a class="item {{ request()->routeIs('users.*') ? 'active' : '' }}" href="{{ route('users.index') }}">
         @include('svg.users')
         <span>USUARIOS</span>
       </a>
 
-       <a class="item {{ request()->routeIs('ikiambio-users.*') ? 'active' : '' }}" href="{{ route('ikiambio-users.index') }}">
+       <a class="item {{ request()->routeIs('users.*') ? 'active' : '' }}" href="{{ route('users.index') }}">
         @include('svg.admins')
         <span>USUARIOS ADMINISTRADORES</span>
       </a>     
@@ -283,9 +283,14 @@
   <section class="content">
     <header class="topbar">
       <div class="topbar-title">@yield('page_title','Inicio')</div>
+      {{-- <div class="topbar-user">
+        @include('svg.user')
+        <span>User XY</span>
+      </div> --}}
       <div class="topbar-user">
         @include('svg.user')
-        <span>Admin MS2S</span>
+        <span>{{ Auth::user()->name }}</span><br/>
+        
       </div>
     </header>
 

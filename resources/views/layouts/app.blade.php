@@ -11,14 +11,14 @@
 <body>
 <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
   <div class="container">
-    <a class="navbar-brand" href="{{ route('ikiambio-users.index') }}">IKIAMBIO</a>
+    <a class="navbar-brand" href="{{ route('users.index') }}">IKIAMBIO</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav01">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div id="nav01" class="collapse navbar-collapse">
       <ul class="navbar-nav me-auto">
-        <li class="nav-item"><a class="nav-link" href="{{ route('ikiambio-users.index') }}">Usuarios</a></li>
-        <li class="nav-item"><a class="nav-link" href="{{ route('ikiambio-users.create') }}">Nuevo</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ route('users.index') }}">Usuarios</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ route('users.create') }}">Nuevo</a></li>
       </ul>
     </div>
   </div>
