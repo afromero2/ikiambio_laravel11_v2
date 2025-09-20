@@ -4,11 +4,12 @@
 @section('page_title','Locations')
 
 @section('content')
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h2 class="m-0">Locations</h2>
-    <a href="{{ route('location.create') }}" class="btn btn-primary">Nuevo</a>
-  </div>
-
+  @if(auth()->user()->is_admin)
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h2 class="m-0">Locations</h2>
+      <a href="{{ route('location.create') }}" class="btn btn-primary">Nuevo</a>
+    </div>
+  @endif
   @if(session('ok'))
     <div class="alert alert-success">{{ session('ok') }}</div>
   @endif

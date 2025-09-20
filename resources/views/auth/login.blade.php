@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>@yield('title','Login — IKIAM')</title>
-  @vite(['resources/css/users.css'])
+  @vite(['resources/css/utility.css'])
 </head>
 <body>
 <div class="container">

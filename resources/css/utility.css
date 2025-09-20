@@ -1,7 +1,7 @@
 /* ==== Estilos generales ==== */
 body {
     font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #4f46e5, #3b82f6);
+    background: linear-gradient(135deg, #cbcccb, #daecd8);
     margin: 0;
     padding: 0;
     color: #333;
@@ -18,7 +18,7 @@ body {
 
 h1 {
     text-align: center;
-    color: #4f46e5;
+    color: #0b7a57;
     margin-bottom: 25px;
 }
 
@@ -40,13 +40,13 @@ form input {
 }
 
 form input:focus {
-    border-color: #4f46e5;
+    border-color: #07582c;
     outline: none;
 }
 
 button {
     width: 100%;
-    background: #4f46e5;
+    background: #148f2d;
     color: white;
     border: none;
     padding: 12px;
@@ -79,4 +79,55 @@ button:hover {
     background: #dcfce7;
     color: #166534;
     border: 1px solid #86efac;
+}
+
+/* Botón de logout dentro del topbar */
+.btn-logout,
+.logout-link {
+    background: transparent;
+    border: none;
+    color: #f5f5f5; /* texto claro para fondo oscuro */
+    font-size: 0.9rem;
+    cursor: pointer;
+    margin-left: 10px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: background 0.2s ease, color 0.2s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-logout:hover,
+.logout-link:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+}
+
+/* Si usas íconos svg */
+.logout-link svg,
+.btn-logout svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+}
+
+
+/* Ocultar el texto en los <option> y mostrar solo color */
+.theme-select option {
+    padding-left: 25px; /* espacio para el "cuadro" */
+    position: relative;
+}
+
+/* Pseudo-elemento para el color */
+.theme-select option::before {
+    content: "";
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    margin-right: 8px;
+    vertical-align: middle;
+    border-radius: 4px;
+    background-color: currentColor;
 }

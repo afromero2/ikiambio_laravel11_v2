@@ -39,7 +39,9 @@
       </dl>
 
       <div class="d-flex gap-2">
-        <a href="{{ route('location.edit',$item->locationID) }}" class="btn btn-primary">Editar</a>
+        @if(auth()->user()->is_admin)
+          <a href="{{ route('location.edit',$item->locationID) }}" class="btn btn-primary">Editar</a>
+        @endif
         <a href="{{ route('location.index') }}" class="btn btn-light">Volver</a>
       </div>
     </div>

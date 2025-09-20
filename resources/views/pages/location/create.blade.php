@@ -24,7 +24,9 @@
       <form method="POST" action="{{ route('location.store') }}" class="row g-3">
         @csrf
         @include('pages.location.partials.form', get_defined_vars())
-        <div class="col-12"><button class="btn btn-primary">Guardar</button></div>
+        @if(auth()->user()->is_admin)
+          <div class="col-12"><button class="btn btn-primary">Guardar</button></div>
+        @endif
       </form>
     </div>
   </div>

@@ -29,4 +29,24 @@
   } else {
     init();
   }
+
+
+  /* document.addEventListener("DOMContentLoaded", () => {
+    const select = document.getElementById("theme-select");
+
+    // Pinta cada option según su data-color
+    Array.from(select.options).forEach(opt => {
+        const color = opt.getAttribute("data-color");
+        opt.style.background = color;   // afecta el cuadrito (con currentColor)
+    });
+
+    // inicializar al cargar
+    const initial = select.options[select.selectedIndex];
+    select.style.background = initial.getAttribute("data-color");
+  });
+ */
+
 })();
+
+
+

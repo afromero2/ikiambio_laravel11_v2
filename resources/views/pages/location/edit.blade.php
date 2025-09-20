@@ -24,7 +24,9 @@
       <form method="POST" action="{{ route('location.update',$item->locationID) }}" class="row g-3">
         @csrf @method('PUT')
         @include('pages.location.partials.form', get_defined_vars())
-        <div class="col-12"><button class="btn btn-primary">Actualizar</button>
+        @if(auth()->user()->is_admin)
+          <div class="col-12"><button class="btn btn-primary">Actualizar</button>
+        @endif  
         <a class="btn btn-outline-secondary" href="{{ route('location.index') }}">Volver</a>
         </div>
       </form>
