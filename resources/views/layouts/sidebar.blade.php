@@ -10,9 +10,15 @@
 <body class="app">
   {{-- Sidebar --}}
   <aside class="sidebar">
-    <div class="brand brand--clickable" onclick="location.href='{{ route('home') }}'"> 
-      @include('svg.salamander') <span>BIOAMAZONIA</span>
-    </div>
+
+    <span  onclick="location.href='{{ route('home') }}'"> 
+        <center><img
+        src="{{ asset('logo.svg') }}"
+        alt="Logo IKIAMBIODB"
+        width="100px" style="text-align:center"
+        loading="lazy"
+      /></center>
+    </span>
 
     <nav class="menu">
 
@@ -47,10 +53,10 @@
           @include('svg.users')
           <span>USUARIOS</span>
         </a>
-         <a class="item {{ request()->routeIs('users.*') ? 'active' : '' }}" href="{{ route('users.index') }}">
+       {{--   <a class="item {{ request()->routeIs('users.*') ? 'active' : '' }}" href="{{ route('users.index') }}">
           @include('svg.admins')
           <span>USUARIOS ADMINISTRADORES</span>
-        </a>
+        </a> --}}
      
         @php
           $vocabsOpen =

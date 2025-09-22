@@ -21,6 +21,7 @@
                 <th>Apellido</th>
                 <th>Email</th>
                 <th>Admin</th>
+                <th>Funcionalidades</th>
             </tr>
         </thead>
         <tbody>
@@ -35,9 +36,9 @@
                 <td class="text-end">
                     <a class="btn btn-sm btn-outline-primary" href="{{ route('users.show',$user) }}">Ver</a>
                     <a class="btn btn-sm btn-outline-warning" href="{{ route('users.edit',$user) }}">Editar</a>
-                    <form class="d-inline" action="{{ route('users.destroy',$user) }}" method="POST" onsubmit="return confirm('¿Eliminar?')">
+                    <form class="d-inline2" action="{{ route('users.destroy',$user) }}" method="POST" onsubmit="return confirm('¿Eliminar?')">
                         @csrf @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                        <button type="submit" class="btn btn-sm btn-outline-warning">Eliminar</button>
                     </form>
                 </td>
             </tr>
