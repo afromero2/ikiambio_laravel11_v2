@@ -11,16 +11,25 @@
   {{-- Sidebar --}}
   <aside class="sidebar">
 
-    <span  onclick="location.href='{{ route('home') }}'"> 
+    {{-- <span onclick="location.href='{{ route('home') }}'"> 
         <center><img
         src="{{ asset('logo.svg') }}"
         alt="Logo IKIAMBIODB"
-        width="100px" style="text-align:center"
+        width="200px"
+        loading="lazy"
+      /></center>
+    </span> --}}
+
+    <nav class="menu">
+
+      <span onclick="location.href='{{ route('home') }}'"> 
+        <center><img
+        src="{{ asset('logo.svg') }}"
+        alt="Logo IKIAMBIODB"
+        width="145px"
         loading="lazy"
       /></center>
     </span>
-
-    <nav class="menu">
 
       <a class="item {{ request()->routeIs('location.*') ? 'active' : '' }}" href="{{ route('location.index') }}">
         @include('svg.users')
@@ -309,7 +318,7 @@
       </div>
     </header>
 
-    <main class="content-body">
+    <main class="content-body btnForms">
       @yield('content')
     </main>
   </section>

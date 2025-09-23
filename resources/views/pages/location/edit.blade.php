@@ -21,7 +21,7 @@
         </div>
       @endif
 
-      <form method="POST" action="{{ route('location.update',$item->locationID) }}" class="row g-3">
+      <form method="POST" action="{{ route('location.update',$item->locationID) }}" class="row g-3 btnForms">
         @csrf @method('PUT')
         @include('pages.location.partials.form', get_defined_vars())
         @if(auth()->user()->is_admin)

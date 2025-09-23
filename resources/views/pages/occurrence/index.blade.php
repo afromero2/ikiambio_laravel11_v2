@@ -84,7 +84,7 @@
       </div>
 
       @if ($items->hasPages())
-        <div class="mt-3">{{ $items->links() }}</div>
+        <div class="mt-3">{{{ $items->links() }}}</div>
       @endif
     @else
       <p class="mb-0">No hay registros.</p>

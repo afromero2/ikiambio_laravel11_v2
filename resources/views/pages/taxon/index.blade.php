@@ -6,7 +6,7 @@
 @section('content')
   @php use Illuminate\Support\Str; @endphp
 
-  <div class="d-flex justify-content-between align-items-center mb-3">
+  <div class="d-flex justify-content-between align-items-center mb-3 btnForms">
     <h2 class="m-0">Taxon</h2>
     <a href="{{ route('taxon.create') }}" class="btn btn-primary">Nuevo</a>
   </div>
@@ -16,7 +16,7 @@
 
   <div class="card">
     <div class="card-body table-responsive">
-      <table class="table align-middle">
+      <table class="table align-middle"> 
         <thead>
           <tr>
             <th>Taxon ID</th>
@@ -52,6 +52,6 @@
   </div>
 
   <div class="mt-3">
-    {{ $items->links() }}
+    {{{ $items->links() }}}
   </div>
 @endsection

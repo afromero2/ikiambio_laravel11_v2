@@ -44,17 +44,42 @@ form input:focus {
     outline: none;
 }
 
-button {
-    width: 100%;
+.login button {
+    /* width: 100%; */
+    width: auto;
     background: #148f2d;
     color: white;
     border: none;
-    padding: 12px;
+    padding: 12px 50px;
     border-radius: 8px;
     margin-top: 25px;
     font-size: 16px;
     cursor: pointer;
     transition: background 0.3s ease;
+}
+
+.btnForms button, .btnForms a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 8px;
+    border: 1px solid var(--ikiam-border);
+    padding: 8px 12px;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    background: var(--ikiam-bg);
+    color: var(--ikiam-text);
+}
+
+.btnForms button:hover, .btnForms a:hover {
+    background: #148f2d;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.btnForms table td{
+    padding: 20px 10px;
 }
 
 button:hover {

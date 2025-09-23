@@ -21,12 +21,15 @@
         </div>
       @endif
 
-      <form method="POST" action="{{ route('location.store') }}" class="row g-3">
+      <form method="POST" action="{{ route('location.store') }}" class="row g-3 btnForms">
         @csrf
         @include('pages.location.partials.form', get_defined_vars())
+        <div class="col-12">
         @if(auth()->user()->is_admin)
-          <div class="col-12"><button class="btn btn-primary">Guardar</button></div>
+          <button class="btn btn-primary">Guardar</button>
         @endif
+        <a href="{{ route('location.index') }}">Cancelar</a>
+        </div>
       </form>
     </div>
   </div>

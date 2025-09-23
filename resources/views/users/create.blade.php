@@ -19,7 +19,7 @@
         </div>
     @endif
 
-    <form method="POST" action="{{ route('users.store') }}">
+    <form class="btnForms" method="POST" action="{{ route('users.store') }}">
         @csrf
         <label>Username</label>
         <input type="text" name="username" value="{{ old('username') }}" required>
@@ -39,10 +39,13 @@
         <div class="form-check">
             <input type="checkbox" name="is_admin" id="is_admin" class="form-check-input"
                 value="1" {{ old('is_admin') ? 'checked' : '' }}>
-            <label class="form-check-label" for="is_admin">Es administrador</label>
-        </div>
+            <label class="form-check-label" for="is_admin">&nbsp;&nbsp;Es administrador</label>
+        </div><br/>
 
         <button type="submit">Crear Usuario</button>
+        <a href="{{ route('users.index') }}" class="btn btn-secondary">
+            Cancelar
+        </a>
     </form>
 </div>
 @endsection

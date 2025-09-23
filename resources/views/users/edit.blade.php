@@ -4,7 +4,7 @@
 @section('page_title','Record Level')
 
 @section('content')
-<div class="container">
+<div class="container btnForms">
     <h2>Editar Usuario</h2>
 
     <form method="POST" action="{{ route('users.update', $user->id) }}">
@@ -27,8 +27,8 @@
         <input type="checkbox" name="is_admin" value="1" {{ $user->is_admin ? 'checked' : '' }}>
 
         <button type="submit">Actualizar Usuario</button>
-        <a href="{{ route('users.index') }}">
-            <button>Cancelar</button>
+        <a href="{{ route('users.index') }}" class="btn btn-secondary">
+            Cancelar
         </a>
     </form>
 </div>

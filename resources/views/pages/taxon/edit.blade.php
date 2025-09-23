@@ -21,7 +21,7 @@
         </div>
       @endif
 
-      <form method="POST" action="{{ route('taxon.update',$item->taxonID) }}" class="row g-3">
+      <form method="POST" action="{{ route('taxon.update',$item->taxonID) }}" class="row g-3 btnForms">
         @csrf @method('PUT')
 
         @include('pages.taxon.partials.form', [

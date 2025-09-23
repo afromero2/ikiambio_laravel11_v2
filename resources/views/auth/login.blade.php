@@ -15,7 +15,7 @@
         <div class="error">{{ $errors->first() }}</div>
     @endif
 
-    <form method="POST" action="/login">
+    <form class="login" method="POST" action="/login">
         @csrf
 
         <label>Email</label>

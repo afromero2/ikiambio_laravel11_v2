@@ -5,23 +5,23 @@
 
 @section('content')
 
-<div class="container">
+<div class="container btnForms">
     <h2>Listado de Usuarios</h2>
 
-    <a href="{{ route('users.create') }}">
-        <button>Nuevo Usuario</button>
+    <a href="{{ route('users.create') }}" class="btn btn-secondary">
+        Nuevo Usuario
     </a>
 
     <table style="width:100%; margin-top:20px; border-collapse: collapse;">
         <thead>
             <tr style="background:#f0f0f0;">
-                <th>ID</th>
-                <th>Username</th>
-                <th>Nombre</th>
-                <th>Apellido</th>
-                <th>Email</th>
-                <th>Admin</th>
-                <th>Funcionalidades</th>
+                <th style="text-align:center">ID</th>
+                <th style="text-align:center">Username</th>
+                <th style="text-align:center">Nombre</th>
+                <th style="text-align:center">Apellido</th>
+                <th style="text-align:center">Email</th>
+                <th style="text-align:center">Admin</th>
+                <th style="text-align:center">Funcionalidades</th>
             </tr>
         </thead>
         <tbody>
@@ -36,7 +36,7 @@
                 <td class="text-end">
                     <a class="btn btn-sm btn-outline-primary" href="{{ route('users.show',$user) }}">Ver</a>
                     <a class="btn btn-sm btn-outline-warning" href="{{ route('users.edit',$user) }}">Editar</a>
-                    <form class="d-inline2" action="{{ route('users.destroy',$user) }}" method="POST" onsubmit="return confirm('¿Eliminar?')">
+                    <form class="d-inline" action="{{ route('users.destroy',$user) }}" method="POST" onsubmit="return confirm('¿Eliminar?')">
                         @csrf @method('DELETE')
                         <button type="submit" class="btn btn-sm btn-outline-warning">Eliminar</button>
                     </form>

@@ -50,6 +50,6 @@
 </div>
 
 <div style="margin-top:12px;">
-  {{ $items->links() }}
+  {{{ $items->links() }}}
 </div>
 @endsection

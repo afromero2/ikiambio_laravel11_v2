@@ -5,7 +5,7 @@
 
 @section('content')
   <div class="card">
-    <div class="card-body">
+    <div class="card-body btnForms">
       <dl class="row">
         <dt class="col-md-3">Taxon ID</dt>
         <dd class="col-md-9">{{ $item->taxonID }}</dd>

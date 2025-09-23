@@ -38,7 +38,7 @@
         <dd class="col-md-9">{{ $item->locationRemarks }}</dd>
       </dl>
 
-      <div class="d-flex gap-2">
+      <div class="d-flex gap-2 btnForms">
         @if(auth()->user()->is_admin)
           <a href="{{ route('location.edit',$item->locationID) }}" class="btn btn-primary">Editar</a>
         @endif

@@ -56,6 +56,6 @@
   </div>
 
   <div class="mt-3">
-    {{ $items->links() }}
+    {{{ $items->links() }}}
   </div>
 @endsection

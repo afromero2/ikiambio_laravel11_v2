@@ -21,7 +21,7 @@
         </div>
       @endif
 
-      <form method="POST" action="{{ route('taxon.store') }}" class="row g-3">
+      <form method="POST" action="{{ route('taxon.store') }}" class="row g-3 btnForms">
         @csrf
 
         @include('pages.taxon.partials.form', [
