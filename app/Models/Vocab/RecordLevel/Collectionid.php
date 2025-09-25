@@ -11,5 +11,5 @@ class Collectionid extends Model
     public $timestamps = false;
     public $incrementing = true;
     protected $keyType = 'int';
-    protected $fillable = ['collectionID_value', 'description'];
+    protected $fillable = ['collection_value', 'description'];
 }

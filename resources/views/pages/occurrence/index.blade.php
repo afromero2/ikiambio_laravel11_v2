@@ -58,7 +58,7 @@
 
                   <a href="{{ route('tbl-multimedia.create', ['occurrence' => $row->id_occ_bd]) }}"
                     class="btn btn-sm btn-outline-primary">
-                    Multimedia +
+                    Multimedia ++
                   </a><br/>
 
                    <a href="{{ route('tbl-extractions.create', ['occurrence' => $row->id_occ_bd]) }}"

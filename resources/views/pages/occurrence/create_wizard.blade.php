@@ -544,8 +544,8 @@
         <div class="modal fade" id="modal-record-level" tabindex="-1" aria-hidden="true"> 
           <div class="modal-dialog modal-xl modal-dialog-scrollable">
             <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title">Record level</h5>
+              <div class="modal-header" style="background:#e7ab74;">
+                <h5 class="modal-title">Record level1</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
               </div>
               <div class="modal-body">

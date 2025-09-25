@@ -206,8 +206,6 @@ class OccurrenceController extends Controller
         }
     }
 
-
-
     public function show(Occurrence $occurrence)
     {
         $occurrence->load([

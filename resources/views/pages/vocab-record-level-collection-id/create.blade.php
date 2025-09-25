@@ -21,7 +21,7 @@
 <form method="POST" action="{{ route('vocab-record-level-collection-id.store') }}" class="card card-body">
   @csrf
 
-  <div class="form-grid">
+  <div class="form-grid"> 
 
     <div>
       <label class="label">Collection value *</label>

@@ -3,7 +3,7 @@
   $fmtDate = fn($dt) => $dt ? $dt->format('Y-m-d\TH:i') : null;
 @endphp
 
-<div class="row g-3" style="background: rgb(244, 235, 226);">
+<div class="row g-3">
   {{-- ==================== SELECTS (FKs) ==================== --}}
   <div class="col-md-4">
     <label class="label" for="type">Type *</label>

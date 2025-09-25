@@ -8,6 +8,7 @@
   @vite(['resources/css/custom.css','resources/css/utility.css','resources/js/app.js'])
 </head>
 <body class="app">
+
   {{-- Sidebar --}}
   <aside class="sidebar">
 
@@ -43,10 +44,10 @@
         @include('svg.list')
         <span>TAXON</span>
       </a>
-      {{-- <a class="item {{ request()->routeIs('record-level.*') ? 'active' : '' }}" href="{{ route('record-level.index') }}">
+      <a class="item {{ request()->routeIs('record-level.*') ? 'active' : '' }}" href="{{ route('record-level.index') }}">
         @include('svg.shield')
         <span>RECORD LEVEL</span>
-      </a> --}}
+      </a>
       {{--  <a class="item {{ request()->routeIs('identification.*') ? 'active' : '' }}" href="{{ route('identification.index') }}">
         @include('svg.role')
         <span>IDENTIFICATION</span>

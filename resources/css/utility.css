@@ -68,22 +68,31 @@ form input:focus {
     font-weight: 500;
     text-decoration: none;
     cursor: pointer;
-    background: var(--ikiam-bg);
+    /* background: var(--ikiam-bg); */
     color: var(--ikiam-text);
 }
 
-.btnForms button:hover, .btnForms a:hover {
-    background: #148f2d;
-    color: #ffffff;
+/* .btn-close{
+    background: transparent !important;
+    color:red;
+} */
+
+.btnForms button:hover:not(.btn-close), .btnForms a:hover:not(.btn-close) {
+    background: #d8f4b4;
+    /* color: #ffffff; */
+    color: #07582c;
     text-decoration: none;
 }
+
+btn-close
 
 .btnForms table td{
     padding: 20px 10px;
 }
 
-button:hover {
-    background: #4338ca;
+button:hover:not(.btn-close) {
+    background: #a5de4a;
+    color: #07582c;
 }
 
 /* ==== Mensajes ==== */

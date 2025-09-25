@@ -62,7 +62,12 @@ class Occurrence extends Model
     public function measurements()
     {
         // FK textual en hija: measurementorfacts.id_occ_bd (varchar) → occurrence.id_occ_bd (int)
-        return $this->hasMany(\App\Models\Measurementorfacts::class, 'id_occ_bd', 'id_occ_bd');
+        return $this->hasMany(\App\Models\Measurementorfacts::class, 'id_occ_bd', 'id_occ_bd'); 
+    }
+
+    public function multimedia()
+    {
+        return $this->hasMany(\App\Models\Tblmultimedia::class, 'id_occ_bd', 'id_occ_bd');
     }
 
     public function extractions()
@@ -118,6 +123,8 @@ class Occurrence extends Model
         return $this->belongsTo(\App\Models\Taxon::class, 'taxonID', 'taxonID');
     }
 
+
+    //Este es el hook de modelo
     protected static function booted()
     {
         static::deleting(function (Occurrence $occ) {
@@ -127,6 +134,7 @@ class Occurrence extends Model
                 //    Borrar primero para evitar restricciones futuras
                 $occ->measurements()->delete();
                 $occ->extractions()->delete();
+                $occ->multimedia()->delete();
 
                 // 2) 1:1 por columnas guardadas en occurrence (borrado "hacia arriba")
                 if ($occ->identificationID) {

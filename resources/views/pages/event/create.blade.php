@@ -24,6 +24,11 @@
   <div class="form-grid">
 
     <div>
+      <label class="label">Locationid</label>
+      <input type="text" name="locationID" value="{{ old('locationID', $locationId) }}" class="input" readonly>
+    </div>
+
+    <div>
       <label class="label">Parenteventid</label>
       <input type="text" name="parentEventID" value="{{ old('parentEventID', isset($item)? $item->parentEventID : '') }}" class="input">
     </div>
@@ -68,10 +73,6 @@
       <textarea name="fieldNotes" class="input" rows="3">{{ old('fieldNotes', isset($item)? $item->fieldNotes : '') }}</textarea>
     </div>
 
-    <div>
-      <label class="label">Locationid</label>
-      <input type="text" name="locationID" value="{{ old('locationID', isset($item)? $item->locationID : '') }}" class="input">
-    </div>
 
     <div>
       <label class="label">Eventremarks</label>

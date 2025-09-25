@@ -233,7 +233,7 @@
     </label>
   </div>
 
-  <div id="organism-subform" class="col-12" style="display:none; background-color:rgb(241, 219, 171)">
+  <div id="organism-subform" class="col-12" style="display:none;">
     <div class="row g-3 mt-1">
       <div class="col-md-12">
         <label class="label" for="organism_associatedOccurrences">Associated Occurrences</label>
@@ -689,7 +689,7 @@
     </label>
   </div>
 
-  <div id="taxon-subform" class="col-12" style="display:none; background-color:rgb(241, 219, 171)">
+  <div id="taxon-subform" class="col-12" style="display:none;">
     <div class="alert alert-info mt-2">
       Actualmente solo se registrará el <strong>taxonID</strong>. Agrega aquí campos extra cuando los definas.
     </div>
@@ -712,7 +712,7 @@
     </label>
   </div>
 
-  <div id="identification-subform" class="col-12" style="display:none; background-color:rgb(241, 219, 171)">
+  <div id="identification-subform" class="col-12" style="display:none;">
     <div class="alert alert-info mt-2">
       Actualmente solo se registrará el <strong>identificationID</strong>. Agrega aquí campos extra cuando los definas.
     </div>

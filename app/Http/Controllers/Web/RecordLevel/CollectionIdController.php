@@ -31,7 +31,7 @@ class CollectionIdController extends Controller
             $item = $this->tx(fn () => Collectionid::create($data));
             return redirect()->route('vocab-record-level-collection-id.index')->with('ok','Creado');
         } catch (QueryException $e) {
-            return back()->withErrors('No se pudo crear.')->withInput();
+            return back()->withErrors('No se pudo crearrrr.')->withInput();
         }
     }
 

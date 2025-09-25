@@ -10,6 +10,7 @@ use App\Http\Controllers\Web\LocationWebController;
 use App\Http\Controllers\Web\OrganismWebController;
 use App\Http\Controllers\Web\TaxonWebController;
 use App\Http\Controllers\Web\IdentificationWebController;
+use App\Http\Controllers\Web\EventWebController;
 use App\Http\Controllers\Web\RecordLevel\TypeController;
 use App\Http\Controllers\Web\RecordLevel\LicenseController;
 use App\Http\Controllers\Web\RecordLevel\RightsHolderController;
@@ -92,6 +93,10 @@ Route::middleware('auth')->group(function () {
     Route::resource('identification', IdentificationWebController::class)
         ->parameters(['identification' => 'identification'])
         ->names('identification');  // identification.index, identification.show, ...
+
+    Route::resource('event', EventWebController::class)
+        ->parameters(['event' => 'event'])
+        ->names('event');  // identification.index, identification.show, ...    
 
     // ===================== RECORD LEVEL =====================
     Route::resource('vocab-record-level-type', TypeController::class)

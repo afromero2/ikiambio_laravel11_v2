@@ -14,6 +14,7 @@
         <thead>
           <tr>
             <th>Eventid</th>
+            <th>Locationid</th>
             <th>Parenteventid</th>
             <th>Eventdate</th>
             <th>Eventtime</th>
@@ -26,6 +27,7 @@
         @forelse($items as $item)
           <tr>
             <td>{{ $item->eventID }}</td>
+            <td>{{ $item->locationID }}</td>
             <td>{{ $item->parentEventID }}</td>
             <td>{{ $item->eventDate }}</td>
             <td>{{ $item->eventTime }}</td>

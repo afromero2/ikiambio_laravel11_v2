@@ -57,8 +57,6 @@ class RecordLevel extends Model
         );
     }
 
-
-
     public function institutionCodeRef()
     {
         return $this->belongsTo(\App\Models\Vocab\RecordLevel\Institutioncode::class, 'institutionCode', 'institutionCode_id');

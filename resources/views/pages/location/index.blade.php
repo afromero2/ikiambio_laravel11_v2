@@ -42,6 +42,12 @@
               <td>{{ $row->continentRef?->continent_value }}</td>
               <td>{{ $row->verbatimSrsRef?->verbatimSRS_value }}</td>
               <td>{{ $row->georefStatusRef?->georef_status_value }}</td>
+               <td class="text-nowrap">
+                 <a href="{{ route('event.create', ['location' => $row->locationID]) }}"
+                    class="btn btn-sm btn-outline-primary">
+                    Event +
+                  </a><br/>
+                </td>
               <td class="text-end">
                 <a href="{{ route('location.show',$row->locationID) }}" class="btn btn-sm btn-outline-secondary">Ver</a>
                 <a href="{{ route('location.edit',$row->locationID) }}" class="btn btn-sm btn-outline-primary">Editar</a>
