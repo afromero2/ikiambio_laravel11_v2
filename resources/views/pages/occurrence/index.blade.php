@@ -22,12 +22,12 @@
               <th>Record level</th>
               <th>Catalog #</th>
               <th>Recorded by</th>
-              <th>Ind. count</th>
+             {{--  <th>Ind. count</th>
               <th>OQ Type</th>
-              <th>Sex</th>
+              <th>Sex</th> --}}
               <th>Life stage</th>
-              <th>Repro. cond.</th>
-              <th>Estab. means</th>
+              {{-- <th>Repro. cond.</th> --}}
+              {{-- <th>Estab. means</th> --}}
               <th>Disposition</th>
               <th></th>
             </tr>
@@ -40,41 +40,132 @@
                 <td>{{ $row->recordLevelRef?->record_level_id }}</td>
                 <td>{{ $row->catalogNumber }}</td>
                 <td>{{ $row->recordedBy }}</td>
-                <td>{{ $row->individualCount }}</td>
+                {{-- <td>{{ $row->individualCount }}</td>
                 <td>{{ $row->organismQuantityTypeRef?->oqtype_value }}</td>
-                <td>{{ $row->sexRef?->sex_value }}</td>
+                <td>{{ $row->sexRef?->sex_value }}</td> --}}
                 <td>{{ $row->lifeStageRef?->lifestage_value }}</td>
-                <td>{{ $row->reproductiveConditionRef?->reprocond_value }}</td>
-                <td>{{ $row->establishmentMeansRef?->estabmeans_value }}</td>
+                {{-- <td>{{ $row->reproductiveConditionRef?->reprocond_value }}</td> --}}
+               {{--  <td>{{ $row->establishmentMeansRef?->estabmeans_value }}</td> --}}
                 {{-- <td>{{ $row->dispositionRef?->disposition_value }}</td> --}}
                 <td class="text-nowrap">
-                 {{--  <a href="{{ route('occurrence.edit',$row) }}" class="btn btn-sm btn-primary">MeasureMF</a><br/> --}}
+                  
+                  {{-- measurements --}}
+                  @if($row->measurements->isEmpty())
+                    <a href="{{ route('measurement-or-facts.create', ['occurrence' => $row->id_occ_bd]) }}"
+                      class="btn btn-sm btn-outline-primary">
+                      Measurement +
+                    </a><br/>
+                    <div class="text-muted mt-2">Sin Measurement.</div>
+                  @else
+                    <table class="table table-sm table-bordered mt-2">
+                      <thead>
+                        <tr>
+                          <th><a href="{{ route('measurement-or-facts.create', ['occurrence' => $row->id_occ_bd]) }}"
+                            class="btn btn-sm btn-outline-primary">
+                            Measurement +
+                          </a><br/>
+                          </th>    
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @foreach($row->measurements as $ev)
+                          <tr>
+                            <td><span style="font-size:13px">{{ $ev->measurementID}}</span>
+                              <a href="{{ route('measurement-or-facts.show', $ev->measurementID) }}" target="_blank" class="btn btn-sm"><i class="fa fa-eye"></i></a>
+                              <a href="{{ route('measurement-or-facts.edit', $ev->measurementID) }}" target="_blank" class="btn btn-sm"><i class="fa fa-edit"></i></a>
+                              <form action="{{ route('measurement-or-facts.destroy',$ev->measurementID) }}" method="POST" class="d-inline"
+                                    onsubmit="return confirm('¿Eliminar este registro?')">
+                                @csrf @method('DELETE')
+                                <button class="btn btn-sm"><i class="fa fa-trash"></i></button>
+                              </form>
+                            </td>
+                          </tr>
+                        @endforeach
+                      </tbody>
+                    </table>
+                  @endif
 
-
-                  <a href="{{ route('measurement-or-facts.create', ['occurrence' => $row->id_occ_bd]) }}"
-                    class="btn btn-sm btn-outline-primary">
-                    Measurement +
-                  </a><br/>
-
-                  <a href="{{ route('tbl-multimedia.create', ['occurrence' => $row->id_occ_bd]) }}"
-                    class="btn btn-sm btn-outline-primary">
-                    Multimedia ++
-                  </a><br/>
-
-                   <a href="{{ route('tbl-extractions.create', ['occurrence' => $row->id_occ_bd]) }}"
-                    class="btn btn-sm btn-outline-primary">
-                    Extractions +
-                  </a><br/>
-
+                  {{-- multimedia --}}
+                  @if($row->multimedia->isEmpty())
+                    <a href="{{ route('tbl-multimedia.create', ['occurrence' => $row->id_occ_bd]) }}"
+                      class="btn btn-sm btn-outline-primary">
+                      Multimedia ++
+                    </a><br/>
+                    <div class="text-muted mt-2">Sin multimedia.</div>
+                  @else
+                    <table class="table table-sm table-bordered mt-2">
+                      <thead>
+                        <tr>
+                          <th> <a href="{{ route('tbl-multimedia.create', ['occurrence' => $row->id_occ_bd]) }}"
+                              class="btn btn-sm btn-outline-primary">
+                              Multimedia ++
+                            </a><br/>
+                          </th>    
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @foreach($row->multimedia as $ev)
+                          <tr>
+                            <td><span style="font-size:13px">{{ $ev->idMultimedia}}</span>
+                              <a href="{{ route('tbl-multimedia.show', $ev->idMultimedia) }}" target="_blank" class="btn btn-sm"><i class="fa fa-eye"></i></a>
+                              <a href="{{ route('tbl-multimedia.edit', $ev->idMultimedia) }}" target="_blank" class="btn btn-sm"><i class="fa fa-edit"></i></a>
+                              <form action="{{ route('tbl-multimedia.destroy',$ev->idMultimedia) }}" method="POST" class="d-inline"
+                                    onsubmit="return confirm('¿Eliminar este registro?')">
+                                @csrf @method('DELETE')
+                                <button class="btn btn-sm"><i class="fa fa-trash"></i></button>
+                              </form>
+                            </td>
+                          </tr>
+                        @endforeach
+                      </tbody>
+                    </table>
+                  @endif
+                  
+                  {{-- extractions --}}
+                  @if($row->extractions->isEmpty())
+                    <a href="{{ route('tbl-extractions.create', ['occurrence' => $row->id_occ_bd]) }}"
+                      class="btn btn-sm btn-outline-primary">
+                      Extractions +
+                    </a><br/>
+                    <div class="text-muted mt-2">Sin multimedia.</div>
+                  @else
+                    <table class="table table-sm table-bordered mt-2">
+                      <thead>
+                        <tr>
+                          <th> <a href="{{ route('tbl-extractions.create', ['occurrence' => $row->id_occ_bd]) }}"
+                            class="btn btn-sm btn-outline-primary">
+                            Extractions +
+                          </a><br/>
+                          </th>    
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @foreach($row->extractions as $ev)
+                          <tr>
+                            <td><span style="font-size:13px">{{ $ev->idExtracciones}}</span>
+                              <a href="{{ route('tbl-extractions.show', $ev->idExtracciones) }}" target="_blank" class="btn btn-sm"><i class="fa fa-eye"></i></a>
+                              <a href="{{ route('tbl-extractions.edit', $ev->idExtracciones) }}" target="_blank" class="btn btn-sm"><i class="fa fa-edit"></i></a>
+                              <form action="{{ route('tbl-extractions.destroy',$ev->idExtracciones) }}" method="POST" class="d-inline"
+                                    onsubmit="return confirm('¿Eliminar este registro?')">
+                                @csrf @method('DELETE')
+                                <button class="btn btn-sm"><i class="fa fa-trash"></i></button>
+                              </form>
+                            </td>
+                          </tr>
+                        @endforeach
+                      </tbody>
+                    </table>
+                  @endif
+                 
                   {{-- <a href="{{ route('occurrence.edit',$row) }}" class="btn btn-sm btn-primary">Multimedia</a><br/> --}}
                   {{-- <a href="{{ route('occurrence.edit',$row) }}" class="btn btn-sm btn-primary">Extractions</a><br/> --}}
                 </td>
                 <td class="text-nowrap">
-                  <a href="{{ route('occurrence.show',$row) }}" class="btn btn-sm btn-outline-secondary">Ver</a><br/>
-                  <a href="{{ route('occurrence.edit',$row) }}" class="btn btn-sm btn-primary">Editar</a><br/>
+                  <a href="{{ route('occurrence.show',$row) }}" class="btn btn-sm btn-outline-secondary"><i class="fa fa-eye"></i>Ver</a><br/>
+                  <a href="{{ route('occurrence.edit',$row) }}" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i>Editar</a><br/>
                   <form action="{{ route('occurrence.destroy',$row) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar registro?')">
                     @csrf @method('DELETE')
-                    <button class="btn btn-sm btn-danger">Eliminar</button>
+                    <button class="btn btn-sm btn-danger"><i class="fa fa-eye"></i>Eliminar</button>
                   </form>
                 </td>
               </tr>

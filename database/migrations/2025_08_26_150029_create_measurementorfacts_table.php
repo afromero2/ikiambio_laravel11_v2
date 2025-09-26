@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::create('measurementorfacts', function (Blueprint $table) {
             $table->text('measurementID')->nullable()->primary();
-            $table->text('id_occ_bd')->nullable();
+            $table->integer('id_occ_bd');
             $table->text('measurementType')->nullable();
             $table->text('measurementValue')->nullable();
             $table->text('measurementAccuracy')->nullable();

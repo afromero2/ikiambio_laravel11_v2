@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::create('TblMultimedia', function (Blueprint $table) {
             $table->text('idMultimedia')->nullable()->primary();
-            $table->text('id_occ_bd')->nullable();
+            $table->integer('id_occ_bd');
             $table->text('type')->nullable();
             $table->text('format')->nullable();
             $table->text('identifier')->nullable();

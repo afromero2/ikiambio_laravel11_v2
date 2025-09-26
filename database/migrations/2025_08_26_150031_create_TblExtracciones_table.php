@@ -9,7 +9,7 @@ return new class extends Migration {
     {
         Schema::create('TblExtracciones', function (Blueprint $table) {
             $table->text('idExtracciones')->nullable()->primary();
-            $table->text('id_occ_bd')->nullable();
+            $table->integer('id_occ_bd');
             $table->text('materialSampleType')->nullable();
             $table->text('idRegistros')->nullable();
             $table->date('fechaExtraccion')->nullable();

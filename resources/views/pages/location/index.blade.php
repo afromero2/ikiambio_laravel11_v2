@@ -29,7 +29,8 @@
             <th>Continent</th>
             <th>Verbatim SRS</th>
             <th>Georef. Status</th>
-            <th class="text-end">Acciones</th>
+            <th class="text-center">Eventos asociados</th>
+            <th class="text-center">Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -42,19 +43,54 @@
               <td>{{ $row->continentRef?->continent_value }}</td>
               <td>{{ $row->verbatimSrsRef?->verbatimSRS_value }}</td>
               <td>{{ $row->georefStatusRef?->georef_status_value }}</td>
-               <td class="text-nowrap">
-                 <a href="{{ route('event.create', ['location' => $row->locationID]) }}"
+              <td class="text-nowrap">
+               
+                {{-- Tabla de eventos de esta location --}}
+                @if($row->events->isEmpty())
+                  <a href="{{ route('event.create', ['location' => $row->locationID]) }}"
                     class="btn btn-sm btn-outline-primary">
                     Event +
                   </a><br/>
-                </td>
-              <td class="text-end">
-                <a href="{{ route('location.show',$row->locationID) }}" class="btn btn-sm btn-outline-secondary">Ver</a>
-                <a href="{{ route('location.edit',$row->locationID) }}" class="btn btn-sm btn-outline-primary">Editar</a>
+                  <div class="text-muted mt-2">Sin eventos para esta ubicación.</div>
+                @else
+                  <table class="table table-sm table-bordered mt-2">
+                    <thead>
+                      <tr>
+                        {{-- <th>Fecha</th>
+                        <th>Hora</th> --}}
+                        <th><a href="{{ route('event.create', ['location' => $row->locationID]) }}"
+                              class="btn btn-sm btn-outline-primary">
+                              Event +
+                            </a><br/>
+                        </th>    
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @foreach($row->events as $ev)
+                        <tr>
+                          <td><span style="font-size:13px">{{ $ev->fieldNotes}}</span>
+                            <a href="{{ route('event.show', $ev->eventID) }}" target="_blank" class="btn btn-sm"><i class="fa fa-eye"></i></a>
+                            <a href="{{ route('event.edit', $ev->eventID) }}" target="_blank" class="btn btn-sm"><i class="fa fa-edit"></i></a>
+                            <form action="{{ route('event.destroy',$row->locationID) }}" method="POST" class="d-inline"
+                                  onsubmit="return confirm('¿Eliminar este registro?')">
+                              @csrf @method('DELETE')
+                              <button class="btn btn-sm"><i class="fa fa-trash"></i></button>
+                            </form>
+                          </td>
+                        </tr>
+                      @endforeach
+                    </tbody>
+                  </table>
+                @endif
+                
+              </td>
+              <td class="text-center">
+                <a href="{{ route('location.show',$row->locationID) }}" class="btn btn-outline-secondary" target="_blank"><i class="fa fa-eye"></i>Ver</a>
+                <a href="{{ route('location.edit',$row->locationID) }}" class="btn btn-outline-primary" target="_blank"><i class="fa fa-edit"></i>Editar</a>
                 <form action="{{ route('location.destroy',$row->locationID) }}" method="POST" class="d-inline"
                       onsubmit="return confirm('¿Eliminar este registro?')">
                   @csrf @method('DELETE')
-                  <button class="btn btn-sm btn-outline-danger">Eliminar</button>
+                  <button class="btn btn-sm btn-outline-danger"><i class="fa fa-trash"></i>Eliminar</button>
                 </form>
               </td>
             </tr>

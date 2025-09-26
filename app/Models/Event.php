@@ -25,4 +25,9 @@ class Event extends Model
         'locationID', 
         'eventRemarks'
     ];
+
+    public function location()
+    {
+        return $this->belongsTo(Location::class, 'locationID', 'locationID');
+    }
 }

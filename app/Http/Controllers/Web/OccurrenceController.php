@@ -60,7 +60,39 @@ class OccurrenceController extends Controller
             'organismQuantityTypeRef','sexRef','lifeStageRef','reproductiveConditionRef',
             'establishmentMeansRef','dispositionRef',
             'organismRef',
+            'measurements' => function ($q) {
+                $q->select([
+                    'measurementID',
+                    'id_occ_bd',
+                    'measurementType',   
+                    'measurementValue'
+                ])
+                ->orderByDesc('measurementID');
+            },
+            'multimedia' => function ($q) {
+                $q->select([
+                    'idMultimedia',
+                    'id_occ_bd',
+                    'type',
+                    'format',
+                    'identifier',
+                    'title'
+                ])
+                ->orderByDesc('idMultimedia');
+            },
+            'extractions' => function ($q) {
+                $q->select([
+                    'idExtracciones',
+                    'id_occ_bd',
+                    'volume', 
+                    'volumeUnit',
+                    'concentration',
+                    'concentrationUnit'
+                ])
+                ->orderByDesc('idExtracciones');
+            },
         ])
+        ->withCount(['measurements','multimedia','extractions'])
         ->orderByDesc('id_occ_bd')
         ->paginate(15);
 

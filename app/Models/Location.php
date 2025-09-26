@@ -28,8 +28,25 @@ class Location extends Model
     ];
 
     // app/Models/Location.php
-    public function continentRef()    { return $this->belongsTo(\App\Models\Vocab\Location\Continent::class, 'continent', 'continent_id'); }
-    public function verbatimSrsRef()  { return $this->belongsTo(\App\Models\Vocab\Location\VerbatimSrs::class, 'verbatimSRS', 'verbatimSRS_id'); }
-    public function georefStatusRef() { return $this->belongsTo(\App\Models\Vocab\Location\GeorefStatus::class, 'georeferenceVerificationStatus', 'georef_status_id'); }
+    public function continentRef()
+    { 
+        return $this->belongsTo(\App\Models\Vocab\Location\Continent::class, 'continent', 'continent_id'); 
+    }
+    
+    public function verbatimSrsRef()
+    { 
+        return $this->belongsTo(\App\Models\Vocab\Location\VerbatimSrs::class, 'verbatimSRS', 'verbatimSRS_id'); 
+    }
+    
+    public function georefStatusRef()
+    { 
+        return $this->belongsTo(\App\Models\Vocab\Location\GeorefStatus::class, 'georeferenceVerificationStatus', 'georef_status_id'); 
+    }
+
+    public function events()
+    {
+        // FK en event = locationID, PK local = locationID
+        return $this->hasMany(Event::class, 'locationID', 'locationID');
+    }
 
 }

@@ -16,8 +16,29 @@ class LocationWebController extends Controller
 {
     public function index()
     {
-        $items = Location::with(['continentRef','verbatimSrsRef','georefStatusRef'])
-            ->orderBy('locationID')->paginate(15);
+       /*  $items = Location::with(['continentRef','verbatimSrsRef','georefStatusRef'])
+            ->orderBy('locationID')->paginate(15); */
+        
+        $items = Location::with([
+            'continentRef',
+            'verbatimSrsRef',
+            'georefStatusRef',
+            'events' => function ($q) {
+                $q->select([
+                    'eventID',
+                    'locationID',   // ¡IMPORTANTE! incluir FK para que Eloquent relacione
+                    'samplingProtocol',
+                    'eventDate',
+                    'eventTime',
+                    'fieldNotes'
+                ])
+                ->orderByDesc('eventDate')
+                ->orderBy('eventTime');
+            },
+        ])
+        ->withCount('events')        // $location->events_count disponible en la vista
+        ->orderBy('locationID')
+        ->paginate(15);    
 
         return view('pages.location.index', compact('items'));
     }
