@@ -71,8 +71,8 @@
                         @foreach($row->measurements as $ev)
                           <tr>
                             <td><span style="font-size:13px">{{ $ev->measurementID}}</span>
-                              <a href="{{ route('measurement-or-facts.show', $ev->measurementID) }}" target="_blank" class="btn btn-sm"><i class="fa fa-eye"></i></a>
-                              <a href="{{ route('measurement-or-facts.edit', $ev->measurementID) }}" target="_blank" class="btn btn-sm"><i class="fa fa-edit"></i></a>
+                              <a href="{{ route('measurement-or-facts.show', $ev->measurementID) }}" class="btn btn-sm"><i class="fa fa-eye"></i></a>
+                              <a href="{{ route('measurement-or-facts.edit', $ev->measurementID) }}" class="btn btn-sm"><i class="fa fa-edit"></i></a>
                               <form action="{{ route('measurement-or-facts.destroy',$ev->measurementID) }}" method="POST" class="d-inline"
                                     onsubmit="return confirm('¿Eliminar este registro?')">
                                 @csrf @method('DELETE')
@@ -107,8 +107,8 @@
                         @foreach($row->multimedia as $ev)
                           <tr>
                             <td><span style="font-size:13px">{{ $ev->idMultimedia}}</span>
-                              <a href="{{ route('tbl-multimedia.show', $ev->idMultimedia) }}" target="_blank" class="btn btn-sm"><i class="fa fa-eye"></i></a>
-                              <a href="{{ route('tbl-multimedia.edit', $ev->idMultimedia) }}" target="_blank" class="btn btn-sm"><i class="fa fa-edit"></i></a>
+                              <a href="{{ route('tbl-multimedia.show', $ev->idMultimedia) }}" class="btn btn-sm"><i class="fa fa-eye"></i></a>
+                              <a href="{{ route('tbl-multimedia.edit', $ev->idMultimedia) }}" class="btn btn-sm"><i class="fa fa-edit"></i></a>
                               <form action="{{ route('tbl-multimedia.destroy',$ev->idMultimedia) }}" method="POST" class="d-inline"
                                     onsubmit="return confirm('¿Eliminar este registro?')">
                                 @csrf @method('DELETE')
@@ -143,8 +143,8 @@
                         @foreach($row->extractions as $ev)
                           <tr>
                             <td><span style="font-size:13px">{{ $ev->idExtracciones}}</span>
-                              <a href="{{ route('tbl-extractions.show', $ev->idExtracciones) }}" target="_blank" class="btn btn-sm"><i class="fa fa-eye"></i></a>
-                              <a href="{{ route('tbl-extractions.edit', $ev->idExtracciones) }}" target="_blank" class="btn btn-sm"><i class="fa fa-edit"></i></a>
+                              <a href="{{ route('tbl-extractions.show', $ev->idExtracciones) }}" class="btn btn-sm"><i class="fa fa-eye"></i></a>
+                              <a href="{{ route('tbl-extractions.edit', $ev->idExtracciones) }}" class="btn btn-sm"><i class="fa fa-edit"></i></a>
                               <form action="{{ route('tbl-extractions.destroy',$ev->idExtracciones) }}" method="POST" class="d-inline"
                                     onsubmit="return confirm('¿Eliminar este registro?')">
                                 @csrf @method('DELETE')

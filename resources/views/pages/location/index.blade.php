@@ -69,8 +69,8 @@
                       @foreach($row->events as $ev)
                         <tr>
                           <td><span style="font-size:13px">{{ $ev->fieldNotes}}</span>
-                            <a href="{{ route('event.show', $ev->eventID) }}" target="_blank" class="btn btn-sm"><i class="fa fa-eye"></i></a>
-                            <a href="{{ route('event.edit', $ev->eventID) }}" target="_blank" class="btn btn-sm"><i class="fa fa-edit"></i></a>
+                            <a href="{{ route('event.show', $ev->eventID) }}" class="btn btn-sm"><i class="fa fa-eye"></i></a>
+                            <a href="{{ route('event.edit', $ev->eventID) }}" class="btn btn-sm"><i class="fa fa-edit"></i></a>
                             <form action="{{ route('event.destroy',$row->locationID) }}" method="POST" class="d-inline"
                                   onsubmit="return confirm('¿Eliminar este registro?')">
                               @csrf @method('DELETE')

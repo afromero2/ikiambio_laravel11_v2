@@ -354,7 +354,7 @@ class OccurrenceController extends Controller
                 $occurrence->update($data);
             });
 
-            return redirect()->route('occurrence.show', $occurrence)->with('ok','Occurrence actualizada');
+            return redirect()->route('occurrence.index', $occurrence)->with('ok','Occurrence actualizada');
         } catch (QueryException $e) {
             Log::error('Error al actualizar Occurrence', ['error' => $e->getMessage()]);
             return back()->withErrors('No se pudo actualizar. Revise los datos.')->withInput();

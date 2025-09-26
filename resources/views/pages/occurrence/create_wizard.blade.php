@@ -531,8 +531,11 @@
         </div>
 
         <div class="mt-3">
-          <button type="submit" class="btn btn-success">Guardar Occurrence</button>
-          <button type="button" id="btn-clear-all" class="btn btn-sm btn-outline-secondary">Limpiar borradores y vínculos</button>
+          <button type="submit" class="btn btn-success">Guardar</button>
+          <a class="btn" href="{{ route('occurrence.index') }}">Cancelar</a>
+          @if(!$isEdit)
+            <button type="button" id="btn-clear-all" class="btn btn-sm btn-outline-secondary" style="float:right">Limpiar borradores y vínculos</button>
+          @endif
         </div>
 
       </form>

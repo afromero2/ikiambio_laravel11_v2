@@ -89,7 +89,8 @@ class MeasurementorfactsController extends Controller
 
         try {
             DB::transaction(fn () => $item->update($data));
-            return redirect()->route('measurement-or-facts.show', $item->measurementID)->with('ok','Actualizado');
+            /* return redirect()->route('occurrence.index', $item->measurementID)->with('ok','Actualizado'); */
+            return redirect()->route('occurrence.index')->with('ok','Actualizado');
         } catch (\Throwable $e) {
             Log::error('Measurementorfacts update error', ['msg'=>$e->getMessage()]);
             return back()->withErrors($e->getMessage())->withInput();

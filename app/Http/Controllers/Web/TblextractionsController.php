@@ -57,7 +57,7 @@ class TblextractionsController extends Controller
         $data = $this->validateData($request, true, $tblextractions);
         try {
             $this->tx(fn () => $tblextractions->update($data));
-            return redirect()->route('tbl-extractions.index')->with('ok','Actualizado');
+            return redirect()->route('occurrence.index')->with('ok','Actualizado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo actualizar.')->withInput();
         }

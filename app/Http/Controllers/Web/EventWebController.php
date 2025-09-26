@@ -83,7 +83,7 @@ class EventWebController extends Controller
         $data = $request->all();
         try {
             $this->tx(fn () => $event->update($data));
-            return redirect()->route('event.index')->with('ok','Actualizado');
+            return redirect()->route('location.index')->with('ok','Actualizado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo actualizar.')->withInput();
         }

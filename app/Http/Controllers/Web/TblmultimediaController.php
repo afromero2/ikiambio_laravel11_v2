@@ -95,7 +95,10 @@ class TblmultimediaController extends Controller
 
         try {
             DB::transaction(fn () => $item->update($data));
-            return redirect()->route('tbl-multimedia.show', $item->idMultimedia)->with('ok','Actualizado');
+            /* return redirect()->route('occurrence.show', $item->idMultimedia)->with('ok','Actualizado'); */
+
+            return redirect()->route('occurrence.index')->with('ok','Actualizado');
+
         } catch (\Throwable $e) {
             Log::error('TblMultimedia update error', ['msg'=>$e->getMessage()]);
             return back()->withErrors($e->getMessage())->withInput();
