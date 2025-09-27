@@ -95,7 +95,7 @@ class LocationWebController extends Controller
             $location->update(collect($data)->except('locationID')->toArray());
         });
 
-        return redirect()->route('location.show', $location->locationID)->with('ok', 'Location actualizado');
+        return redirect()->route('location.index', $location->locationID)->with('ok', 'Location actualizado');
     }
 
     public function destroy(Location $location)

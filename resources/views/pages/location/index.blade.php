@@ -85,12 +85,12 @@
                 
               </td>
               <td class="text-center">
-                <a href="{{ route('location.show',$row->locationID) }}" class="btn btn-outline-secondary" target="_blank"><i class="fa fa-eye"></i>Ver</a>
-                <a href="{{ route('location.edit',$row->locationID) }}" class="btn btn-outline-primary" target="_blank"><i class="fa fa-edit"></i>Editar</a>
+                <a href="{{ route('location.show',$row->locationID) }}" class="btn"><i class="fa fa-eye"></i></a>
+                <a href="{{ route('location.edit',$row->locationID) }}" class="btn"><i class="fa fa-edit"></i></a>
                 <form action="{{ route('location.destroy',$row->locationID) }}" method="POST" class="d-inline"
                       onsubmit="return confirm('¿Eliminar este registro?')">
                   @csrf @method('DELETE')
-                  <button class="btn btn-sm btn-outline-danger"><i class="fa fa-trash"></i>Eliminar</button>
+                  <button class="btn btn-outline-danger"><i class="fa fa-trash"></i></button>
                 </form>
               </td>
             </tr>

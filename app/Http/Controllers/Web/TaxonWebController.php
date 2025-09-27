@@ -71,7 +71,7 @@ class TaxonWebController extends Controller
             $taxon->update(collect($data)->except('taxonID')->toArray());
         });
 
-        return redirect()->route('taxon.show', $taxon->taxonID)->with('ok','Taxon actualizado');
+        return redirect()->route('taxon.index', $taxon->taxonID)->with('ok','Taxon actualizado');
     }
 
     public function destroy(Taxon $taxon)

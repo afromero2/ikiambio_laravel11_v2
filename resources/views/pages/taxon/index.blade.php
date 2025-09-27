@@ -18,12 +18,12 @@
     <div class="card-body table-responsive">
       <table class="table align-middle"> 
         <thead>
-          <tr>
-            <th>Taxon ID</th>
-            <th>Scientific Name</th>
-            <th>Rank</th>
-            <th>Status</th>
-            <th class="text-end">Acciones</th>
+          <tr class="text-center">
+            <th class="text-center">Taxon ID</th>
+            <th class="text-center">Scientific Name</th>
+            <th class="text-center">Rank</th>
+            <th class="text-center">Status</th>
+            <th class="text-center">Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -34,12 +34,12 @@
               <td>{{ $row->taxonRankRef?->taxonRank_value }}</td>
               <td>{{ $row->taxonomicStatusRef?->taxonomicStatus_value }}</td>
               <td class="text-end">
-                <a href="{{ route('taxon.show',$row->taxonID) }}" class="btn btn-sm btn-outline-secondary">Ver</a>
-                <a href="{{ route('taxon.edit',$row->taxonID) }}" class="btn btn-sm btn-outline-primary">Editar</a>
+                <a href="{{ route('taxon.show',$row->taxonID) }}" class="btn btn-sm btn-outline-secondary"><i class="fa fa-eye"></i></a>
+                <a href="{{ route('taxon.edit',$row->taxonID) }}" class="btn btn-sm btn-outline-primary"><i class="fa fa-edit"></i></a>
                 <form action="{{ route('taxon.destroy',$row->taxonID) }}" method="POST" class="d-inline"
                       onsubmit="return confirm('¿Eliminar este registro?')">
                   @csrf @method('DELETE')
-                  <button class="btn btn-sm btn-outline-danger">Eliminar</button>
+                  <button class="btn btn-sm btn-outline-danger"><i class="fa fa-trash"></i></button>
                 </form>
               </td>
             </tr>

@@ -34,11 +34,11 @@
                 <td>{{ $user->email }}</td>
                 <td>{{ $user->is_admin ? 'Sí' : 'No' }}</td>
                 <td class="text-end">
-                    <a class="btn btn-sm btn-outline-primary" href="{{ route('users.show',$user) }}">Ver</a>
-                    <a class="btn btn-sm btn-outline-warning" href="{{ route('users.edit',$user) }}">Editar</a>
+                    <a class="btn btn-sm btn-outline-primary" href="{{ route('users.show',$user) }}"><i class="fa fa-eye"></i></a>
+                    <a class="btn btn-sm btn-outline-warning" href="{{ route('users.edit',$user) }}"><i class="fa fa-edit"></i></a>
                     <form class="d-inline" action="{{ route('users.destroy',$user) }}" method="POST" onsubmit="return confirm('¿Eliminar?')">
                         @csrf @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-outline-warning">Eliminar</button>
+                        <button type="submit" class="btn btn-sm btn-outline-warning"><i class="fa fa-trash"></i></button>
                     </form>
                 </td>
             </tr>

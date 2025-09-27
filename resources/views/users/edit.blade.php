@@ -23,10 +23,11 @@
         <label>Email</label>
         <input type="email" name="email" value="{{ $user->email }}" required>
 
-        <label>Es Administrador</label>
-        <input type="checkbox" name="is_admin" value="1" {{ $user->is_admin ? 'checked' : '' }}>
+        {{-- <label>Es Administrador</label> --}}
+        <br/><br/><b>Es Administrador</b>
+        <input style="width:20%" type="checkbox" name="is_admin" value="{{ $user->is_admin ? 1 : 0 }}" {{ $user->is_admin ? 'checked' : '' }}><br/><br/>
 
-        <button type="submit">Actualizar Usuario</button>
+        <button type="submit">Actualizar</button>
         <a href="{{ route('users.index') }}" class="btn btn-secondary">
             Cancelar
         </a>
