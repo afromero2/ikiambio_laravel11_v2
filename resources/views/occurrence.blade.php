@@ -353,7 +353,7 @@ function renderTable(tableId, tableName, rowsCount=3){
     tdAct.innerHTML = `
       <button class="btn view" data-action="view" data-table="${tableName}" data-id="${idValue}">Ver</button>
       <button class="btn edit" data-action="edit" data-table="${tableName}" data-id="${idValue}">Editar</button>
-      <button class="btn del"  data-action="delete" data-table="${tableName}" data-id="${idValue}">Eliminar</button>`;
+      <button class="btn del"  data-action="delete" data-table="${tableName}" data-id="${idValue}"><i class="fa fa-trash"></i></button>`;
     tr.appendChild(tdAct);
     tbody.appendChild(tr);
   }

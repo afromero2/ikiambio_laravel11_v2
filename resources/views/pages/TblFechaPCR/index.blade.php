@@ -32,11 +32,11 @@
             <td>{{ $item->amplificationStaff }}</td>
             <td>{{ $item->num_reacciones }}</td>
             <td style="text-align:right;">
-              <a class="btn ghost" href="{{ route('TblFechaPCR.show', $item) }}">Ver</a>
-              <a class="btn ghost warn" href="{{ route('TblFechaPCR.edit', $item) }}">Editar</a>
+              <a class="btn ghost" href="{{ route('TblFechaPCR.show', $item) }}"><i class="fa fa-eye"></i></a>
+              <a class="btn ghost" href="{{ route('TblFechaPCR.edit', $item) }}"><i class="fa fa-edit"></i></a>
               <form style="display:inline" method="POST" action="{{ route('TblFechaPCR.destroy', $item) }}" onsubmit="return confirm('¿Eliminar?')">
                 @csrf @method('DELETE')
-                <button class="btn ghost danger" type="submit">Eliminar</button>
+                <button class="btn ghost " type="submit"><i class="fa fa-trash"></i></button>
               </form>
             </td>
           </tr>

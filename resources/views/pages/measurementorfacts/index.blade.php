@@ -32,11 +32,11 @@
             <td>{{ $item->measurementAccuracy }}</td>
             <td>{{ $item->measurementUnit }}</td>
             <td style="text-align:right;">
-              <a class="btn ghost" href="{{ route('measurement-or-facts.show', $item) }}">Ver</a>
-              <a class="btn ghost warn" href="{{ route('measurement-or-facts.edit', $item) }}">Editar</a>
+              <a class="btn ghost" href="{{ route('measurement-or-facts.show', $item) }}"><i class="fa fa-eye"></i></a>
+              <a class="btn ghost" href="{{ route('measurement-or-facts.edit', $item) }}"><i class="fa fa-edit"></i></a>
               <form style="display:inline" method="POST" action="{{ route('measurement-or-facts.destroy', $item) }}" onsubmit="return confirm('¿Eliminar?')">
                 @csrf @method('DELETE')
-                <button class="btn ghost danger" type="submit">Eliminar</button>
+                <button class="btn ghost " type="submit"><i class="fa fa-trash"></i></button>
               </form>
             </td>
           </tr>

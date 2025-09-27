@@ -161,11 +161,11 @@
                   {{-- <a href="{{ route('occurrence.edit',$row) }}" class="btn btn-sm btn-primary">Extractions</a><br/> --}}
                 </td>
                 <td class="text-nowrap">
-                  <a href="{{ route('occurrence.show',$row) }}" class="btn btn-sm btn-outline-secondary"><i class="fa fa-eye"></i>Ver</a><br/>
-                  <a href="{{ route('occurrence.edit',$row) }}" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i>Editar</a><br/>
+                  <a href="{{ route('occurrence.show',$row) }}" class="btn btn-sm btn-outline-secondary"><i class="fa fa-eye"></i><i class="fa fa-eye"></i></a><br/>
+                  <a href="{{ route('occurrence.edit',$row) }}" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i><i class="fa fa-edit"></i></a><br/>
                   <form action="{{ route('occurrence.destroy',$row) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar registro?')">
                     @csrf @method('DELETE')
-                    <button class="btn btn-sm btn-danger"><i class="fa fa-eye"></i>Eliminar</button>
+                    <button class="btn btn-sm btn-danger"><i class="fa fa-eye"></i><i class="fa fa-trash"></i></button>
                   </form>
                 </td>
               </tr>

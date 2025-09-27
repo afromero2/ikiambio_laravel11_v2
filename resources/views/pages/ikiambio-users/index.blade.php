@@ -28,11 +28,11 @@
             <td>{{ $u->full_name }}</td>
             <td>{{ $u->username }}</td>
             <td class="text-end">
-              <a class="btn btn-sm btn-outline-primary" href="{{ route('ikiambio-users.show',$u) }}">Ver</a>
-              <a class="btn btn-sm btn-outline-warning" href="{{ route('ikiambio-users.edit',$u) }}">Editar</a>
+              <a class="btn btn-sm btn-outline-primary" href="{{ route('ikiambio-users.show',$u) }}"><i class="fa fa-eye"></i></a>
+              <a class="btn btn-sm btn-outline-warning" href="{{ route('ikiambio-users.edit',$u) }}"><i class="fa fa-edit"></i></a>
               <form class="d-inline" action="{{ route('ikiambio-users.destroy',$u) }}" method="POST" onsubmit="return confirm('¿Eliminar?')">
                 @csrf @method('DELETE')
-                <button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button>
+                <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fa fa-trash"></i></button>
               </form>
             </td>
           </tr>
@@ -74,11 +74,11 @@
           <td class="px-4 py-3 text-sm text-gray-900 font-medium">{{ $u->full_name }}</td>
           <td class="px-4 py-3 text-sm text-gray-700">{{ $u->username }}</td>
           <td class="px-4 py-3 text-sm text-right">
-            <a class="text-indigo-600 hover:text-indigo-800 mr-3" href="{{ route('ikiambio-users.show',$u) }}">Ver</a>
-            <a class="text-amber-600 hover:text-amber-800 mr-3" href="{{ route('ikiambio-users.edit',$u) }}">Editar</a>
+            <a class="text-indigo-600 hover:text-indigo-800 mr-3" href="{{ route('ikiambio-users.show',$u) }}"><i class="fa fa-eye"></i></a>
+            <a class="text-amber-600 hover:text-amber-800 mr-3" href="{{ route('ikiambio-users.edit',$u) }}"><i class="fa fa-edit"></i></a>
             <form class="inline" action="{{ route('ikiambio-users.destroy',$u) }}" method="POST" onsubmit="return confirm('¿Eliminar?')">
               @csrf @method('DELETE')
-              <button type="submit" class="text-red-600 hover:text-red-800">Eliminar</button>
+              <button type="submit" class="text-red-600 hover:text-red-800"><i class="fa fa-trash"></i></button>
             </form>
           </td>
         </tr>

@@ -11,5 +11,28 @@ class Tblregistroslaboratorio extends Model
     public $timestamps = false;
     public $incrementing = false;
     protected $keyType = 'string';
-    protected $fillable = ['idFechaPCR', 'idExtracciones', 'vol_ADN_PCR', 'amplificationSuccess', 'amplificationSuccessDetails', 'sampleDesignation', 'idPrimerF', 'idPrimerR', 'tecnologia_secuenciacion', 'consensusSequence', 'fechaSecuenciacion', 'sequencingStaff', 'ordenSecuenciacion', 'geneticAccessionNumber', 'geneticAccessionURI'];
+    protected $fillable = [
+        'idFechaPCR', 
+        'idExtracciones', 
+        'vol_ADN_PCR', 
+        'amplificationSuccess', 
+        'amplificationSuccessDetails', 
+        'sampleDesignation', 
+        'idPrimerF', 
+        'idPrimerR', 
+        'tecnologia_secuenciacion', 
+        'consensusSequence', 
+        'fechaSecuenciacion', 
+        'sequencingStaff', 
+        'ordenSecuenciacion', 
+        'geneticAccessionNumber', 
+        'geneticAccessionURI'
+    ];
+
+    public function extracciones()
+    {
+        return $this->belongsTo(Tblextractions::class, 'idRegistrosLaboratorio', 'idRegistrosLaboratorio');
+    }
+
+
 }

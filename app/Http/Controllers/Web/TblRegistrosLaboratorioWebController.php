@@ -1,25 +1,27 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Web;
 
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\Concerns\WrapsTransactions;
 use App\Models\Tblregistroslaboratorio;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
 
-class TblregistroslaboratorioController extends Controller
+class TblRegistrosLaboratorioWebController extends Controller
 {
     use WrapsTransactions;
 
     public function index()
     {
         $items = Tblregistroslaboratorio::orderByDesc('id')->paginate(15);
-        return view('pages.tblregistroslaboratorio.index', compact('items'));
+        return view('pages.tbl-registros-laboratorio.index', compact('items'));
     }
 
     public function create()
     {
-        return view('pages.tblregistroslaboratorio.create');
+        $extraccionId = request('extraccionId'); // viene del query string
+        return view('pages.tbl-registros-laboratorio.create', compact('extraccionId'));
     }
 
     public function store(Request $request)
@@ -27,7 +29,7 @@ class TblregistroslaboratorioController extends Controller
         $data = $request->all();
         try {
             $item = $this->tx(fn () => Tblregistroslaboratorio::create($data));
-            return redirect()->route('tblregistroslaboratorio.index')->with('ok','Creado');
+            return redirect()->route('tbl-registros-laboratorio.index')->with('ok','Creado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo crear.')->withInput();
         }
@@ -35,12 +37,12 @@ class TblregistroslaboratorioController extends Controller
 
     public function show(Tblregistroslaboratorio $tblregistroslaboratorio)
     {
-        return view('pages.tblregistroslaboratorio.show', ['item' => $tblregistroslaboratorio]);
+        return view('pages.tbl-registros-laboratorio.show', ['item' => $tblregistroslaboratorio]);
     }
 
     public function edit(Tblregistroslaboratorio $tblregistroslaboratorio)
     {
-        return view('pages.tblregistroslaboratorio.edit', ['item' => $tblregistroslaboratorio]);
+        return view('pages.tbl-registros-laboratorio.edit', ['item' => $tblregistroslaboratorio]);
     }
 
     public function update(Request $request, Tblregistroslaboratorio $tblregistroslaboratorio)
@@ -48,7 +50,7 @@ class TblregistroslaboratorioController extends Controller
         $data = $request->all();
         try {
             $this->tx(fn () => $tblregistroslaboratorio->update($data));
-            return redirect()->route('tblregistroslaboratorio.index')->with('ok','Actualizado');
+            return redirect()->route('tbl-registros-laboratorio.index')->with('ok','Actualizado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo actualizar.')->withInput();
         }

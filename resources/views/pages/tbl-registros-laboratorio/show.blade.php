@@ -42,8 +42,8 @@
     </dl>
 
     <div style="margin-top:12px;">
-      <a class="btn" href="{{ route('TblRegistrosLaboratorio.edit', $item) }}">Editar</a>
-      <a class="btn" href="{{ route('TblRegistrosLaboratorio.index') }}">Volver</a>
+      <a class="btn" href="{{ route('tbl-registros-laboratorio.edit', $item) }}">Editar</a>
+      <a class="btn" href="{{ route('tbl-registros-laboratorio.index') }}">Volver</a>
     </div>
   </div>
 </div>

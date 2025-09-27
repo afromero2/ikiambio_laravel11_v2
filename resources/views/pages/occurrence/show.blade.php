@@ -87,7 +87,7 @@
 
   <div class="mt-2">
     <a class="btn btn-outline-secondary" href="{{ route('occurrence.index') }}">Volver</a>
-    <a class="btn btn-primary" href="{{ route('occurrence.edit',$item) }}">Editar</a>
+    <a class="btn btn-primary" href="{{ route('occurrence.edit',$item) }}"><i class="fa fa-edit"></i></a>
   </div>
 </div>
 @endsection

@@ -568,6 +568,7 @@ class ComposerStaticInit626b9e7ddd47fb7eff9aaa53cce0c9ad
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\LoginController' => __DIR__ . '/../..' . '/app/Http/Controllers/LoginController.php',
         'App\\Http\\Controllers\\UserController' => __DIR__ . '/../..' . '/app/Http/Controllers/UserController.php',
+        'App\\Http\\Controllers\\Web\\EventWebController' => __DIR__ . '/../..' . '/app/Http/Controllers/Web/EventWebController.php',
         'App\\Http\\Controllers\\Web\\IdentificationWebController' => __DIR__ . '/../..' . '/app/Http/Controllers/Web/IdentificationWebController.php',
         'App\\Http\\Controllers\\Web\\Identification\\TypeStatusController' => __DIR__ . '/../..' . '/app/Http/Controllers/Web/Identification/TypeStatusController.php',
         'App\\Http\\Controllers\\Web\\Identification\\VerificationStatusController' => __DIR__ . '/../..' . '/app/Http/Controllers/Web/Identification/VerificationStatusController.php',

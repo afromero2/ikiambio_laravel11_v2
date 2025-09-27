@@ -220,8 +220,8 @@
             Elegir / Crear
           </button>&nbsp;
          <div id="rl-actions" class="mt-1" style="display:none">
-            <a id="rl-view"  class="btn btn-link p-2" target="_blank" rel="noopener noreferrer">Ver</a>
-            <a id="rl-edit"  class="btn btn-link p-2" target="_blank" rel="noopener noreferrer">Editar</a>
+            <a id="rl-view"  class="btn btn-link p-2" target="_blank" rel="noopener noreferrer"><i class="fa fa-eye"></i></a>
+            <a id="rl-edit"  class="btn btn-link p-2" target="_blank" rel="noopener noreferrer"><i class="fa fa-edit"></i></a>
           </div>
         </div>
 
@@ -248,8 +248,8 @@
             Elegir / Crear
           </button>&nbsp;
           <div id="org-actions" class="mt-1" style="display:none">
-            <a id="org-view" class="btn btn-link p-2" target="_blank" rel="noopener noreferrer">Ver</a>
-            <a id="org-edit" class="btn btn-link p-2" target="_blank" rel="noopener noreferrer">Editar</a>
+            <a id="org-view" class="btn btn-link p-2" target="_blank" rel="noopener noreferrer"><i class="fa fa-eye"></i></a>
+            <a id="org-edit" class="btn btn-link p-2" target="_blank" rel="noopener noreferrer"><i class="fa fa-edit"></i></a>
           </div>
         </div>
 
@@ -276,8 +276,8 @@
             Elegir / Crear
           </button>&nbsp;
           <div id="loc-actions" class="mt-1" style="display:none">
-            <a id="loc-view" class="btn btn-link p-2" target="_blank" rel="noopener noreferrer">Ver</a>
-            <a id="loc-edit" class="btn btn-link p-2" target="_blank" rel="noopener noreferrer">Editar</a>
+            <a id="loc-view" class="btn btn-link p-2" target="_blank" rel="noopener noreferrer"><i class="fa fa-eye"></i></a>
+            <a id="loc-edit" class="btn btn-link p-2" target="_blank" rel="noopener noreferrer"><i class="fa fa-edit"></i></a>
           </div>
 
         </div>
@@ -305,8 +305,8 @@
             Elegir / Crear
           </button>&nbsp;
           <div id="tax-actions" class="mt-1" style="display:none">
-            <a id="tax-view" class="btn btn-link p-2" target="_blank" rel="noopener noreferrer">Ver</a>
-            <a id="tax-edit" class="btn btn-link p-2" target="_blank" rel="noopener noreferrer">Editar</a>
+            <a id="tax-view" class="btn btn-link p-2" target="_blank" rel="noopener noreferrer"><i class="fa fa-eye"></i></a>
+            <a id="tax-edit" class="btn btn-link p-2" target="_blank" rel="noopener noreferrer"><i class="fa fa-edit"></i></a>
           </div>
 
         </div>
@@ -334,8 +334,8 @@
             Elegir / Crear
           </button>&nbsp;
             <div id="idn-actions" class="mt-1" style="display:none">
-              <a id="idn-view" class="btn btn-link p-2" target="_blank" rel="noopener noreferrer">Ver</a>
-              <a id="idn-edit" class="btn btn-link p-2" target="_blank" rel="noopener noreferrer">Editar</a>
+              <a id="idn-view" class="btn btn-link p-2" target="_blank" rel="noopener noreferrer"><i class="fa fa-eye"></i></a>
+              <a id="idn-edit" class="btn btn-link p-2" target="_blank" rel="noopener noreferrer"><i class="fa fa-edit"></i></a>
             </div>
         </div>
 

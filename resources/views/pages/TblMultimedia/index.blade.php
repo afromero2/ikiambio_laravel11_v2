@@ -32,11 +32,11 @@
             <td>{{ $item->identifier }}</td>
             <td>{{ $item->title }}</td>
             <td style="text-align:right;">
-              <a class="btn ghost" href="{{ route('tbl-multimedia.show', $item) }}">Ver</a>
-              <a class="btn ghost warn" href="{{ route('tbl-multimedia.edit', $item) }}">Editar</a>
+              <a class="btn ghost" href="{{ route('tbl-multimedia.show', $item) }}"><i class="fa fa-eye"></i></a>
+              <a class="btn ghost" href="{{ route('tbl-multimedia.edit', $item) }}"><i class="fa fa-edit"></i></a>
               <form style="display:inline" method="POST" action="{{ route('tbl-multimedia.destroy', $item) }}" onsubmit="return confirm('¿Eliminar?')">
                 @csrf @method('DELETE')
-                <button class="btn ghost danger" type="submit">Eliminar</button>
+                <button class="btn ghost " type="submit"><i class="fa fa-trash"></i></button>
               </form>
             </td>
           </tr>

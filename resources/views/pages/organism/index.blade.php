@@ -38,12 +38,12 @@
               <td>{{ Str::limit($row->associatedOrganisms, 60) }}</td>
               <td>{{ Str::limit($row->previousIdentifications, 60) }}</td>
               <td class="text-end">
-                <a href="{{ route('organism.show',$row->organismID) }}" class="btn btn-sm btn-outline-secondary">Ver</a>
-                <a href="{{ route('organism.edit',$row->organismID) }}" class="btn btn-sm btn-outline-primary">Editar</a>
+                <a href="{{ route('organism.show',$row->organismID) }}" class="btn btn-sm btn-outline-secondary"><i class="fa fa-eye"></i></a>
+                <a href="{{ route('organism.edit',$row->organismID) }}" class="btn btn-sm btn-outline-primary"><i class="fa fa-edit"></i></a>
                 <form action="{{ route('organism.destroy',$row->organismID) }}" method="POST" class="d-inline"
                       onsubmit="return confirm('¿Eliminar este registro?')">
                   @csrf @method('DELETE')
-                  <button class="btn btn-sm btn-outline-danger">Eliminar</button>
+                  <button class="btn btn-sm btn-outline-danger"><i class="fa fa-trash"></i></button>
                 </form>
               </td>
             </tr>

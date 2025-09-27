@@ -32,6 +32,7 @@ return array(
     'App\\Http\\Controllers\\Controller' => $baseDir . '/app/Http/Controllers/Controller.php',
     'App\\Http\\Controllers\\LoginController' => $baseDir . '/app/Http/Controllers/LoginController.php',
     'App\\Http\\Controllers\\UserController' => $baseDir . '/app/Http/Controllers/UserController.php',
+    'App\\Http\\Controllers\\Web\\EventWebController' => $baseDir . '/app/Http/Controllers/Web/EventWebController.php',
     'App\\Http\\Controllers\\Web\\IdentificationWebController' => $baseDir . '/app/Http/Controllers/Web/IdentificationWebController.php',
     'App\\Http\\Controllers\\Web\\Identification\\TypeStatusController' => $baseDir . '/app/Http/Controllers/Web/Identification/TypeStatusController.php',
     'App\\Http\\Controllers\\Web\\Identification\\VerificationStatusController' => $baseDir . '/app/Http/Controllers/Web/Identification/VerificationStatusController.php',

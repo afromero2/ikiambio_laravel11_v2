@@ -12,14 +12,39 @@ class TblextractionsController extends Controller
 {
     use WrapsTransactions;
 
-    public function index()
+    /* public function index()
     {
         
         $pk = (new Tblextractions)->getKeyName(); // 'idExtracciones'
         $items = Tblextractions::orderByDesc($pk)->paginate(15);
         
         return view('pages.tblextractions.index', compact('items'));
+    } */
+
+
+    public function index()
+    {   
+        $items = Tblextractions::with([
+            'regLaboratorio' => function ($q) {
+                $q->select([
+                    'idExtracciones',
+                    'idRegistrosLaboratorio', 
+                    'vol_ADN_PCR',
+                    'amplificationSuccess',
+                    'amplificationSuccessDetails',
+                    'sequencingStaff'
+                ])
+                ->orderByDesc('idRegistrosLaboratorio')
+                ->orderBy('sequencingStaff');
+            },
+        ])
+        ->withCount('regLaboratorio')        // $location->events_count disponible en la vista
+        ->orderByDesc('idExtracciones')  // más útil ver las últimas primero
+        ->paginate(15);    
+
+        return view('pages.tblextractions.index', compact('items'));
     }
+
 
     public function create()
     {

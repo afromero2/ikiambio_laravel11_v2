@@ -38,6 +38,7 @@ use App\Http\Controllers\Web\Tblprimers\PrimerDirectionController;
 use App\Http\Controllers\Web\TblmultimediaController;
 use App\Http\Controllers\Web\MeasurementorfactsController;
 use App\Http\Controllers\Web\TblextractionsController;
+use App\Http\Controllers\Web\TblregistroslaboratorioWebController;
 use App\Http\Controllers\Ajax\OrganismController as AjaxOrganismController;
 use App\Http\Controllers\Ajax\RecordLevelController as AjaxRecordLevelController;
 use App\Http\Controllers\Ajax\LocationController as AjaxLocationController;
@@ -212,6 +213,10 @@ Route::middleware('auth')->group(function () {
     Route::resource('tbl-extractions', TblextractionsController::class)
         ->names('tbl-extractions')
         ->parameters(['tbl-extractions' => 'tblextractions']);
+
+    Route::resource('tbl-registros-laboratorio', TblRegistrosLaboratorioWebController::class)
+        ->names('tbl-registros-laboratorio')
+        ->parameters(['tbl-registros-laboratorio' => 'registrosLaboratorio']);    
 
     // ===================== USAR AJAX ======================
     Route::get('/ajax/organisms/search', [AjaxOrganismController::class, 'search'])->name('ajax.organisms.search');    

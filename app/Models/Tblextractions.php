@@ -43,4 +43,11 @@ class Tblextractions extends Model
     {
         return $this->getKeyName(); // 'idExtracciones'
     }
+
+    public function regLaboratorio()
+    {
+        // Una extracción tiene muchos registros de laboratorio
+        return $this->hasMany(\App\Models\TblRegistrosLaboratorio::class, 'idExtracciones', 'idExtracciones');
+    }
+
 }
