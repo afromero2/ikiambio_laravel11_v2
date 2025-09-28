@@ -60,7 +60,7 @@ class TblextractionsController extends Controller
         $data = $this->validateData($request);
         try {
             $item = $this->tx(fn () => Tblextractions::create($data));
-            return redirect()->route('tbl-extractions.index')->with('ok','Creado');
+            return redirect()->route('occurrence.index')->with('ok','Creado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo crear.')->withInput();
         }

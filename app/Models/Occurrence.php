@@ -123,7 +123,6 @@ class Occurrence extends Model
         return $this->belongsTo(\App\Models\Taxon::class, 'taxonID', 'taxonID');
     }
 
-
     //Este es el hook de modelo
     protected static function booted()
     {

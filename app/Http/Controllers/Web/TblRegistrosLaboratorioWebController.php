@@ -40,7 +40,7 @@ class TblRegistrosLaboratorioWebController extends Controller
             'idFechaPCR'  => ['required','string','max:255'],
             'idExtracciones'         => ['required','string','max:255'],
             'vol_ADN_PCR'       => ['required','string','max:255'],
-            'amplificationSuccess'   => ['required','string'],
+            'amplificationSuccess'   => ['nullable','string'],
             'amplificationSuccessDetails' => ['required','string','max:255'],
             'sampleDesignation'  => ['required','string'],
             'idPrimerF'      => ['required','string','max:255'],

@@ -31,6 +31,23 @@ class Tblextractions extends Model
                 $m->idExtracciones = (string) Str::uuid();
             }
         });
+
+        // Borra los hijos antes de borrar la extracción
+        static::deleting(function (Tblextractions $ex) { 
+            // Si NO usas SoftDeletes en el padre/hijo:
+            // -> delete(): borrado normal
+            // -> forceDelete(): borrado definitivo
+
+            // Si el padre usa SoftDeletes y quieres respetarlo:
+            if (method_exists($ex, 'isForceDeleting') && $ex->isForceDeleting()) {
+                // Forzar borrado definitivo de los hijos (si los hijos también usan SoftDeletes, esto los elimina de verdad)
+                $ex->regLaboratorio()->forceDelete();
+            } else {
+                // Borrado normal de los hijos
+                $ex->regLaboratorio()->delete();
+            }
+        });
+
     }
 
     public function occurrence()

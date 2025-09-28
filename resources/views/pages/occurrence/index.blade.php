@@ -127,7 +127,7 @@
                       class="btn btn-sm btn-outline-primary">
                       Extractions +
                     </a><br/>
-                    <div class="text-muted mt-2">Sin multimedia.</div>
+                    <div class="text-muted mt-2">Sin extracciones.</div>
                   @else
                     <table class="table table-sm table-bordered mt-2">
                       <thead>
@@ -161,11 +161,11 @@
                   {{-- <a href="{{ route('occurrence.edit',$row) }}" class="btn btn-sm btn-primary">Extractions</a><br/> --}}
                 </td>
                 <td class="text-nowrap">
-                  <a href="{{ route('occurrence.show',$row) }}" class="btn btn-sm btn-outline-secondary"><i class="fa fa-eye"></i><i class="fa fa-eye"></i></a><br/>
-                  <a href="{{ route('occurrence.edit',$row) }}" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i><i class="fa fa-edit"></i></a><br/>
+                  <a href="{{ route('occurrence.show',$row) }}" class="btn btn-sm btn-outline-secondary"><i class="fa fa-eye"></i></a><br/>
+                  <a href="{{ route('occurrence.edit',$row) }}" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a><br/>
                   <form action="{{ route('occurrence.destroy',$row) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar registro?')">
                     @csrf @method('DELETE')
-                    <button class="btn btn-sm btn-danger"><i class="fa fa-eye"></i><i class="fa fa-trash"></i></button>
+                    <button class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
                   </form>
                 </td>
               </tr>
