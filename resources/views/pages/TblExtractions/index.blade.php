@@ -55,12 +55,21 @@
                       </tr>
                     </thead>
                     <tbody>
-                      @foreach($row->regLaboratorio as $ev)
+                      @foreach($item->regLaboratorio as $rl)
                         <tr>
-                          <td><span style="font-size:13px">{{ $ev->fieldNotes}}</span>
-                            <a href="{{ route('event.show', $ev->eventID) }}" class="btn btn-sm"><i class="fa fa-eye"></i></a>
-                            <a href="{{ route('event.edit', $ev->eventID) }}" class="btn btn-sm"><i class="fa fa-edit"></i></a>
-                            <form action="{{ route('event.destroy',$row->locationID) }}" method="POST" class="d-inline"
+                          <td><span style="font-size:13px">{{ $rl->idExtracciones }}</span>
+                           
+                            <a href="{{ route('tbl-registros-laboratorio.show', $rl) }}"
+                              class="btn btn-sm" title="Ver">
+                              <i class="fa-solid fa-eye"></i>
+                            </a>
+
+                            <a href="{{ route('tbl-registros-laboratorio.edit', $rl) }}"
+                              class="btn btn-sm" title="Editar">
+                              <i class="fa-solid fa-pen-to-square"></i>
+                            </a>
+
+                            <form action="{{ route('tbl-registros-laboratorio.destroy',$rl) }}" method="POST" class="d-inline"
                                   onsubmit="return confirm('¿Eliminar este registro?')">
                               @csrf @method('DELETE')
                               <button class="btn btn-sm"><i class="fa fa-trash"></i></button>

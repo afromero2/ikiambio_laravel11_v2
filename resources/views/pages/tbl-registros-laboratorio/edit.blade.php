@@ -101,7 +101,7 @@
 
   <div style="margin-top:12px;">
     <button class="btn primary">Actualizar</button>
-    <a href="{{ route('tbl-registros-laboratorio.index') }}" class="btn">Cancelar</a>
+    <a href="{{ route('tbl-extractions.index',$item) }}" class="btn">Cancelar</a>
   </div>
 </form>
 @endsection

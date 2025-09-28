@@ -216,7 +216,8 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('tbl-registros-laboratorio', TblRegistrosLaboratorioWebController::class)
         ->names('tbl-registros-laboratorio')
-        ->parameters(['tbl-registros-laboratorio' => 'registrosLaboratorio']);    
+        ->parameters(['tbl-registros-laboratorio' => 'idRegistrosLaboratorio']);    
+
 
     // ===================== USAR AJAX ======================
     Route::get('/ajax/organisms/search', [AjaxOrganismController::class, 'search'])->name('ajax.organisms.search');    

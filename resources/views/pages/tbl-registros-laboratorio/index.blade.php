@@ -1,55 +1,58 @@
 @extends('layouts.sidebar')
-@section('page_title','Tblregistroslaboratorio')
+@section('page_title','Registros de laboratorio')
 
 @section('content')
-<div class="d-flex" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-  <h1 style="margin:0;font-size:1.25rem;">Tblregistroslaboratorio</h1>
-  <a href="{{ route('TblRegistrosLaboratorio.create') }}" class="btn primary">Nuevo</a>
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="h5 m-0">Registros de laboratorio</h1>
+  <a href="{{ route('tbl-registros-laboratorio.create') }}" class="btn btn-primary btn-sm">Nuevo</a>
 </div>
 
 <div class="card">
-  <div class="card-body" style="padding:0;">
-    <div style="overflow:auto;">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Idregistroslaboratorio</th>
-            <th>Idfechapcr</th>
-            <th>Idextracciones</th>
-            <th>Vol adn pcr</th>
-            <th>Amplificationsuccess</th>
-            <th>Amplificationsuccessdetails</th>
-            <th style="text-align:right;">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-        @forelse($items as $item)
-          <tr>
-            <td>{{ $item->idRegistrosLaboratorio }}</td>
-            <td>{{ $item->idFechaPCR }}</td>
-            <td>{{ $item->idExtracciones }}</td>
-            <td>{{ $item->vol_ADN_PCR }}</td>
-            <td>{{ $item->amplificationSuccess }}</td>
-            <td>{{ $item->amplificationSuccessDetails }}</td>
-            <td style="text-align:right;">
-              <a class="btn ghost" href="{{ route('tbl-registros-laboratorio.show', $item) }}"><i class="fa fa-eye"></i></a>
-              <a class="btn ghost" href="{{ route('tbl-registros-laboratorio.edit', $item) }}"><i class="fa fa-edit"></i></a>
-              <form style="display:inline" method="POST" action="{{ route('tbl-registros-laboratorio.destroy', $item) }}" onsubmit="return confirm('¿Eliminar?')">
-                @csrf @method('DELETE')
-                <button class="btn ghost " type="submit"><i class="fa fa-trash"></i></button>
-              </form>
-            </td>
-          </tr>
-        @empty
-          <tr><td colspan="7" style="text-align:center;color:#6b7280;padding:20px;">Sin registros</td></tr>
-        @endforelse
-        </tbody>
-      </table>
-    </div>
+  <div class="card-body p-0">
+    <table class="table table-sm mb-0">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Extracción</th>
+          <th>Vol ADN PCR</th>
+          <th>Amp</th>
+          <th>Staff</th>
+          <th class="text-end">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+      @forelse($items as $row)
+        <tr>
+          <td>{{ $row->idRegistrosLaboratorio }}</td>
+          <td>{{ $row->idExtracciones }}</td>
+          <td>{{ $row->vol_ADN_PCR ?? '—' }}</td>
+          <td>{{ isset($row->amplificationSuccess) ? ($row->amplificationSuccess ? 'Sí' : 'No') : '—' }}</td>
+          <td>{{ $row->sequencingStaff ?? '—' }}</td>
+          <td class="text-end text-nowrap">
+            <a href="{{ route('tbl-registros-laboratorio.show', $row) }}" class="btn btn-outline-secondary btn-sm" title="Ver">
+              <i class="fa-solid fa-eye"></i>
+            </a>
+            <a href="{{ route('tbl-registros-laboratorio.edit', $row) }}" class="btn btn-outline-warning btn-sm" title="Editar">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </a>
+            <form action="{{ route('tbl-registros-laboratorio.destroy', $row) }}" method="POST" class="d-inline"
+                  onsubmit="return confirm('¿Eliminar este registro?')">
+              @csrf @method('DELETE')
+              <button class="btn btn-outline-danger btn-sm" type="submit" title="Eliminar">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </form>
+          </td>
+        </tr>
+      @empty
+        <tr><td colspan="6" class="text-center text-muted py-4">Sin registros</td></tr>
+      @endforelse
+      </tbody>
+    </table>
   </div>
 </div>
 
-<div style="margin-top:12px;">
+<div class="mt-3">
   {{ $items->links() }}
 </div>
 @endsection
