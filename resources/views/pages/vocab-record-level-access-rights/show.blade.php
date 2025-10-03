@@ -16,8 +16,8 @@
     </dl>
 
     <div style="margin-top:12px;">
-      <a class="btn" href="{{ route('vocab-record-level-access-rights.edit', $item) }}">Editar</a>
       <a class="btn" href="{{ route('vocab-record-level-access-rights.index') }}">Volver</a>
+      <a class="btn" href="{{ route('vocab-record-level-access-rights.edit', $item) }}">Editar</a>
     </div>
   </div>
 </div>

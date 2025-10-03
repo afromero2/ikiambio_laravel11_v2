@@ -23,8 +23,8 @@
     </dl>
 
     <div class="mt-3">
-      <a class="btn btn-outline-primary" href="{{ route('ikiambio-users.edit',$user) }}">Editar</a>
       <a class="btn btn-link" href="{{ route('ikiambio-users.index') }}">Volver</a>
+      <a class="btn btn-outline-primary" href="{{ route('ikiambio-users.edit',$user) }}">Editar</a>
     </div>
   </div>
 </div>

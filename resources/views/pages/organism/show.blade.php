@@ -21,8 +21,8 @@
       </dl>
 
       <div class="d-flex gap-2">
-        <a href="{{ route('organism.edit',$item->organismID) }}" class="btn btn-primary">Editar</a>
         <a href="{{ route('organism.index') }}" class="btn btn-light">Volver</a>
+        <a href="{{ route('organism.edit',$item->organismID) }}" class="btn btn-primary">Editar</a>
       </div>
     </div>
   </div>

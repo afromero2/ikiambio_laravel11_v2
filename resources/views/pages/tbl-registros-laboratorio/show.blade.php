@@ -43,11 +43,11 @@
 
     <div style="margin-top:12px;">
 
+      <a class="btn" href="{{ route('tbl-extractions.index') }}">Volver</a>
       <a href="{{ route('tbl-registros-laboratorio.edit', ['idRegistrosLaboratorio' => $item->idRegistrosLaboratorio]) }}"
         class="btn btn-warning">
         Editar
       </a>
-      <a class="btn" href="{{ route('tbl-extractions.index') }}">Volver</a>
 
     </div>
   </div>

@@ -82,7 +82,7 @@
 
   <div style="margin-top:12px;">
     <button class="btn primary">Guardar</button>
-    <a href="{{ route('tbl-multimedia.index') }}" class="btn">Cancelar</a>
+    <a href="{{ route('occurrence.index') }}" class="btn">Cancelar</a>
   </div>
 </form>
 @endsection

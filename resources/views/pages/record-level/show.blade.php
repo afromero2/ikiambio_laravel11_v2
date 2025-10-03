@@ -66,7 +66,7 @@
 
   <div class="mt-2">
     <a class="btn btn-outline-secondary" href="{{ route('record-level.index') }}">Volver</a>
-    <a class="btn btn-primary" href="{{ route('record-level.edit',$item) }}"><i class="fa fa-edit"></i></a>
+    <a class="btn btn-primary" href="{{ route('record-level.edit',$item) }}">Editar</a>
   </div>
 </div>
 @endsection

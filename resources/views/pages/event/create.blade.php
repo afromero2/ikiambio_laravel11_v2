@@ -82,7 +82,7 @@
 
   <div style="margin-top:12px;">
     <button class="btn primary">Guardar</button>
-    <a href="{{ route('event.index') }}" class="btn">Cancelar</a>
+    <a href="{{ route('location.index') }}" class="btn">Cancelar</a>
   </div>
 </form>
 @endsection

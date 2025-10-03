@@ -14,9 +14,8 @@
     <p><strong>Email:</strong> {{ $user->email }}</p>
     <p><strong>Administrador:</strong> {{ $user->is_admin ? 'Sí' : 'No' }}</p>
 
-    <a href="{{ route('users.index') }}" class="btn btn-secondary">
-        Volver
-    </a>
+    <a href="{{ route('users.index') }}" class="btn btn-secondary">Volver</a>
+     <a class="btn btn-secondary" href="{{ route('users.edit',$user) }}">Editar</a>
 
 </div>
 @endsection

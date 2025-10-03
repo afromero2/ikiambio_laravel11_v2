@@ -34,8 +34,8 @@
     </dl>
 
     <div style="margin-top:12px;">
-      <a class="btn" href="{{ route('event.edit', $item) }}">Editar</a>
       <a class="btn" href="{{ route('location.index') }}">Volver</a>
+      <a class="btn" href="{{ route('event.edit', $item) }}">Editar</a>
     </div>
   </div>
 </div>
