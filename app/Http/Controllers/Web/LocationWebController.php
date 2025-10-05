@@ -15,10 +15,7 @@ use Illuminate\Support\Str;
 class LocationWebController extends Controller
 {
     public function index()
-    {
-       /*  $items = Location::with(['continentRef','verbatimSrsRef','georefStatusRef'])
-            ->orderBy('locationID')->paginate(15); */
-        
+    {   
         $items = Location::with([
             'continentRef',
             'verbatimSrsRef',

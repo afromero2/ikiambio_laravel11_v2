@@ -95,7 +95,8 @@ class EventWebController extends Controller
             $this->tx(fn () => $event->delete());
             return back()->with('ok','Eliminado');
         } catch (QueryException $e) {
-            return back()->withErrors('No se pudo eliminar (posibles FKs).');
+            return $e;
+            /* return back()->withErrors('No se pudo eliminar (posibles FKs).'); */
         }
     }
 }

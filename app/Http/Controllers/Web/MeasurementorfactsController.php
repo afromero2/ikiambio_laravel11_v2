@@ -29,7 +29,7 @@ class MeasurementorfactsController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'measurementID'                => ['nullable','string','max:255','unique:measurementorfacts,measurementID'],
+            'measurementID'                => ['required','string','max:255','unique:measurementorfacts,measurementID'],
             'id_occ_bd'                    => ['nullable','string','max:255'], // ajusta si es int en tu esquema
             'measurementType'              => ['nullable','string','max:255'],
             'measurementValue'             => ['nullable','string','max:255'],

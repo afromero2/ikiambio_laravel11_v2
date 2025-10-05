@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Location extends Model
 {
@@ -47,6 +48,20 @@ class Location extends Model
     {
         // FK en event = locationID, PK local = locationID
         return $this->hasMany(Event::class, 'locationID', 'locationID');
+    }
+
+    protected static function booted()
+    {
+        static::deleting(function (Location $loc) {
+            DB::transaction(function () use ($loc) {
+                // Si usas SoftDeletes y quieres respetar forceDelete:
+                if (method_exists($loc, 'isForceDeleting') && $loc->isForceDeleting()) {
+                    $loc->events()->forceDelete();
+                } else {
+                    $loc->events()->delete();
+                }
+            });
+        });
     }
 
 }

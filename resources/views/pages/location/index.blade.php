@@ -58,11 +58,13 @@
                       <tr>
                         {{-- <th>Fecha</th>
                         <th>Hora</th> --}}
+                        @if($row->events_count == 0)
                         <th><a href="{{ route('event.create', ['location' => $row->locationID]) }}"
                               class="btn btn-sm btn-outline-primary">
                               Event +
                             </a><br/>
-                        </th>    
+                        </th>
+                        @endif    
                       </tr>
                     </thead>
                     <tbody>
@@ -71,10 +73,9 @@
                           <td><span style="font-size:13px">{{ $ev->fieldNotes}}</span>
                             <a href="{{ route('event.show', $ev->eventID) }}" class="btn btn-sm"><i class="fa fa-eye"></i></a>
                             <a href="{{ route('event.edit', $ev->eventID) }}" class="btn btn-sm"><i class="fa fa-edit"></i></a>
-                            <form action="{{ route('event.destroy',$row->locationID) }}" method="POST" class="d-inline"
-                                  onsubmit="return confirm('¿Eliminar este registro?')">
+                            <form style="display:inline" method="POST" action="{{ route('event.destroy', $ev) }}" onsubmit="return confirm('¿Eliminar?')">
                               @csrf @method('DELETE')
-                              <button class="btn btn-sm"><i class="fa fa-trash"></i></button>
+                              <button class="btn ghost " type="submit"><i class="fa fa-trash"></i></button>
                             </form>
                           </td>
                         </tr>
