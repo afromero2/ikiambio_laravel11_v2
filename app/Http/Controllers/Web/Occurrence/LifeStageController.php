@@ -7,6 +7,8 @@ use App\Http\Controllers\Concerns\WrapsTransactions;
 use App\Models\Vocab\Occurrence\LifeStage;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class LifeStageController extends Controller
 {
@@ -25,13 +27,15 @@ class LifeStageController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-
         try {
-            $item = $this->tx(fn () => LifeStage::create($data));
+            $data = $request->validate($this->rules());
+            if (empty($data['lifestage_id'] ?? null)) {
+                $data['lifestage_id'] = (string) Str::uuid();
+            }
+            LifeStage::create($data);
             return redirect()->route('vocab-occurrence-life-stage.index')->with('ok','Creado');
         } catch (QueryException $e) {
-            return back()->withErrors('No se pudo crear.')->withInput();
+            return back()->withErrors('No se pudo actualizar.')->withInput();
         }
     }
 
@@ -47,10 +51,9 @@ class LifeStageController extends Controller
 
     public function update(Request $request, LifeStage $lifeStage)
     {
-        $data = $request->all();
-
         try {
-            $this->tx(fn () => $lifeStage->update($data));
+            $data = $request->validate($this->rules($lifeStage));
+            $lifeStage->update($data);
             return redirect()->route('vocab-occurrence-life-stage.index')->with('ok','Actualizado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo actualizar.')->withInput();
@@ -66,4 +69,17 @@ class LifeStageController extends Controller
             return back()->withErrors('No se pudo eliminar (posibles FKs).');
         }
     }
+
+    protected function rules($lifeStage = null): array
+    {
+        return [
+            'lifestage_value' => [
+                'required','string','max:40',
+                Rule::unique('vocab_occurrence_lifeStage','lifestage_value')
+                ->ignore($lifeStage?->lifestage_id,'lifestage_id')
+            ],
+            'description' => ['required','string'],
+        ];
+    }
+
 }

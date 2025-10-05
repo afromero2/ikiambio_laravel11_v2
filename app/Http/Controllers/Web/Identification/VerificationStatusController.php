@@ -7,6 +7,8 @@ use App\Http\Controllers\Concerns\WrapsTransactions;
 use App\Models\Vocab\Identification\VerificationStatus;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 
 class VerificationStatusController extends Controller
 {
@@ -25,13 +27,15 @@ class VerificationStatusController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-
         try {
-            $item = $this->tx(fn () => VerificationStatus::create($data));
+            $data = $request->validate($this->rules());
+            if (empty($data['vocab_identification_verificationStatus_id'] ?? null)) {
+                $data['vocab_identification_verificationStatus_id'] = (string) Str::uuid();
+            }
+            VerificationStatus::create($data);
             return redirect()->route('vocab-identification-verification-status.index')->with('ok','Creado');
         } catch (QueryException $e) {
-            return back()->withErrors('No se pudo crear.')->withInput();
+            return back()->withErrors('No se pudo actualizar.')->withInput();
         }
     }
 
@@ -47,14 +51,13 @@ class VerificationStatusController extends Controller
 
     public function update(Request $request, VerificationStatus $verificationStatus)
     {
-        $data = $request->all();
-
         try {
-            $this->tx(fn () => $verificationStatus->update($data));
+            $data = $request->validate($this->rules($verificationStatus));
+            $verificationStatus->update($data);
             return redirect()->route('vocab-identification-verification-status.index')->with('ok','Actualizado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo actualizar.')->withInput();
-        }
+        }    
     }
 
     public function destroy(VerificationStatus $verificationStatus)
@@ -65,5 +68,18 @@ class VerificationStatusController extends Controller
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo eliminar (posibles FKs).');
         }
+    }
+
+ 
+    protected function rules($identification = null): array
+    {
+        return [
+            'identificationVerificationStatus_value' => [
+                'required','string','max:100',
+                Rule::unique('vocab_identification_verificationStatus','identificationVerificationStatus_value')
+                ->ignore($identification?->vocab_identification_verificationStatus_id,'vocab_identification_verificationStatus_id')
+            ],
+            'description' => ['required','string'],
+        ];
     }
 }

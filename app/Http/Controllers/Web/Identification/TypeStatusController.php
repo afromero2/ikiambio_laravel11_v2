@@ -7,6 +7,8 @@ use App\Http\Controllers\Concerns\WrapsTransactions;
 use App\Models\Vocab\Identification\TypeStatus;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 
 class TypeStatusController extends Controller
 {
@@ -25,14 +27,16 @@ class TypeStatusController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-
         try {
-            $item = $this->tx(fn () => TypeStatus::create($data));
+            $data = $request->validate($this->rules());
+            if (empty($data['vocab_identification_typeStatus_id'] ?? null)) {
+                $data['vocab_identification_typeStatus_id'] = (string) Str::uuid();
+            }
+            TypeStatus::create($data);
             return redirect()->route('vocab-identification-type-status.index')->with('ok','Creado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo crear.')->withInput();
-        }
+	    }    
     }
 
     public function show(TypeStatus $typeStatus)
@@ -47,11 +51,10 @@ class TypeStatusController extends Controller
 
     public function update(Request $request, TypeStatus $typeStatus)
     {
-        $data = $request->all();
-
         try {
-            $this->tx(fn () => $typeStatus->update($data));
-            return redirect()->route('vocab-identification-type-status.index')->with('ok','Actualizado');
+            $data = $request->validate($this->rules($typeStatus));
+            $typeStatus->update($data);
+            return back()->with('ok','Actualizado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo actualizar.')->withInput();
         }
@@ -66,4 +69,16 @@ class TypeStatusController extends Controller
             return back()->withErrors('No se pudo eliminar (posibles FKs).');
         }
     }
+
+    protected function rules($typeStatus = null): array
+    {
+        return [
+            'typeStatus_value' => [
+                'required','string','max:50', Rule::unique('vocab_identification_typeStatus','typeStatus_value')
+                ->ignore($typeStatus?->vocab_identification_typeStatus_id,'vocab_identification_typeStatus_id')
+            ],
+            'description' => ['required','string'],
+        ];
+    }
+
 }

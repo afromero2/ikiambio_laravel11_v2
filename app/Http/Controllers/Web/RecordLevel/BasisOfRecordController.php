@@ -7,6 +7,8 @@ use App\Http\Controllers\Concerns\WrapsTransactions;
 use App\Models\Vocab\RecordLevel\BasisOfRecord;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class BasisOfRecordController extends Controller
 {
@@ -25,13 +27,15 @@ class BasisOfRecordController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-
         try {
-            $item = $this->tx(fn () => BasisOfRecord::create($data));
+            $data = $request->validate($this->rules());
+            if (empty($data['basisofrecord_id'] ?? null)) {
+                $data['basisofrecord_id'] = (string) Str::uuid();
+            }
+            BasisOfRecord::create($data);
             return redirect()->route('vocab-record-level-basis-of-record.index')->with('ok','Creado');
         } catch (QueryException $e) {
-            return back()->withErrors('No se pudo crear.')->withInput();
+            return back()->withErrors('No se pudo actualizar.')->withInput();
         }
     }
 
@@ -47,10 +51,9 @@ class BasisOfRecordController extends Controller
 
     public function update(Request $request, BasisOfRecord $basisOfRecord)
     {
-        $data = $request->all();
-
         try {
-            $this->tx(fn () => $basisOfRecord->update($data));
+            $data = $request->validate($this->rules($basisOfRecord));
+            $basisOfRecord->update($data);
             return redirect()->route('vocab-record-level-basis-of-record.index')->with('ok','Actualizado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo actualizar.')->withInput();
@@ -66,4 +69,17 @@ class BasisOfRecordController extends Controller
             return back()->withErrors('No se pudo eliminar (posibles FKs).');
         }
     }
+
+    protected function rules($basisOfRecord = null): array
+    {
+        return [
+            'basisofrecord_value' => [
+                'required','string','max:50',
+                Rule::unique('vocab_record_level_basisOfRecord','basisofrecord_value')
+                ->ignore($basisOfRecord?->basisofrecord_id, 'basisofrecord_id')
+            ],
+            'description' => ['required','string'],
+        ];
+    }
+
 }

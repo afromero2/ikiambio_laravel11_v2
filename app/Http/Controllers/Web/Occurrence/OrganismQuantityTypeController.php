@@ -7,6 +7,8 @@ use App\Http\Controllers\Concerns\WrapsTransactions;
 use App\Models\Vocab\Occurrence\OrganismQuantityType;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class OrganismQuantityTypeController extends Controller
 {
@@ -25,13 +27,15 @@ class OrganismQuantityTypeController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-
         try {
-            $item = $this->tx(fn () => OrganismQuantityType::create($data));
+            $data = $request->validate($this->rules());
+            if (empty($data['disposition_id'] ?? null)) {
+                $data['disposition_id'] = (string) Str::uuid();
+            }
+            OrganismQuantityType::create($data);
             return redirect()->route('vocab-occurrence-organism-quantity-type.index')->with('ok','Creado');
         } catch (QueryException $e) {
-            return back()->withErrors('No se pudo crear.')->withInput();
+            return back()->withErrors('No se pudo actualizar.')->withInput();
         }
     }
 
@@ -47,10 +51,9 @@ class OrganismQuantityTypeController extends Controller
 
     public function update(Request $request, OrganismQuantityType $organismQuantityType)
     {
-        $data = $request->all();
-
         try {
-            $this->tx(fn () => $organismQuantityType->update($data));
+            $data = $request->validate($this->rules($organismQuantityType));
+            $organismQuantityType->update($data);
             return redirect()->route('vocab-occurrence-organism-quantity-type.index')->with('ok','Actualizado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo actualizar.')->withInput();
@@ -66,4 +69,17 @@ class OrganismQuantityTypeController extends Controller
             return back()->withErrors('No se pudo eliminar (posibles FKs).');
         }
     }
+
+    protected function rules($organismQuantityType = null): array
+    {
+        return [
+            'oqtype_value' => [
+                'required','string','max:30',
+                Rule::unique('vocab_occurrence_organismQuantityType','oqtype_value')
+                ->ignore($organismQuantityType?->oqtype_id,'oqtype_id')
+            ],
+            'description' => ['required','string']
+        ];
+    }
+
 }

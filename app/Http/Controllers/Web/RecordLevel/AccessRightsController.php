@@ -7,6 +7,8 @@ use App\Http\Controllers\Concerns\WrapsTransactions;
 use App\Models\Vocab\RecordLevel\Accessrights;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class AccessRightsController extends Controller
 {
@@ -25,13 +27,15 @@ class AccessRightsController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-
         try {
-            $item = $this->tx(fn () => Accessrights::create($data));
+            $data = $request->validate($this->rules());
+            if (empty($data['accessrights_id'] ?? null)) {
+                $data['accessrights_id'] = (string) Str::uuid();
+            }
+            Accessrights::create($data);
             return redirect()->route('vocab-record-level-access-rights.index')->with('ok','Creado');
         } catch (QueryException $e) {
-            return back()->withErrors('No se pudo crear.')->withInput();
+            return back()->withErrors('No se pudo actualizar.')->withInput();
         }
     }
 
@@ -47,10 +51,9 @@ class AccessRightsController extends Controller
 
     public function update(Request $request, Accessrights $accessRights)
     {
-        $data = $request->all();
-
         try {
-            $this->tx(fn () => $accessRights->update($data));
+            $data = $request->validate($this->rules($accessRights));
+            $accessRights->update($data);
             return redirect()->route('vocab-record-level-access-rights.index')->with('ok','Actualizado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo actualizar.')->withInput();
@@ -66,4 +69,17 @@ class AccessRightsController extends Controller
             return back()->withErrors('No se pudo eliminar (posibles FKs).');
         }
     }
+
+    protected function rules($accessRights = null): array
+    {
+        return [
+            'accessrights_value' => [
+                'required','string','max:200',
+                Rule::unique('vocab_record_level_accessRights','accessrights_value')
+                ->ignore($accessRights?->accessrights_id, 'accessrights_id')
+            ],
+            'description' => ['required','string'],
+        ];
+    }
+
 }

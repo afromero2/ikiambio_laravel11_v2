@@ -7,6 +7,8 @@ use App\Http\Controllers\Concerns\WrapsTransactions;
 use App\Models\Vocab\RecordLevel\Rightsholder;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class RightsHolderController extends Controller
 {
@@ -25,13 +27,16 @@ class RightsHolderController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-
         try {
-            $item = $this->tx(fn () => Rightsholder::create($data));
+            $data = $request->validate($this->rules());
+            if (empty($data['rightsHolder_id'] ?? null)) {
+                $data['rightsHolder_id'] = (string) Str::uuid();
+            }
+            Rightsholder::create($data);
             return redirect()->route('vocab-record-level-rights-holder.index')->with('ok','Creado');
         } catch (QueryException $e) {
-            return back()->withErrors('No se pudo crear.')->withInput();
+            /* return back()->withErrors('No se pudo actualizar.')->withInput(); */
+            return $e;
         }
     }
 
@@ -47,10 +52,9 @@ class RightsHolderController extends Controller
 
     public function update(Request $request, Rightsholder $rightsHolder)
     {
-        $data = $request->all();
-
         try {
-            $this->tx(fn () => $rightsHolder->update($data));
+            $data = $request->validate($this->rules($rightsHolder));
+            $rightsHolder->update($data);
             return redirect()->route('vocab-record-level-rights-holder.index')->with('ok','Actualizado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo actualizar.')->withInput();
@@ -66,4 +70,22 @@ class RightsHolderController extends Controller
             return back()->withErrors('No se pudo eliminar (posibles FKs).');
         }
     }
+
+    protected function rules($rightsHolder = null): array
+    {   
+       /*  return [
+            'rightsHolder_value' => [
+                'required','string','max:150',
+                Rule::unique('vocab-record-level-rightsholder','rightsHolder_value')
+                ->ignore($rightsHolder?->rightsHolder_id, 'rightsHolder_id')
+            ],
+            'description'  => ['required','string'],
+        ]; */
+
+        return [
+            'rightsHolder_value' => ['required','string','max:150'],
+            'description'        => ['required','string'],
+        ];
+    }
+
 }

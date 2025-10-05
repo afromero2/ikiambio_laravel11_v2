@@ -7,6 +7,8 @@ use App\Http\Controllers\Concerns\WrapsTransactions;
 use App\Models\Vocab\RecordLevel\OwnerInstitutionCode;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class OwnerInstitutionCodeController extends Controller
 {
@@ -25,13 +27,15 @@ class OwnerInstitutionCodeController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-
         try {
-            $item = $this->tx(fn () => OwnerInstitutionCode::create($data));
+            $data = $request->validate($this->rules());
+            if (empty($data['ownerinstitutioncode_id'] ?? null)) {
+                $data['ownerinstitutioncode_id'] = (string) Str::uuid();
+            }
+            OwnerInstitutionCode::create($data);
             return redirect()->route('vocab-record-level-owner-institution-code.index')->with('ok','Creado');
         } catch (QueryException $e) {
-            return back()->withErrors('No se pudo crear.')->withInput();
+            return back()->withErrors('No se pudo actualizar.')->withInput();
         }
     }
 
@@ -47,10 +51,9 @@ class OwnerInstitutionCodeController extends Controller
 
     public function update(Request $request, OwnerInstitutionCode $ownerInstitutionCode)
     {
-        $data = $request->all();
-
         try {
-            $this->tx(fn () => $ownerInstitutionCode->update($data));
+            $data = $request->validate($this->rules($ownerInstitutionCode));
+            $ownerInstitutionCode->update($data);
             return redirect()->route('vocab-record-level-owner-institution-code.index')->with('ok','Actualizado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo actualizar.')->withInput();
@@ -66,4 +69,17 @@ class OwnerInstitutionCodeController extends Controller
             return back()->withErrors('No se pudo eliminar (posibles FKs).');
         }
     }
+
+    protected function rules($ownerInstitutionCode = null): array
+    {
+       return [
+            'ownerinstitutioncode_value' => [
+                'required','string','max:150',
+                Rule::unique('vocab_record_level_ownerInstitutionCode','ownerinstitutioncode_value')
+                ->ignore($ownerInstitutionCode?->ownerinstitutioncode_id, 'ownerinstitutioncode_id')
+            ],
+            'description' => ['required','string'],
+        ];
+    }
+
 }

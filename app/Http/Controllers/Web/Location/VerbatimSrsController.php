@@ -7,6 +7,8 @@ use App\Http\Controllers\Concerns\WrapsTransactions;
 use App\Models\Vocab\Location\VerbatimSrs;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class VerbatimSrsController extends Controller
 {
@@ -25,13 +27,15 @@ class VerbatimSrsController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-
         try {
-            $item = $this->tx(fn () => VerbatimSrs::create($data));
-            return redirect()->route('vocab-location-verbatim-srs.index')->with('ok','Creado');
+            $data = $request->validate($this->rules());
+            if (empty($data['verbatimSRS_id'] ?? null)) {
+                $data['verbatimSRS_id'] = (string) Str::uuid();
+            }
+            VerbatimSrs::create($data);
+             return redirect()->route('vocab-location-verbatim-srs.index')->with('ok','Creado');
         } catch (QueryException $e) {
-            return back()->withErrors('No se pudo crear.')->withInput();
+            return back()->withErrors('No se pudo actualizar.')->withInput();
         }
     }
 
@@ -47,10 +51,9 @@ class VerbatimSrsController extends Controller
 
     public function update(Request $request, VerbatimSrs $verbatimSrs)
     {
-        $data = $request->all();
-
         try {
-            $this->tx(fn () => $verbatimSrs->update($data));
+            $data = $request->validate($this->rules($verbatimSrs));
+            $verbatimSrs->update($data);
             return redirect()->route('vocab-location-verbatim-srs.index')->with('ok','Actualizado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo actualizar.')->withInput();
@@ -66,4 +69,17 @@ class VerbatimSrsController extends Controller
             return back()->withErrors('No se pudo eliminar (posibles FKs).');
         }
     }
+
+    protected function rules($verbatimSrs = null): array
+    {
+        return [
+            'verbatimSRS_value' => [
+                'required','string','max:50',
+                Rule::unique('vocab_location_verbatimSRS','verbatimSRS_value')
+                ->ignore($verbatimSrs?->verbatimSRS_id,'verbatimSRS_id')
+            ],
+            'description' => ['required','string'],
+        ];
+    }
+
 }

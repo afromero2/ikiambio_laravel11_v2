@@ -7,6 +7,8 @@ use App\Http\Controllers\Concerns\WrapsTransactions;
 use App\Models\Vocab\Occurrence\Sex;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class SexController extends Controller
 {
@@ -25,13 +27,15 @@ class SexController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-
         try {
-            $item = $this->tx(fn () => Sex::create($data));
+            $data = $request->validate($this->rules());
+            if (empty($data['sex_id'] ?? null)) {
+                $data['sex_id'] = (string) Str::uuid();
+            }
+            Sex::create($data);
             return redirect()->route('vocab-occurrence-sex.index')->with('ok','Creado');
         } catch (QueryException $e) {
-            return back()->withErrors('No se pudo crear.')->withInput();
+            return back()->withErrors('No se pudo actualizar.')->withInput();
         }
     }
 
@@ -47,10 +51,9 @@ class SexController extends Controller
 
     public function update(Request $request, Sex $sex)
     {
-        $data = $request->all();
-
         try {
-            $this->tx(fn () => $sex->update($data));
+            $data = $request->validate($this->rules($sex));
+            $sex->update($data);
             return redirect()->route('vocab-occurrence-sex.index')->with('ok','Actualizado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo actualizar.')->withInput();
@@ -66,4 +69,18 @@ class SexController extends Controller
             return back()->withErrors('No se pudo eliminar (posibles FKs).');
         }
     }
+
+    
+    protected function rules($sex = null): array
+    {
+        return [
+            'sex_value' => [
+                'required','string','max:30',
+                Rule::unique('vocab_occurrence_sex','sex_value')
+                ->ignore($sex?->sex_id,'sex_id')
+            ],
+            'description' => ['required','string']
+        ];
+    }
+
 }

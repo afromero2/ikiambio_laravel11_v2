@@ -7,6 +7,8 @@ use App\Http\Controllers\Concerns\WrapsTransactions;
 use App\Models\Vocab\Location\GeorefStatus;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class GeorefStatusController extends Controller
 {
@@ -25,13 +27,15 @@ class GeorefStatusController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-
         try {
-            $item = $this->tx(fn () => GeorefStatus::create($data));
+            $data = $request->validate($this->rules());
+            if (empty($data['georef_status_id'] ?? null)) {
+                $data['georef_status_id'] = (string) Str::uuid();
+            }
+            GeorefStatus::create($data);
             return redirect()->route('vocab-location-georef-status.index')->with('ok','Creado');
         } catch (QueryException $e) {
-            return back()->withErrors('No se pudo crear.')->withInput();
+            return back()->withErrors('No se pudo actualizar.')->withInput();
         }
     }
 
@@ -47,14 +51,15 @@ class GeorefStatusController extends Controller
 
     public function update(Request $request, GeorefStatus $georefStatus)
     {
-        $data = $request->all();
-
         try {
-            $this->tx(fn () => $georefStatus->update($data));
+            $data = $request->validate($this->rules($georefStatus));
+            $georefStatus->update($data);
             return redirect()->route('vocab-location-georef-status.index')->with('ok','Actualizado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo actualizar.')->withInput();
         }
+        
+        $data = $request->all();
     }
 
     public function destroy(GeorefStatus $georefStatus)
@@ -66,4 +71,18 @@ class GeorefStatusController extends Controller
             return back()->withErrors('No se pudo eliminar (posibles FKs).');
         }
     }
+
+    protected function rules($georefStatus = null): array
+    {
+        return [
+            'georef_status_value' => [
+                'required','string','max:80',
+                Rule::unique('vocab_location_georef_status','georef_status_value')
+                ->ignore($georefStatus?->georef_status_id,'georef_status_id')
+            ],
+            'description' => ['required','string'],
+        ];
+    }
+
+
 }

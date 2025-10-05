@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\Identification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Str;
 
 class IdentificationWebController extends Controller
 {
@@ -28,10 +31,17 @@ class IdentificationWebController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-        if (empty($data['identificationID'])) $data['identificationID'] = (string) \Illuminate\Support\Str::uuid();
-        DB::transaction(fn()=> Identification::create($data));
-        return redirect()->route('identification.index')->with('ok','Creado');
+        try {
+            $data = $request->validate($this->rules());
+            if (empty($data['identificationID'] ?? null)) {
+                $data['identificationID'] = (string) Str::uuid();
+            }
+            Identification::create($data);
+            return redirect()->route('identification.index')->with('ok','Creado');
+        } catch (QueryException $e) {
+            /* return back()->withErrors('No se pudo crear.')->withInput(); */
+            return $e;
+        }
     }
 
     public function edit(Identification $identification)
@@ -41,9 +51,13 @@ class IdentificationWebController extends Controller
 
     public function update(Request $request, Identification $identification)
     {
-        $data = $request->all();
-        DB::transaction(fn()=> $identification->update($data));
-        return redirect()->route('identification.show', $identification)->with('ok','Actualizado');
+        try {
+            $data = $request->validate($this->rules($identification));
+            $identification->update($data);
+            return redirect()->route('identification.index')->with('ok','Actualizado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo actualizar.')->withInput();
+        }
     }
 
     public function destroy(Identification $identification)
@@ -51,4 +65,18 @@ class IdentificationWebController extends Controller
         DB::transaction(fn()=> $identification->delete());
         return back()->with('ok','Eliminado');
     }
+
+    protected function rules($identification = null): array
+    {
+        return [
+            'identificationID'             => [$identification ? 'sometimes' : 'nullable','string','max:100', Rule::unique('identification','identificationID')->ignore($identification?->identificationID,'identificationID')],
+            'identificationQualifier'      => ['required','string','max:100'],
+            'typeStatus'                   => ['required','integer'],
+            'identifiedBy'                 => ['required','string','max:255'],
+            'dateIdentified'               => ['required','date'],
+            'identificationVerificationStatus' => ['required','integer'],
+            'identificationRemarks'        => ['required','string'],
+        ];
+    }
+
 }

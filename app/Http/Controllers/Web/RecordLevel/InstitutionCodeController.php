@@ -7,6 +7,8 @@ use App\Http\Controllers\Concerns\WrapsTransactions;
 use App\Models\Vocab\RecordLevel\Institutioncode;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class InstitutionCodeController extends Controller
 {
@@ -25,13 +27,15 @@ class InstitutionCodeController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-
         try {
-            $item = $this->tx(fn () => Institutioncode::create($data));
+            $data = $request->validate($this->rules());
+            if (empty($data['institutionCode_id'] ?? null)) {
+                $data['institutionCode_id'] = (string) Str::uuid();
+            }
+            Institutioncode::create($data);
             return redirect()->route('vocab-record-level-institution-code.index')->with('ok','Creado');
         } catch (QueryException $e) {
-            return back()->withErrors('No se pudo crear.')->withInput();
+            return back()->withErrors('No se pudo actualizar.')->withInput();
         }
     }
 
@@ -47,10 +51,9 @@ class InstitutionCodeController extends Controller
 
     public function update(Request $request, Institutioncode $institutionCode)
     {
-        $data = $request->all();
-
         try {
-            $this->tx(fn () => $institutionCode->update($data));
+            $data = $request->validate($this->rules($institutionCode));
+            $institutionCode->update($data);
             return redirect()->route('vocab-record-level-institution-code.index')->with('ok','Actualizado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo actualizar.')->withInput();
@@ -65,5 +68,19 @@ class InstitutionCodeController extends Controller
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo eliminar (posibles FKs).');
         }
+    }   
+
+    protected function rules($institutionCode = null): array
+    {
+        return [
+            'institutionCode_value' => [
+                'required','string','max:50',
+                Rule::unique('vocab_record_level_institutionCode','institutionCode_value')
+                ->ignore($institutionCode?->institutionCode_id, 'institutionCode_id')
+            ],
+            'description' => ['required','string'],
+        ];
+
     }
+
 }

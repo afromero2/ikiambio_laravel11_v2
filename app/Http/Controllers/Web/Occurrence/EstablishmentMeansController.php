@@ -7,6 +7,8 @@ use App\Http\Controllers\Concerns\WrapsTransactions;
 use App\Models\Vocab\Occurrence\EstablishmentMeans;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class EstablishmentMeansController extends Controller
 {
@@ -25,6 +27,17 @@ class EstablishmentMeansController extends Controller
 
     public function store(Request $request)
     {
+        try {
+            $data = $request->validate($this->rules());
+            if (empty($data['estabmeans_id'] ?? null)) {
+                $data['estabmeans_id'] = (string) Str::uuid();
+            }
+            EstablishmentMeans::create($data);
+            return redirect()->route('vocab-occurrence-disposition.index')->with('ok','Creado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo actualizar.')->withInput();
+        }
+        
         $data = $request->all();
 
         try {
@@ -47,10 +60,9 @@ class EstablishmentMeansController extends Controller
 
     public function update(Request $request, EstablishmentMeans $establishmentMeans)
     {
-        $data = $request->all();
-
         try {
-            $this->tx(fn () => $establishmentMeans->update($data));
+            $data = $request->validate($this->rules($establishmentMeans));
+            $establishmentMeans->update($data);
             return redirect()->route('vocab-occurrence-establishment-means.index')->with('ok','Actualizado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo actualizar.')->withInput();
@@ -66,4 +78,17 @@ class EstablishmentMeansController extends Controller
             return back()->withErrors('No se pudo eliminar (posibles FKs).');
         }
     }
+
+    protected function rules($establishmentMeans = null): array
+    {
+        return [
+            'estabmeans_value' => [
+                'required','string','max:60',
+                Rule::unique('vocab_occurrence_establishmentMeans','estabmeans_value')
+                ->ignore($establishmentMeans?->estabmeans_id,'estabmeans_id')
+            ],
+            'description' => ['required','string']
+        ];
+    }
+
 }

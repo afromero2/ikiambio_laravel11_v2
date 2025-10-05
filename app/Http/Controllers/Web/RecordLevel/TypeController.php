@@ -7,6 +7,8 @@ use App\Http\Controllers\Concerns\WrapsTransactions;
 use App\Models\Vocab\RecordLevel\Type;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class TypeController extends Controller
 {
@@ -25,13 +27,15 @@ class TypeController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-
         try {
-            $item = $this->tx(fn () => Type::create($data));
+            $data = $request->validate($this->rules());
+            if (empty($data['type_id'] ?? null)) {
+                $data['type_id'] = (string) Str::uuid();
+            }
+            Type::create($data);
             return redirect()->route('vocab-record-level-type.index')->with('ok','Creado');
         } catch (QueryException $e) {
-            return back()->withErrors('No se pudo crear.')->withInput();
+            return back()->withErrors('No se pudo actualizar.')->withInput();
         }
     }
 
@@ -47,10 +51,9 @@ class TypeController extends Controller
 
     public function update(Request $request, Type $type)
     {
-        $data = $request->all();
-
         try {
-            $this->tx(fn () => $type->update($data));
+            $data = $request->validate($this->rules($type));
+            $type->update($data);
             return redirect()->route('vocab-record-level-type.index')->with('ok','Actualizado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo actualizar.')->withInput();
@@ -66,4 +69,17 @@ class TypeController extends Controller
             return back()->withErrors('No se pudo eliminar (posibles FKs).');
         }
     }
+
+    protected function rules($type = null): array
+    {
+        return [
+            'type_value' => [
+                'required','string','max:20',
+                Rule::unique('vocab_record_level_type','type_value')
+                ->ignore($type?->type_id, 'type_id')
+            ],
+            'description' => ['required','string'],
+        ];
+    }
+
 }

@@ -7,6 +7,8 @@ use App\Http\Controllers\Concerns\WrapsTransactions;
 use App\Models\Vocab\Occurrence\ReproductiveCondition;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class ReproductiveConditionController extends Controller
 {
@@ -25,13 +27,15 @@ class ReproductiveConditionController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-
         try {
-            $item = $this->tx(fn () => ReproductiveCondition::create($data));
+            $data = $request->validate($this->rules());
+            if (empty($data['reprocond_id'] ?? null)) {
+                $data['reprocond_id'] = (string) Str::uuid();
+            }
+            ReproductiveCondition::create($data);
             return redirect()->route('vocab-occurrence-reproductive-condition.index')->with('ok','Creado');
         } catch (QueryException $e) {
-            return back()->withErrors('No se pudo crear.')->withInput();
+            return back()->withErrors('No se pudo actualizar.')->withInput();
         }
     }
 
@@ -47,10 +51,9 @@ class ReproductiveConditionController extends Controller
 
     public function update(Request $request, ReproductiveCondition $reproductiveCondition)
     {
-        $data = $request->all();
-
         try {
-            $this->tx(fn () => $reproductiveCondition->update($data));
+            $data = $request->validate($this->rules($reproductiveCondition));
+            $reproductiveCondition->update($data);
             return redirect()->route('vocab-occurrence-reproductive-condition.index')->with('ok','Actualizado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo actualizar.')->withInput();
@@ -66,4 +69,17 @@ class ReproductiveConditionController extends Controller
             return back()->withErrors('No se pudo eliminar (posibles FKs).');
         }
     }
+
+    protected function rules($reproductiveCondition = null): array
+    {
+        return [
+            'reprocond_value' => [
+                'required','string','max:40',
+                Rule::unique('vocab_occurrence_reproductiveCondition','reprocond_value')
+                ->ignore($reproductiveCondition?->reprocond_id,'reprocond_id')
+            ],
+            'description' => ['required','string']
+        ];
+    }
+
 }

@@ -7,6 +7,8 @@ use App\Http\Controllers\Concerns\WrapsTransactions;
 use App\Models\Vocab\RecordLevel\Collectioncode;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class CollectionCodeController extends Controller
 {
@@ -25,14 +27,17 @@ class CollectionCodeController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-
         try {
-            $item = $this->tx(fn () => Collectioncode::create($data));
+            $data = $request->validate($this->rules());
+            if (empty($data['collectionCode_id'] ?? null)) {
+                $data['collectionCode_id'] = (string) Str::uuid();
+            }
+            Collectioncode::create($data);
             return redirect()->route('vocab-record-level-collection-code.index')->with('ok','Creado');
         } catch (QueryException $e) {
-            return back()->withErrors('No se pudo crear.')->withInput();
+            return back()->withErrors('No se pudo actualizar.')->withInput();
         }
+        
     }
 
     public function show(Collectioncode $collectionCode)
@@ -47,10 +52,9 @@ class CollectionCodeController extends Controller
 
     public function update(Request $request, Collectioncode $collectionCode)
     {
-        $data = $request->all();
-
         try {
-            $this->tx(fn () => $collectionCode->update($data));
+            $data = $request->validate($this->rules($collectionCode));
+            $collectionCode->update($data);
             return redirect()->route('vocab-record-level-collection-code.index')->with('ok','Actualizado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo actualizar.')->withInput();
@@ -66,4 +70,17 @@ class CollectionCodeController extends Controller
             return back()->withErrors('No se pudo eliminar (posibles FKs).');
         }
     }
+
+    protected function rules($collectionCode = null): array
+    {
+        return [
+            'collectionCode_value' => [
+                'required','string','max:50',
+                Rule::unique('vocab_record_level_collectionCode','collectionCode_value')
+                ->ignore($collectionCode?->collectionCode_id, 'collectionCode_id')
+            ],
+            'description' => ['required','string'],
+        ];
+    }
+
 }
