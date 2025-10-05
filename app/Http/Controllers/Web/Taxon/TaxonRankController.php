@@ -7,6 +7,8 @@ use App\Http\Controllers\Concerns\WrapsTransactions;
 use App\Models\Vocab\Taxon\TaxonRank;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class TaxonRankController extends Controller
 {
@@ -25,13 +27,15 @@ class TaxonRankController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-
         try {
-            $item = $this->tx(fn () => TaxonRank::create($data));
+            $data = $request->validate($this->rules());
+            if (empty($data['taxonRank_id'] ?? null)) {
+                $data['taxonRank_id'] = (string) Str::uuid();
+            }
+            TaxonRank::create($data);
             return redirect()->route('vocab-taxon-taxon-rank.index')->with('ok','Creado');
         } catch (QueryException $e) {
-            return back()->withErrors('No se pudo crear.')->withInput();
+            return back()->withErrors('No se pudo actualizar.')->withInput();
         }
     }
 
@@ -47,10 +51,9 @@ class TaxonRankController extends Controller
 
     public function update(Request $request, TaxonRank $taxonRank)
     {
-        $data = $request->all();
-
         try {
-            $this->tx(fn () => $taxonRank->update($data));
+            $data = $request->validate($this->rules($taxonRank));
+            $taxonRank->update($data);
             return redirect()->route('vocab-taxon-taxon-rank.index')->with('ok','Actualizado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo actualizar.')->withInput();
@@ -66,4 +69,18 @@ class TaxonRankController extends Controller
             return back()->withErrors('No se pudo eliminar (posibles FKs).');
         }
     }
+
+    protected function rules($taxonRank = null): array
+    {
+        return [
+            'taxonRank_value' => [
+                'required','string','max:50',
+                Rule::unique('vocab_taxon_taxonRank','taxonRank_value')
+                ->ignore($taxonRank?->taxonRank_id,'taxonRank_id')
+            ],
+            'description' => ['required','string'],
+        ];
+
+    }
+
 }

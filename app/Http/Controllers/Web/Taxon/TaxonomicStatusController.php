@@ -7,6 +7,8 @@ use App\Http\Controllers\Concerns\WrapsTransactions;
 use App\Models\Vocab\Taxon\TaxonomicStatus;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class TaxonomicStatusController extends Controller
 {
@@ -25,13 +27,15 @@ class TaxonomicStatusController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-
         try {
-            $item = $this->tx(fn () => TaxonomicStatus::create($data));
+            $data = $request->validate($this->rules());
+            if (empty($data['taxonomicStatus_id'] ?? null)) {
+                $data['taxonomicStatus_id'] = (string) Str::uuid();
+            }
+            TaxonomicStatus::create($data);
             return redirect()->route('vocab-taxon-taxonomic-status.index')->with('ok','Creado');
         } catch (QueryException $e) {
-            return back()->withErrors('No se pudo crear.')->withInput();
+            return back()->withErrors('No se pudo actualizar.')->withInput();
         }
     }
 
@@ -47,10 +51,9 @@ class TaxonomicStatusController extends Controller
 
     public function update(Request $request, TaxonomicStatus $taxonomicStatus)
     {
-        $data = $request->all();
-
         try {
-            $this->tx(fn () => $taxonomicStatus->update($data));
+            $data = $request->validate($this->rules($taxonomicStatus));
+            $taxonomicStatus->update($data);
             return redirect()->route('vocab-taxon-taxonomic-status.index')->with('ok','Actualizado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo actualizar.')->withInput();
@@ -66,4 +69,18 @@ class TaxonomicStatusController extends Controller
             return back()->withErrors('No se pudo eliminar (posibles FKs).');
         }
     }
+
+    protected function rules($taxonomicStatus = null): array
+    {
+        return [
+            'taxonomicStatus_value' => [
+                'required','string','max:50',
+                Rule::unique('vocab_taxon_taxonomicStatus','taxonomicStatus_value')
+                ->ignore($taxonomicStatus?->taxonomicStatus_id,'taxonomicStatus_id')
+            ],
+            'description' => ['required','string'],
+        ];
+
+    }
+
 }

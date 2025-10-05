@@ -7,6 +7,8 @@ use App\Http\Controllers\Concerns\WrapsTransactions;
 use App\Models\Vocab\Tblprimers\PrimerDirection;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class PrimerDirectionController extends Controller
 {
@@ -25,13 +27,15 @@ class PrimerDirectionController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-
         try {
-            $item = $this->tx(fn () => PrimerDirection::create($data));
+            $data = $request->validate($this->rules());
+            if (empty($data['id_primerdirection'] ?? null)) {
+                $data['id_primerdirection'] = (string) Str::uuid();
+            }
+            PrimerDirection::create($data);
             return redirect()->route('vocab-tblprimers-primer-direction.index')->with('ok','Creado');
         } catch (QueryException $e) {
-            return back()->withErrors('No se pudo crear.')->withInput();
+            return back()->withErrors('No se pudo actualizar.')->withInput();
         }
     }
 
@@ -47,10 +51,9 @@ class PrimerDirectionController extends Controller
 
     public function update(Request $request, PrimerDirection $primerDirection)
     {
-        $data = $request->all();
-
         try {
-            $this->tx(fn () => $primerDirection->update($data));
+            $data = $request->validate($this->rules($primerDirection));
+            $primerDirection->update($data);
             return redirect()->route('vocab-tblprimers-primer-direction.index')->with('ok','Actualizado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo actualizar.')->withInput();
@@ -66,4 +69,17 @@ class PrimerDirectionController extends Controller
             return back()->withErrors('No se pudo eliminar (posibles FKs).');
         }
     }
+
+    protected function rules($primerDirection = null): array
+    {
+        return [
+            'primerdirection_value' => [
+                'required','string','max:20',
+                Rule::unique('vocab_tblprimers_primerDirection','primerdirection_value')
+                ->ignore($primerDirection?->id_primerdirection,'id_primerdirection')
+            ],
+            'description' => ['required','string'],
+        ];
+    }
+
 }
