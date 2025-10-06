@@ -4,7 +4,7 @@
 @section('content')
 <div class="d-flex" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
   <h1 style="margin:0;font-size:1.25rem;">Tblprimersf</h1>
-  <a href="{{ route('TblPrimersF.create') }}" class="btn primary">Nuevo</a>
+  <a href="{{ route('tbl-primers-f.create') }}" class="btn primary">Nuevo</a>
 </div>
 
 <div class="card">
@@ -25,16 +25,16 @@
         <tbody>
         @forelse($items as $item)
           <tr>
-            <td>{{ $item->idPrimers }}</td>
+            <td>{{ $item->idPrimersf }}</td>
             <td>{{ $item->genAbrev }}</td>
             <td>{{ $item->genName }}</td>
             <td>{{ $item->primerName }}</td>
             <td>{{ $item->primerSequence }}</td>
             <td>{{ $item->primerReferenceCitation }}</td>
             <td style="text-align:right;">
-              <a class="btn ghost" href="{{ route('TblPrimersF.show', $item) }}"><i class="fa fa-eye"></i></a>
-              <a class="btn ghost" href="{{ route('TblPrimersF.edit', $item) }}"><i class="fa fa-edit"></i></a>
-              <form style="display:inline" method="POST" action="{{ route('TblPrimersF.destroy', $item) }}" onsubmit="return confirm('¿Eliminar?')">
+              <a class="btn ghost" href="{{ route('tbl-primers-f.show', $item) }}"><i class="fa fa-eye"></i></a>
+              <a class="btn ghost" href="{{ route('tbl-primers-f.edit', $item) }}"><i class="fa fa-edit"></i></a>
+              <form style="display:inline" method="POST" action="{{ route('tbl-primers-f.destroy', $item) }}" onsubmit="return confirm('¿Eliminar?')">
                 @csrf @method('DELETE')
                 <button class="btn ghost " type="submit"><i class="fa fa-trash"></i></button>
               </form>

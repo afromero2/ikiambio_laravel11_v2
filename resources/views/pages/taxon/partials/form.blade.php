@@ -50,6 +50,7 @@
   <div class="col-md-3">
     <label class="label" for="kingdom">Kingdom</label>
     <input type="text" name="kingdom" id="kingdom" class="input" value="{{ old('kingdom', $item->kingdom ?? '') }}">
+    @error('kingdom') <small class="text-danger">{{ $message }}</small> @enderror
   </div>
   <div class="col-md-3">
     <label class="label" for="phylum">Phylum</label>

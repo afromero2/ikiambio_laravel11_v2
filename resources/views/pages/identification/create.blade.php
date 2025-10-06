@@ -31,6 +31,7 @@
     <div>
       <label class="label">Typestatus</label>
       <input type="number" name="typeStatus" value="{{ old('typeStatus', isset($item)? $item->typeStatus : '') }}" class="input">
+      @error('typeStatus') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
 
     <div>

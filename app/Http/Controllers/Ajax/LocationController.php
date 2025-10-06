@@ -14,12 +14,11 @@ class LocationController extends Controller
     {
         // Validamos mínimos. Si no envían locationID lo generamos (uuid).
         $data = $request->validate([
-            'locationID' => ['nullable','string','max:255','unique:location,locationID'],
-            'id_INEC'    => ['nullable','string','max:255'],
-            'higherGeographyID' => ['nullable','string','max:255'],
-
+            /* 'locationID' => ['nullable','string','max:255','unique:location,locationID'],
+            'id_INEC'    => ['required','string','max:255'],
+            'higherGeographyID' => ['required','string','max:255'],
             'continent'  => ['required','integer'],
-            'waterBody'  => ['nullable','string','max:255'],
+            'waterBody'  => ['required','string','max:255'],
             'islandGroup'=> ['nullable','string','max:255'],
             'island'     => ['nullable','string','max:255'],
             'country'    => ['nullable','string','max:255'],
@@ -44,7 +43,36 @@ class LocationController extends Controller
             'georeferencedBy'   => ['nullable','string','max:255'],
             'georeferencedDate' => ['nullable','date'],
             'georeferenceVerificationStatus' => ['required','integer'],
-            'georeferenceRemarks' => ['nullable','string'],
+            'georeferenceRemarks' => ['nullable','string'], */
+
+            'locationID'               => ['required','string','max:255','unique:location,locationID'],
+             'id_INEC'                  => ['required','string'],
+            'higherGeographyID'        => ['required','string'],
+            'continent'                => ['required','integer','exists:vocab_location_continent,continent_id'],
+            'waterBody'                => ['required','string'],
+            'islandGroup'              => ['required','string'],
+            'island'                   => ['required','string'],
+            'country'                  => ['required','string'],
+            'countryCode'              => ['required','string','size:2'],
+            'stateProvince'            => ['required','string'],
+            'county'                   => ['required','string'],
+            'municipality'             => ['required','string'],
+            'locality'                 => ['required','string'],
+            'verbatimLocality'         => ['required','string'],
+            'verbatimElevation'        => ['required','string'],
+            'verbatimDepth'            => ['required','string'],
+            'locationRemarks'          => ['required','string'],
+            'decimalLatitude'          => ['required','numeric'],
+            'decimalLongitude'         => ['required','numeric'],
+            'geodeticDatum'            => ['required','string'],
+            'verbatimLatitude'         => ['required','string'],
+            'verbatimLongitude'        => ['required','string'],
+            'verbatimCoordinateSystem' => ['required','string'],
+            'verbatimSRS'              => ['required','integer','exists:vocab_location_verbatimSRS,verbatimSRS_id'],
+            'georeferencedBy'          => ['required','string'],
+            'georeferencedDate'        => ['required','date'],
+            'georeferenceVerificationStatus' => ['required','integer','exists:vocab_location_georef_status,georef_status_id'],
+            'georeferenceRemarks'      => ['required','string']
         ]);
 
         if (empty($data['locationID'])) {

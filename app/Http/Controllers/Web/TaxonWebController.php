@@ -9,6 +9,8 @@ use App\Models\Vocab\Taxon\TaxonomicStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+use Illuminate\Database\QueryException;
 
 class TaxonWebController extends Controller
 {
@@ -33,18 +35,17 @@ class TaxonWebController extends Controller
 
     public function store(Request $request)
     {
-        $data = $this->rules($request);
-
-        $id = $data['taxonID'] ?: Str::uuid()->toString();
-
-        DB::transaction(function () use (&$id, $data) {
-            Taxon::updateOrCreate(
-                ['taxonID' => $id],
-                collect($data)->except('taxonID')->toArray()
-            );
-        });
-
-        return redirect()->route('taxon.show', $id)->with('ok','Taxon creado');
+        try {
+            $data = $request->validate($this->rules());
+            if (empty($data['taxonID'] ?? null)) {
+                $data['taxonID'] = (string) Str::uuid();
+            }
+            Taxon::create($data);
+            return redirect()->route('taxon.index')->with('ok','Taxon creado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo crear.')->withInput();
+            /* return $e; */
+        }
     }
 
     public function show(Taxon $taxon)
@@ -64,14 +65,13 @@ class TaxonWebController extends Controller
 
     public function update(Request $request, Taxon $taxon)
     {
-        $data = $this->rules($request, updating:true);
-
-        DB::transaction(function () use ($taxon, $data) {
-            // No cambiar la PK aquí
-            $taxon->update(collect($data)->except('taxonID')->toArray());
-        });
-
-        return redirect()->route('taxon.index', $taxon->taxonID)->with('ok','Taxon actualizado');
+        try {
+            $data = $request->validate($this->rules($taxon));
+            $taxon->update($data);
+            return redirect()->route('taxon.index', $taxon->taxonID)->with('ok','Actualizado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo actualizar.')->withInput();
+        }
     }
 
     public function destroy(Taxon $taxon)
@@ -83,30 +83,30 @@ class TaxonWebController extends Controller
         return redirect()->route('taxon.index')->with('ok','Taxon eliminado');
     }
 
-    private function rules(Request $request, bool $updating=false): array
+    protected function rules($taxon = null): array
     {
-        return $request->validate([
-            'taxonID'                 => ['nullable','string','max:100'],
-            'scientificNameID'        => ['nullable','string','max:100'],
+        return [
+            'taxonID'                 => [$taxon ? 'sometimes' : 'nullable','string','max:100', Rule::unique('taxon','taxonID')->ignore($taxon?->taxonID,'taxonID')],
+            'scientificNameID'        => ['required','string','max:100'],
             'scientificName'          => ['required','string','max:255'],
-            'namePublishedIn'         => ['nullable','string'],
-            'namePublishedInYear'     => ['nullable','integer'],
-            'higherClassification'    => ['nullable','string'],
-            'kingdom'                 => ['nullable','string','max:100'],
-            'phylum'                  => ['nullable','string','max:100'],
-            'class'                   => ['nullable','string','max:100'],
-            'order'                   => ['nullable','string','max:100'],
-            'family'                  => ['nullable','string','max:100'],
-            'genus'                   => ['nullable','string','max:100'],
-            'subgenus'                => ['nullable','string','max:100'],
-            'specificEpithet'         => ['nullable','string','max:100'],
-            'intraspecificEpithet'    => ['nullable','string','max:100'],
-            'taxonRank'               => ['nullable','integer'],   // FK vocab
-            'verbatimTaxonRank'       => ['nullable','string','max:50'],
-            'scientificNameAuthorship'=> ['nullable','string'],
-            'vernacularName'          => ['nullable','string'],
-            'taxonomicStatus'         => ['nullable','integer'],   // FK vocab
-            'taxonRemarks'            => ['nullable','string'],
-        ]);
+            'namePublishedIn'         => ['required','string'],
+            'namePublishedInYear'     => ['required','integer'],
+            'higherClassification'    => ['required','string'],
+            'kingdom' => ['required','string','max:100'],
+            'phylum'  => ['required','string','max:100'],
+            'class'   => ['required','string','max:100'],
+            'order'   => ['required','string','max:100'],
+            'family'  => ['required','string','max:100'],
+            'genus'   => ['required','string','max:100'],
+            'subgenus'=> ['required','string','max:100'],
+            'specificEpithet'      => ['required','string','max:100'],
+            'intraspecificEpithet' => ['required','string','max:100'],
+            'taxonRank'            => ['required','integer','exists:vocab_taxon_taxonRank,taxonRank_id'],
+            'verbatimTaxonRank'    => ['required','string','max:50'],
+            'scientificNameAuthorship'=> ['required','string'],
+            'vernacularName'          => ['required','string'],
+            'taxonomicStatus'         => ['required','integer','exists:vocab_taxon_taxonomicStatus,taxonomicStatus_id'],
+            'taxonRemarks'            => ['required','string']
+        ];
     }
 }

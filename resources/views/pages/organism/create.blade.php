@@ -28,7 +28,7 @@
 
         <div class="col-12 d-flex gap-2">
           <button class="btn btn-primary">Guardar</button>
-          <a href="{{ route('organism.index') }}" class="btn btn-light">Cancelarrrrrrrrrrrrrr</a>
+          <a href="{{ route('organism.index') }}" class="btn btn-light">Cancelar</a>
         </div>
       </form>
     </div>

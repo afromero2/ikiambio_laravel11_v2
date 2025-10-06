@@ -4,7 +4,7 @@
 @section('content')
 <div class="d-flex" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
   <h1 style="margin:0;font-size:1.25rem;">Tblfechapcr</h1>
-  <a href="{{ route('TblFechaPCR.create') }}" class="btn primary">Nuevo</a>
+  <a href="{{ route('tbl-fecha-pcr.create') }}" class="btn primary">Nuevo</a>
 </div>
 
 <div class="card">
@@ -32,9 +32,9 @@
             <td>{{ $item->amplificationStaff }}</td>
             <td>{{ $item->num_reacciones }}</td>
             <td style="text-align:right;">
-              <a class="btn ghost" href="{{ route('TblFechaPCR.show', $item) }}"><i class="fa fa-eye"></i></a>
-              <a class="btn ghost" href="{{ route('TblFechaPCR.edit', $item) }}"><i class="fa fa-edit"></i></a>
-              <form style="display:inline" method="POST" action="{{ route('TblFechaPCR.destroy', $item) }}" onsubmit="return confirm('¿Eliminar?')">
+              <a class="btn ghost" href="{{ route('tbl-fecha-pcr.show', $item) }}"><i class="fa fa-eye"></i></a>
+              <a class="btn ghost" href="{{ route('tbl-fecha-pcr.edit', $item) }}"><i class="fa fa-edit"></i></a>
+              <form style="display:inline" method="POST" action="{{ route('tbl-fecha-pcr.destroy', $item) }}" onsubmit="return confirm('¿Eliminar?')">
                 @csrf @method('DELETE')
                 <button class="btn ghost " type="submit"><i class="fa fa-trash"></i></button>
               </form>

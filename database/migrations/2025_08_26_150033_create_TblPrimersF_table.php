@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('TblPrimersF', function (Blueprint $table) {
-            $table->text('idPrimers')->nullable()->primary();
+            $table->text('idPrimersf')->nullable()->primary();
             $table->text('genAbrev')->nullable();
             $table->text('genName')->nullable();
             $table->text('primerName')->nullable();

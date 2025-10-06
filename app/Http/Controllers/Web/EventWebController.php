@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 
 
 class EventWebController extends Controller
@@ -31,41 +32,16 @@ class EventWebController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-
-         $data = $request->validate([
-            'parentEventID'                => ['required','string','max:255','unique:measurementorfacts,measurementID'],
-            'eventDate'                    => ['required','date'], // ajusta si es int en tu esquema
-            'eventTime'              => ['required','string','max:255'],
-            'year'             => ['required','string','max:255'],
-            'month'          => ['required','string','max:255'],
-            'day'              => ['required','string','max:255'],
-            'habitat'      => ['required','string','max:255'],
-            'samplingProtocol'    => ['required','string'],
-            'fieldNotes'            => ['required','string'],
-            'locationID'           => ['required','string'],
-            'eventRemarks'           => ['required','string'],
-        ]);
-
         try {
-            $item = DB::transaction(function () use ($data) {
-                if (empty($data['eventID'])) {
-                    $data['eventID'] = (string) Str::uuid();
-                }
-                return Event::create($data);
-            });
-
-            return redirect()
-                ->route('location.index', $item->eventID)
-                ->with('ok', 'Event creado');
-
-        } catch (\Throwable $e) {
-            Log::error('Measurementorfacts store error', ['msg'=>$e->getMessage()]);
-            return back()->withErrors($e->getMessage())->withInput();
+            $data = $request->validate($this->rules());
+            if (empty($data['eventID'] ?? null)) {
+                $data['eventID'] = (string) Str::uuid();
+            }
+            Event::create($data);
+            return redirect()->route('location.index')->with('ok','Creado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo actualizar.')->withInput();
         }
-
-
-
     }
 
     public function show(Event $event)
@@ -80,9 +56,9 @@ class EventWebController extends Controller
 
     public function update(Request $request, Event $event)
     {
-        $data = $request->all();
         try {
-            $this->tx(fn () => $event->update($data));
+            $data = $request->validate($this->rules($event));
+            $event->update($data);
             return redirect()->route('location.index')->with('ok','Actualizado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo actualizar.')->withInput();
@@ -99,4 +75,26 @@ class EventWebController extends Controller
             /* return back()->withErrors('No se pudo eliminar (posibles FKs).'); */
         }
     }
+
+    protected function rules($event = null): array
+    {
+        return [
+            'eventID'       => [
+                $event ? 'sometimes' : 'nullable', 'string','max:100',
+                Rule::unique('event','eventID')->ignore($event?->eventID, 'eventID')
+            ],
+            'parentEventID' => ['required','string','max:100'], // si apunta a event.eventID y quieres forzar FK: 'exists:event,eventID'
+            'eventDate'     => ['required','date'],
+            'eventTime'     => ['required','date_format:H:i:s'],
+            'year'          => ['required','integer','between:1900,5000'],
+            'month'         => ['required','integer','between:1,12'],
+            'day'           => ['required','integer','between:1,31'],
+            'habitat'       => ['required','string'],
+            'samplingProtocol'=> ['required','string'],
+            'fieldNotes'    => ['required','string'],
+            'locationID'    => ['required','string','exists:location,locationID'],
+            'eventRemarks'  => ['required','string']
+        ];
+    }
+
 }

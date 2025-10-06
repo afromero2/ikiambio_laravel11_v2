@@ -11,6 +11,8 @@ use App\Models\Vocab\Location\GeorefStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+use Illuminate\Database\QueryException;
 
 class LocationWebController extends Controller
 {
@@ -51,19 +53,16 @@ class LocationWebController extends Controller
 
     public function store(Request $request)
     {
-        $data = $this->rules($request);
-
-        // Si no envían locationID, generamos uno (UUID)
-        $id = $data['locationID'] ?: Str::uuid()->toString();
-
-        DB::transaction(function () use (&$id, $data) {
-            Location::updateOrCreate(
-                ['locationID' => $id],
-                collect($data)->except('locationID')->toArray()
-            );
-        });
-
-        return redirect()->route('location.show', $id)->with('ok', 'Location creado');
+        try {
+            $data = $request->validate($this->rules());
+            if (empty($data['locationID'] ?? null)) {
+                $data['locationID'] = (string) Str::uuid();
+            }
+            Location::create($data);
+            return redirect()->route('location.show', $data['locationID'])->with('ok', 'Location creado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo crear.')->withInput();
+        }
     }
 
     public function show(Location $location)
@@ -85,14 +84,13 @@ class LocationWebController extends Controller
 
     public function update(Request $request, Location $location)
     {
-        $data = $this->rules($request, updating: true);
-
-        DB::transaction(function () use ($location, $data) {
-            // No permitimos cambiar la PK aquí; si quisieras, maneja $data['locationID']
-            $location->update(collect($data)->except('locationID')->toArray());
-        });
-
-        return redirect()->route('location.index', $location->locationID)->with('ok', 'Location actualizado');
+        try {
+            $data = $request->validate($this->rules($location));
+            $location->update($data);
+            return redirect()->route('location.index', $location->locationID)->with('ok', 'Location actualizado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo actualizar.')->withInput();
+        }
     }
 
     public function destroy(Location $location)
@@ -104,38 +102,38 @@ class LocationWebController extends Controller
         return redirect()->route('location.index')->with('ok', 'Location eliminado');
     }
 
-    /** Validación compartida */
-    private function rules(Request $request, bool $updating = false): array
+    protected function rules($location = null): array
     {
-        return $request->validate([
-            'locationID' => ['nullable','string','max:255'], // PK string
-            'id_INEC' => ['nullable','string','max:255'],
-            'higherGeographyID' => ['nullable','string','max:255'],
-            'continent' => ['required','integer'],
-            'waterBody' => ['nullable','string'],
-            'islandGroup' => ['nullable','string'],
-            'island' => ['nullable','string'],
-            'country' => ['nullable','string'],
-            'countryCode' => ['nullable','string','max:2'],
-            'stateProvince' => ['nullable','string'],
-            'county' => ['nullable','string'],
-            'municipality' => ['nullable','string'],
-            'locality' => ['nullable','string'],
-            'verbatimLocality' => ['nullable','string'],
-            'verbatimElevation' => ['nullable','string'],
-            'verbatimDepth' => ['nullable','string'],
-            'locationRemarks' => ['nullable','string'],
-            'decimalLatitude' => ['nullable','numeric'],
-            'decimalLongitude' => ['nullable','numeric'],
-            'geodeticDatum' => ['nullable','string'],
-            'verbatimLatitude' => ['nullable','string'],
-            'verbatimLongitude' => ['nullable','string'],
-            'verbatimCoordinateSystem' => ['nullable','string'],
-            'verbatimSRS' => ['required','integer'],
-            'georeferencedBy' => ['nullable','string'],
-            'georeferencedDate' => ['nullable','date'], // Y-m-d
-            'georeferenceVerificationStatus' => ['required','integer'],
-            'georeferenceRemarks' => ['nullable','string'],
-        ]);
+        return [
+            'locationID'               => [$location ? 'sometimes' : 'nullable','string', Rule::unique('location','locationID')->ignore($location?->locationID,'locationID')],
+            'id_INEC'                  => ['required','string'],
+            'higherGeographyID'        => ['required','string'],
+            'continent'                => ['required','integer','exists:vocab_location_continent,continent_id'],
+            'waterBody'                => ['required','string'],
+            'islandGroup'              => ['required','string'],
+            'island'                   => ['required','string'],
+            'country'                  => ['required','string'],
+            'countryCode'              => ['required','string','size:2'],
+            'stateProvince'            => ['required','string'],
+            'county'                   => ['required','string'],
+            'municipality'             => ['required','string'],
+            'locality'                 => ['required','string'],
+            'verbatimLocality'         => ['required','string'],
+            'verbatimElevation'        => ['required','string'],
+            'verbatimDepth'            => ['required','string'],
+            'locationRemarks'          => ['required','string'],
+            'decimalLatitude'          => ['required','numeric'],
+            'decimalLongitude'         => ['required','numeric'],
+            'geodeticDatum'            => ['required','string'],
+            'verbatimLatitude'         => ['required','string'],
+            'verbatimLongitude'        => ['required','string'],
+            'verbatimCoordinateSystem' => ['required','string'],
+            'verbatimSRS'              => ['required','integer','exists:vocab_location_verbatimSRS,verbatimSRS_id'],
+            'georeferencedBy'          => ['required','string'],
+            'georeferencedDate'        => ['required','date'],
+            'georeferenceVerificationStatus' => ['required','integer','exists:vocab_location_georef_status,georef_status_id'],
+            'georeferenceRemarks'      => ['required','string']
+        ];
     }
+
 }

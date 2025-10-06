@@ -6,6 +6,8 @@ use App\Http\Controllers\Concerns\WrapsTransactions;
 use App\Models\Tblprimers;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class TblprimersController extends Controller
 {

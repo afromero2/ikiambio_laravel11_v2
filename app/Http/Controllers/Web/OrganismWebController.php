@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Organism;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class OrganismWebController  extends Controller
 {
@@ -25,9 +27,12 @@ class OrganismWebController  extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
         try {
-            $item = $this->tx(fn () => Organism::create($data));
+            $data = $request->validate($this->rules());
+            if (empty($data['organismID'] ?? null)) {
+                $data['organismID'] = (string) Str::uuid();
+            }
+            Organism::create($data);
             return redirect()->route('organism.index')->with('ok','Creado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo crear.')->withInput();
@@ -46,9 +51,9 @@ class OrganismWebController  extends Controller
 
     public function update(Request $request, Organism $organism)
     {
-        $data = $request->all();
         try {
-            $this->tx(fn () => $organism->update($data));
+            $data = $request->validate($this->rules($organism));
+            $organism->update($data);
             return redirect()->route('organism.index')->with('ok','Actualizado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo actualizar.')->withInput();
@@ -64,4 +69,15 @@ class OrganismWebController  extends Controller
             return back()->withErrors('No se pudo eliminar (posibles FKs).');
         }
     }
+
+    protected function rules($organism = null): array
+    {
+        return [
+            'organismID'             => [$organism ? 'sometimes' : 'nullable','string', Rule::unique('organism','organismID')->ignore($organism?->organismID,'organismID')],
+            'associatedOccurrences'  => ['required','string'],
+            'associatedOrganisms'    => ['required','string'],
+            'previousIdentifications'=> ['required','string']
+        ];
+    }
+
 }

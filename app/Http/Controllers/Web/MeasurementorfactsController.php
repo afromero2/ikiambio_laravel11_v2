@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+use Illuminate\Database\QueryException;
 
 class MeasurementorfactsController extends Controller
 {
@@ -28,34 +30,15 @@ class MeasurementorfactsController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'measurementID'                => ['required','string','max:255','unique:measurementorfacts,measurementID'],
-            'id_occ_bd'                    => ['nullable','string','max:255'], // ajusta si es int en tu esquema
-            'measurementType'              => ['nullable','string','max:255'],
-            'measurementValue'             => ['nullable','string','max:255'],
-            'measurementAccuracy'          => ['nullable','string','max:255'],
-            'measurementUnit'              => ['nullable','string','max:255'],
-            'measurementDeterminedBy'      => ['nullable','string','max:255'],
-            'measurementDeterminedDate'    => ['nullable','date'],
-            'measurementMethod'            => ['nullable','string'],
-            'measurementRemarks'           => ['nullable','string'],
-        ]);
-
         try {
-            $item = DB::transaction(function () use ($data) {
-                if (empty($data['measurementID'])) {
-                    $data['measurementID'] = (string) Str::uuid();
-                }
-                return Measurementorfacts::create($data);
-            });
-
-            return redirect()
-                ->route('measurement-or-facts.show', $item->measurementID)
-                ->with('ok', 'Measurement/Fact creado');
-
-        } catch (\Throwable $e) {
-            Log::error('Measurementorfacts store error', ['msg'=>$e->getMessage()]);
-            return back()->withErrors($e->getMessage())->withInput();
+            $data = $request->validate($this->rules());
+            if (empty($data['measurementID'] ?? null)) {
+                $data['measurementID'] = (string) Str::uuid();
+            }
+            Measurementorfacts::create($data);
+            return redirect()->route('occurrence.index')->with('ok','Creado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo crear.')->withInput();
         }
     }
 
@@ -71,29 +54,14 @@ class MeasurementorfactsController extends Controller
         return view('pages.measurementorfacts.edit', compact('item'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Measurementorfacts $measurementorfacts )
     {
-        $item = Measurementorfacts::findOrFail($id);
-
-        $data = $request->validate([
-            'id_occ_bd'                    => ['nullable','string','max:255'],
-            'measurementType'              => ['nullable','string','max:255'],
-            'measurementValue'             => ['nullable','string','max:255'],
-            'measurementAccuracy'          => ['nullable','string','max:255'],
-            'measurementUnit'              => ['nullable','string','max:255'],
-            'measurementDeterminedBy'      => ['nullable','string','max:255'],
-            'measurementDeterminedDate'    => ['nullable','date'],
-            'measurementMethod'            => ['nullable','string'],
-            'measurementRemarks'           => ['nullable','string'],
-        ]);
-
         try {
-            DB::transaction(fn () => $item->update($data));
-            /* return redirect()->route('occurrence.index', $item->measurementID)->with('ok','Actualizado'); */
+            $data = $request->validate($this->rules($measurementorfacts));
+            $measurementorfacts->update($data);
             return redirect()->route('occurrence.index')->with('ok','Actualizado');
-        } catch (\Throwable $e) {
-            Log::error('Measurementorfacts update error', ['msg'=>$e->getMessage()]);
-            return back()->withErrors($e->getMessage())->withInput();
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo actualizar.')->withInput();
         }
     }
 
@@ -108,4 +76,21 @@ class MeasurementorfactsController extends Controller
             return back()->withErrors($e->getMessage());
         }
     }
+
+    protected function rules($measurementorfacts = null): array
+    {
+        return [
+            'measurementID'              => [$measurementorfacts ? 'sometimes' : 'nullable','string', Rule::unique('measurementorfacts','measurementID')->ignore($measurementorfacts?->measurementID,'measurementID')],
+            'id_occ_bd'                  => ['required','string'],
+            'measurementType'            => ['required','string'],
+            'measurementValue'           => ['required','string'],
+            'measurementAccuracy'        => ['required','string'],
+            'measurementUnit'            => ['required','string'],
+            'measurementDeterminedBy'    => ['required','string'],
+            'measurementDeterminedDate'  => ['required','date'],
+            'measurementMethod'          => ['required','string'],
+            'measurementRemarks'         => ['required','string']
+        ];
+    }
+
 }

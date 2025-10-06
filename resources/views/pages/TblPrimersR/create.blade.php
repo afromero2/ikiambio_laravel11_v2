@@ -18,7 +18,7 @@
   </div>
 @endif
 
-<form method="POST" action="{{ route('TblPrimersR.store') }}" class="card card-body">
+<form method="POST" action="{{ route('tbl-primers-r.store') }}" class="card card-body">
   @csrf
 
   <div class="form-grid">
@@ -49,7 +49,7 @@
     </div>
 
     <div>
-      <label class="label">Id primerdirection *</label>
+      <label class="label">Id primerdirection</label>
       <input type="number" name="id_primerDirection" value="{{ old('id_primerDirection', isset($item)? $item->id_primerDirection : '') }}" class="input">
     </div>
 
@@ -116,7 +116,7 @@
 
   <div style="margin-top:12px;">
     <button class="btn primary">Guardar</button>
-    <a href="{{ route('TblPrimersR.index') }}" class="btn">Cancelar</a>
+    <a href="{{ route('tbl-primers-r.index') }}" class="btn">Cancelar</a>
   </div>
 </form>
 @endsection

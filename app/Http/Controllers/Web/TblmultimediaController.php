@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+use Illuminate\Database\QueryException;
 
 class TblmultimediaController extends Controller
 {
@@ -29,91 +31,69 @@ class TblmultimediaController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->validate([
-            // Si no envías idMultimedia, lo generamos
-            'idMultimedia' => ['nullable','string','max:255','unique:TblMultimedia,idMultimedia'],
-            'id_occ_bd'  => ['required','string','max:255'],
-            'type'         => ['nullable','string','max:255'],
-            'format'       => ['nullable','string','max:255'],
-            'identifier'   => ['nullable','string'],
-            'title'        => ['nullable','string','max:255'],
-            'description'  => ['nullable','string'],
-            'created'      => ['required','date'],
-            'creator'      => ['required','string','max:255'],
-            'contributor'  => ['nullable','string','max:255'],
-            'publisher'    => ['nullable','string','max:255'],
-            'license'      => ['nullable','string','max:255'],
-        ]);
-
         try {
-            $item = DB::transaction(function () use ($data) {
-                if (empty($data['idMultimedia'])) {
-                    $data['idMultimedia'] = (string) Str::uuid();
-                }
-                return TblMultimedia::create($data);
-            });
-
-            return redirect()
-                ->route('tbl-multimedia.show', $item->idMultimedia)
-                ->with('ok', 'Multimedia creado');
-
-        } catch (\Throwable $e) {
-            Log::error('TblMultimedia store error', ['msg'=>$e->getMessage()]);
-            return back()->withErrors($e->getMessage())->withInput();
+            $data = $request->validate($this->rules());
+            if (empty($data['idMultimedia'] ?? null)) {
+                $data['idMultimedia'] = (string) Str::uuid();
+            }
+            TblMultimedia::create($data);
+            return redirect()->route('occurrence.index')->with('ok','Creado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo crear.')->withInput();
         }
     }
 
-    public function show($id)
+    public function show($multimedia)
     {
-        $item = TblMultimedia::findOrFail($id);
+        $item = TblMultimedia::findOrFail($multimedia);
         return view('pages.tblmultimedia.show', compact('item'));
     }
 
-    public function edit($id)
+    public function edit($multimedia)
     {
-        $item = TblMultimedia::findOrFail($id);
+        $item = TblMultimedia::findOrFail($multimedia);
         return view('pages.tblmultimedia.edit', compact('item'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, TblMultimedia $multimedia)
     {
-        $item = TblMultimedia::findOrFail($id);
-
-        $data = $request->validate([
-            'id_occ_bd'  => ['required','string','max:255'],
-            'type'         => ['nullable','string','max:255'],
-            'format'       => ['nullable','string','max:255'],
-            'identifier'   => ['nullable','string'],
-            'title'        => ['nullable','string','max:255'],
-            'description'  => ['nullable','string'],
-            'created'      => ['required','date'],
-            'creator'      => ['required','string','max:255'],
-            'contributor'  => ['nullable','string','max:255'],
-            'publisher'    => ['nullable','string','max:255'],
-            'license'      => ['nullable','string','max:255'],
-        ]);
-
         try {
-            DB::transaction(fn () => $item->update($data));
-            /* return redirect()->route('occurrence.show', $item->idMultimedia)->with('ok','Actualizado'); */
-
+            $data = $request->validate($this->rules($multimedia));
+            $multimedia->update($data);
             return redirect()->route('occurrence.index')->with('ok','Actualizado');
-
-        } catch (\Throwable $e) {
-            Log::error('TblMultimedia update error', ['msg'=>$e->getMessage()]);
-            return back()->withErrors($e->getMessage())->withInput();
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo actualizar.')->withInput();
         }
     }
 
-    public function destroy($id)
+    public function destroy($multimedia)
     {
-        $item = TblMultimedia::findOrFail($id);
+        $item = TblMultimedia::findOrFail($multimedia);
         try {
             DB::transaction(fn () => $item->delete());
-            return redirect()->route('tbl-multimedia.index')->with('ok','Eliminado');
+            return redirect()->route('occurrence.index')->with('ok','Eliminado');
         } catch (\Throwable $e) {
             Log::error('TblMultimedia destroy error', ['msg'=>$e->getMessage()]);
             return back()->withErrors($e->getMessage());
         }
     }
+
+    protected function rules($multimedia = null): array
+    {
+        return [
+            'idMultimedia' => [$multimedia ? 'sometimes' : 'nullable','string', Rule::unique('TblMultimedia','idMultimedia')->ignore($multimedia?->idMultimedia,'idMultimedia')],
+            'id_occ_bd'    => ['required','string'], // si aplicas FK: exists:occurrence,id_occ_bd
+            'type'         => ['required','string'],
+            'format'       => ['required','string'],
+            'identifier'   => ['required','string'],
+            'title'        => ['required','string'],
+            'description'  => ['required','string'],
+            'created'      => ['required','date'],
+            'creator'      => ['required','string'],
+            'contributor'  => ['required','string'],
+            'publisher'    => ['required','string'],
+            'license'      => ['required','string']
+        ];
+    }
+
 }

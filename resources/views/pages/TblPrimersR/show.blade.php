@@ -48,8 +48,8 @@
     </dl>
 
     <div style="margin-top:12px;">
-      <a class="btn" href="{{ route('TblPrimersR.index') }}">Volver</a>
-      <a class="btn" href="{{ route('TblPrimersR.edit', $item) }}">Editar</a>
+      <a class="btn" href="{{ route('tbl-primers-r.index') }}">Volver</a>
+      <a class="btn" href="{{ route('tbl-primers-r.edit', $item) }}">Editar</a>
     </div>
   </div>
 </div>

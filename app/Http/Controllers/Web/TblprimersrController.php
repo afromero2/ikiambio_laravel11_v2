@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Concerns\WrapsTransactions;
 use App\Models\Tblprimersr;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class TblprimersrController extends Controller
 {
@@ -14,7 +16,7 @@ class TblprimersrController extends Controller
 
     public function index()
     {
-        $items = Tblprimersr::orderByDesc('id')->paginate(15);
+        $items = Tblprimersr::orderByDesc('idPrimersr')->paginate(15);
         return view('pages.tblprimersr.index', compact('items'));
     }
 
@@ -25,13 +27,16 @@ class TblprimersrController extends Controller
 
     public function store(Request $request)
     {
-        $data = $request->all();
-
         try {
-            $item = $this->tx(fn () => Tblprimersr::create($data));
-            return redirect()->route('tblprimersr.index')->with('ok', 'Creado');
+            $data = $request->validate($this->rules());
+            if (empty($data['idPrimersr'] ?? null)) {
+                $data['idPrimersr'] = (string) Str::uuid();
+            }
+            Tblprimersr::create($data);
+            return redirect()->route('tbl-primers-r.index')->with('ok', 'Creado');
         } catch (QueryException $e) {
-            return back()->withErrors('No se pudo crear.')->withInput();
+            /* return back()->withErrors('No se pudo crear.')->withInput(); */
+            return $e;
         }
     }
 
@@ -47,11 +52,10 @@ class TblprimersrController extends Controller
 
     public function update(Request $request, Tblprimersr $tblprimersr)
     {
-        $data = $request->all();
-
         try {
-            $this->tx(fn () => $tblprimersr->update($data));
-            return redirect()->route('tblprimersr.index')->with('ok', 'Actualizado');
+            $data = $request->validate($this->rules($tblprimersr));
+            $tblprimersr->update($data);
+            return redirect()->route('tbl-primers-r.index')->with('ok', 'Actualizado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo actualizar.')->withInput();
         }
@@ -66,4 +70,30 @@ class TblprimersrController extends Controller
             return back()->withErrors('No se pudo eliminar (posibles FKs).');
         }
     }
+
+    protected function rules($tblprimersr = null): array
+    {
+        return [
+            'idPrimersr'               => [$tblprimersr ? 'sometimes' : 'nullable','string', Rule::unique('TblPrimersR','idPrimersr')->ignore($tblprimersr?->idPrimersr,'idPrimersr')],
+            'genAbrev'                => ['required','string'],
+            'genName'                 => ['required','string'],
+            'primerName'              => ['required','string'],
+            'primerSequence'          => ['required','string'],
+            'primerReferenceCitation' => ['required','string'],
+            'id_primerDirection'      => ['required','string'],
+            'grupo_Taxonomico'        => ['required','string'],
+            'region'                  => ['required','string'],
+            'tecnologia'              => ['required','string'],
+            'proyecto_Tesis'          => ['required','string'],
+            'longitud_Primer'         => ['required','integer'],
+            'Longitud_amplicon'       => ['required','integer'],
+            'gc'                      => ['required','numeric'],
+            'dnaMeltingPoint'         => ['required','numeric'],
+            'annealing_Temperature'   => ['required','numeric'],
+            'primerStaff'             => ['required','string'],
+            'fecha_orden'             => ['required','date'],
+            'proveedor'               => ['required','string'],
+        ];
+    }
+
 }

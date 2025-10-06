@@ -18,7 +18,7 @@
   </div>
 @endif
 
-<form method="POST" action="{{ route('TblFechaPCR.update', $item) }}" class="card card-body">
+<form method="POST" action="{{ route('tbl-fecha-pcr.update', $item) }}" class="card card-body">
   @csrf @method('PUT')
 
   <div class="form-grid">
@@ -181,7 +181,7 @@
 
   <div style="margin-top:12px;">
     <button class="btn primary">Actualizar</button>
-    <a href="{{ route('TblFechaPCR.index') }}" class="btn">Cancelar</a>
+    <a href="{{ route('tbl-fecha-pcr.index') }}" class="btn">Cancelar</a>
   </div>
 </form>
 @endsection

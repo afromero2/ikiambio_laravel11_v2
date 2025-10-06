@@ -7,20 +7,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Tblextractions;
 use Illuminate\Http\Request;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class TblextractionsController extends Controller
 {
     use WrapsTransactions;
-
-    /* public function index()
-    {
-        
-        $pk = (new Tblextractions)->getKeyName(); // 'idExtracciones'
-        $items = Tblextractions::orderByDesc($pk)->paginate(15);
-        
-        return view('pages.tblextractions.index', compact('items'));
-    } */
-
 
     public function index()
     {   
@@ -45,7 +37,6 @@ class TblextractionsController extends Controller
         return view('pages.tblextractions.index', compact('items'));
     }
 
-
     public function create()
     {
         $occurrenceId = request('occurrence'); // viene del query string
@@ -56,10 +47,12 @@ class TblextractionsController extends Controller
 
     public function store(Request $request)
     {
-        /* $data = $request->all(); */
-        $data = $this->validateData($request);
-        try {
-            $item = $this->tx(fn () => Tblextractions::create($data));
+       try {
+            $data = $request->validate($this->rules());
+            if (empty($data['disposition_id'] ?? null)) {
+                $data['disposition_id'] = (string) Str::uuid();
+            }
+            Tblextractions::create($data);
             return redirect()->route('occurrence.index')->with('ok','Creado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo crear.')->withInput();
@@ -78,10 +71,9 @@ class TblextractionsController extends Controller
 
     public function update(Request $request, Tblextractions $tblextractions)
     {
-        /* $data = $request->all(); */
-        $data = $this->validateData($request, true, $tblextractions);
         try {
-            $this->tx(fn () => $tblextractions->update($data));
+            $data = $request->validate($this->rules($tblextractions));
+            $tblextractions->update($data);
             return redirect()->route('occurrence.index')->with('ok','Actualizado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo actualizar.')->withInput();
@@ -96,6 +88,38 @@ class TblextractionsController extends Controller
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo eliminar (posibles FKs).');
         }
+    }
+
+    protected function rules($tblextractions = null): array
+    {
+        return [
+            'idExtracciones'                     => [$tblextractions ? 'sometimes' : 'nullable','string', Rule::unique('TblExtracciones','idExtracciones')->ignore($tblextractions?->idExtracciones,'idExtracciones')],
+            'id_occ_bd'                          => ['required','string'], // si usas FK real: 'exists:occurrence,id_occ_bd'
+            'materialSampleType'                 => ['required','string'],
+            'idRegistros'                        => ['required','string'],
+            'fechaExtraccion'                    => ['required','date'],
+            'purificationMethod'                 => ['required','string'],
+            'methodDeterminationConcentrationAndRatios' => ['required','string'],
+            'adn_enSTOCK'                        => ['nullable','boolean'],
+            'volume'                             => ['required','numeric'],
+            'volumeUnit'                         => ['required','string'],
+            'concentration'                      => ['required','numeric'],
+            'concentrationUnit'                  => ['required','string'],
+            'ratioOfAbsorbance260_280'           => ['required','numeric'],
+            'ratioOfAbsorbance260_230'           => ['required','numeric'],
+            'preservationType'                   => ['required','string'],
+            'preservationTemperature'            => ['required','string'],
+            'preservationDateBegin'              => ['required','date'],
+            'quality'                            => ['required','string'],
+            'qualityCheckDate'                   => ['required','date'],
+            'sieving'                            => ['required','string'],
+            'codigoMuestraBiobanco'              => ['required','string'],
+            'codigoADNBiobanco'                  => ['required','string'],
+            'codigoGermoplasmaBiobanco'          => ['required','string'],
+            'extractionStaff'                    => ['required','string'],
+            'qualityRemarks'                     => ['required','string']
+        ];
+
     }
 
     private function validateData(Request $request, bool $isUpdate = false, ?Tblextractions $current = null): array

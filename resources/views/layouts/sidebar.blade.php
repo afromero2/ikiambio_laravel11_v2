@@ -260,9 +260,21 @@
                 </a>
                 @endif
 
-                @if (Route::has('tblprimersf.index'))
-                <a class="item {{ request()->routeIs('tblprimersf.*') ? 'active' : '' }}" href="{{ route('tblprimersf.index') }}">
+                 @if (Route::has('tbl-fecha-pcr.index'))
+                <a class="item {{ request()->routeIs('tbl-fecha-pcr.*') ? 'active' : '' }}" href="{{ route('tbl-fecha-pcr.index') }}">
+                  @include('svg.check') <span>Tbl PCR</span>
+                </a>
+                @endif  
+
+                @if (Route::has('tbl-primers-f.index'))
+                <a class="item {{ request()->routeIs('tbl-primers-f.*') ? 'active' : '' }}" href="{{ route('tbl-primers-f.index') }}">
                   @include('svg.check') <span>Primers F</span>
+                </a>
+                @endif
+                
+                @if (Route::has('tbl-primers-r.index'))
+                <a class="item {{ request()->routeIs('tbl-primers-r.*') ? 'active' : '' }}" href="{{ route('tbl-primers-r.index') }}">
+                  @include('svg.check') <span>Primers R</span>
                 </a>
                 @endif
 

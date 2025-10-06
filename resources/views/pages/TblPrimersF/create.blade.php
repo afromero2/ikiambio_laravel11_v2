@@ -18,7 +18,7 @@
   </div>
 @endif
 
-<form method="POST" action="{{ route('TblPrimersF.store') }}" class="card card-body">
+<form method="POST" action="{{ route('tbl-primers-f.store') }}" class="card card-body">
   @csrf
 
   <div class="form-grid">
@@ -116,7 +116,7 @@
 
   <div style="margin-top:12px;">
     <button class="btn primary">Guardar</button>
-    <a href="{{ route('TblPrimersF.index') }}" class="btn">Cancelar</a>
+    <a href="{{ route('tbl-primers-f.index') }}" class="btn">Cancelar</a>
   </div>
 </form>
 @endsection

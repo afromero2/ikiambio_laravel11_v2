@@ -39,8 +39,8 @@
     </div>
 
     <div>
-      <label class="label">Eventtime</label>
-      <input type="time" name="eventTime" value="{{ old('eventTime', isset($item)? $item->eventTime : '') }}" class="input">
+      <label class="label">Eventtime (h/m/s)</label>
+      <input type="time" name="eventTime" class="input" step="1" value="{{ old('eventTime', isset($item) && $item->eventTime ? \Carbon\Carbon::parse($item->eventTime)->format('H:i:s') : '') }}">
     </div>
 
     <div>

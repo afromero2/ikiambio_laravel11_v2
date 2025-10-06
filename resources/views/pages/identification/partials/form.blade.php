@@ -28,7 +28,7 @@
   </div>
 
   <div class="col-md-4">
-    <label class="label" for="{{ $p }}typeStatus">Type status</label>
+    <label class="label" for="{{ $p }}typeStatus">Type status333</label>
     <select name="typeStatus" id="{{ $p }}typeStatus" class="form-control">
       <option value="">— Selecciona —</option>
       @foreach($typeStatuses as $opt) {{-- vocab_identification_typeStatus_id, typeStatus_value --}}

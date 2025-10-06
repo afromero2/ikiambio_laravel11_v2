@@ -6,8 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\RecordLevel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
-
+use Illuminate\Database\QueryException;
 // Modelos vocab
 use App\Models\Vocab\RecordLevel\Type;
 use App\Models\Vocab\RecordLevel\License;
@@ -19,6 +18,8 @@ use App\Models\Vocab\RecordLevel\Institutioncode;
 use App\Models\Vocab\RecordLevel\Collectioncode;
 use App\Models\Vocab\RecordLevel\Ownerinstitutioncode;
 use App\Models\Vocab\RecordLevel\Basisofrecord;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class RecordLevelController extends Controller
 {
@@ -41,13 +42,16 @@ class RecordLevelController extends Controller
 
     public function store(Request $request)
     {
-        $data = $this->validated($request);
-
-        DB::transaction(function () use ($data) {
+        try {
+            $data = $request->validate($this->rules());
+            if (empty($data['disposition_id'] ?? null)) {
+                $data['disposition_id'] = (string) Str::uuid();
+            }
             RecordLevel::create($data);
-        });
-
-        return redirect()->route('record-level.index')->with('ok', 'Creado');
+            return redirect()->route('record-level.index')->with('ok', 'Creado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo crear.')->withInput();
+        }
     }
 
     public function show(RecordLevel $recordLevel)
@@ -70,13 +74,13 @@ class RecordLevelController extends Controller
 
     public function update(Request $request, RecordLevel $recordLevel)
     {
-        $data = $this->validated($request);
-
-        DB::transaction(function () use ($recordLevel, $data) {
+        try {
+            $data = $request->validate($this->rules($recordLevel));
             $recordLevel->update($data);
-        });
-
-        return redirect()->route('record-level.index')->with('ok', 'Actualizado');
+            return redirect()->route('record-level.index')->with('ok', 'Actualizado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo actualizar.')->withInput();
+        }
     }
 
     public function destroy(RecordLevel $recordLevel)
@@ -86,6 +90,30 @@ class RecordLevelController extends Controller
         });
 
         return back()->with('ok', 'Eliminado');
+    }
+
+    protected function rules($identification = null): array
+    {
+        return [
+            'type'        => ['required','integer','exists:vocab_record_level_type,type_id'],
+            'modified'    => ['required','date'],
+            'language'    => ['required','string','size:2'],
+            'license'     => ['required','integer','exists:vocab_record_level_license,license_id'],
+            'rightsHolder'=> ['required','integer','exists:vocab_record_level_rightsHolder,rightsHolder_id'],
+            'accessRights'=> ['required','integer','exists:vocab_record_level_accessRights,accessrights_id'],
+            'bibliographicCitation' => ['required','string'],
+            'references'  => ['required','string'],
+            'institutionID' => ['required','integer','exists:vocab_record_level_institutionID,institution_id'],
+            'collectionID'  => ['required','integer','exists:vocab_record_level_collectionID,collection_id'],
+            'datasetID'     => ['required','string','max:100'],
+            'institutionCode'=> ['required','integer','exists:vocab_record_level_institutionCode,institutionCode_id'],
+            'collectionCode' => ['required','integer','exists:vocab_record_level_collectionCode,collectionCode_id'],
+            'datasetName'     => ['required','string','max:255'],
+            'ownerInstitutionCode' => ['required','integer','exists:vocab_record_level_ownerInstitutionCode,ownerinstitutioncode_id'],
+            'basisOfRecord'   => ['required','integer','exists:vocab_record_level_basisOfRecord,basisofrecord_id'],
+            'informationWithheld' => ['required','string'],
+            'dataGeneralizations'=> ['required','string']
+        ];
     }
 
     // ================= Helpers =================

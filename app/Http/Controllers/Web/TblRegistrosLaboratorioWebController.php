@@ -10,6 +10,7 @@ use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class TblRegistrosLaboratorioWebController extends Controller
 {
@@ -34,44 +35,16 @@ class TblRegistrosLaboratorioWebController extends Controller
 
     public function store(Request $request)
     {
-        
-        $data = $request->validate([
-            'idRegistrosLaboratorio' => ['nullable','string','max:255','unique:Tblregistroslaboratorio,idRegistrosLaboratorio'],
-            'idFechaPCR'  => ['required','string','max:255'],
-            'idExtracciones'         => ['required','string','max:255'],
-            'vol_ADN_PCR'       => ['required','string','max:255'],
-            'amplificationSuccess'   => ['nullable','string'],
-            'amplificationSuccessDetails' => ['required','string','max:255'],
-            'sampleDesignation'  => ['required','string'],
-            'idPrimerF'      => ['required','string','max:255'],
-            'idPrimerR'      => ['required','string','max:255'],
-            'tecnologia_secuenciacion'  => ['required','string','max:255'],
-            'consensusSequence'    => ['required','string','max:255'],
-            'fechaSecuenciacion'      => ['required','date'],
-            'sequencingStaff'      => ['required','string','max:255'],
-            'ordenSecuenciacion'      => ['required','string','max:255'],
-            'geneticAccessionNumber'      => ['required','string','max:255'],
-            'geneticAccessionURI'      => ['required','string','max:255'],
-        ]);
-
         try {
-            $item = DB::transaction(function () use ($data) {
-                if (empty($data['idRegistrosLaboratorio'])) {
-                    $data['idRegistrosLaboratorio'] = (string) Str::uuid();
-                }
-
-                return Tblregistroslaboratorio::create($data);
-            });
-
-            return redirect()
-                ->route('tbl-extractions.index', $item)
-                ->with('ok', 'Registro laboratorio creado');
-
-        } catch (\Throwable $e) {
-            Log::error('Tblregistroslaboratorio store error', ['msg'=>$e->getMessage()]);
-            return back()->withErrors($e->getMessage())->withInput();
+            $data = $request->validate($this->rules());
+            if (empty($data['idRegistrosLaboratorio'] ?? null)) {
+                $data['idRegistrosLaboratorio'] = (string) Str::uuid();
+            }
+            TblRegistrosLaboratorio::create($data);
+            return redirect()->route('tbl-extractions.index')->with('ok', 'Registro laboratorio creado');
+        } catch (QueryException $e) {
+            return back()->withErrors('No se pudo crear.')->withInput();
         }
-        
     }
 
     public function show(Tblregistroslaboratorio $idRegistrosLaboratorio)
@@ -86,29 +59,10 @@ class TblRegistrosLaboratorioWebController extends Controller
 
     public function update(Request $request, Tblregistroslaboratorio $idRegistrosLaboratorio)
     {
-        $data = $request->validate([
-            'idRegistrosLaboratorio' => ['nullable','string','max:255','unique:Tblregistroslaboratorio,idRegistrosLaboratorio'],
-            'idFechaPCR'  => ['required','string','max:255'],
-            'idExtracciones'         => ['required','string','max:255'],
-            'vol_ADN_PCR'       => ['required','string','max:255'],
-            'amplificationSuccess'   => ['required','string'],
-            'amplificationSuccessDetails' => ['required','string','max:255'],
-            'sampleDesignation'  => ['required','string'],
-            'idPrimerF'      => ['required','string','max:255'],
-            'idPrimerR'      => ['required','string','max:255'],
-            'tecnologia_secuenciacion'  => ['required','string','max:255'],
-            'consensusSequence'    => ['required','string','max:255'],
-            'fechaSecuenciacion'      => ['required','date'],
-            'sequencingStaff'      => ['required','string','max:255'],
-            'ordenSecuenciacion'      => ['required','string','max:255'],
-            'geneticAccessionNumber'      => ['required','string','max:255'],
-            'geneticAccessionURI'      => ['required','string','max:255'],
-        ]);
-
-
         try {
-            $this->tx(fn () => $idRegistrosLaboratorio->update($data));
-            return redirect()->route('tbl-extractions.index',$idRegistrosLaboratorio)->with('ok','Actualizado');
+            $data = $request->validate($this->rules($idRegistrosLaboratorio));
+            $idRegistrosLaboratorio->update($data);
+            return redirect()->route('tbl-extractions.index')->with('ok','Actualizado');
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo actualizar.')->withInput();
         }
@@ -123,4 +77,27 @@ class TblRegistrosLaboratorioWebController extends Controller
             return back()->withErrors('No se pudo eliminar (posibles FKs).');
         }
     }
+
+    protected function rules($idRegistrosLaboratorio = null): array
+    {
+        return [
+            'idRegistrosLaboratorio'      => [$idRegistrosLaboratorio ? 'sometimes' : 'nullable','string', Rule::unique('TblRegistrosLaboratorio','idRegistrosLaboratorio')->ignore($idRegistrosLaboratorio,'idRegistrosLaboratorio')],
+            'idFechaPCR'                  => ['required','string'],      // si aplicas FK: exists:TblFechaPCR,idFechaPCR
+            'idExtracciones'              => ['required','string'],      // si aplicas FK: exists:TblExtracciones,idExtracciones
+            'vol_ADN_PCR'                 => ['required','numeric'],
+            'amplificationSuccess'        => ['nullable','boolean'],
+            'amplificationSuccessDetails' => ['required','string'],
+            'sampleDesignation'           => ['required','string'],
+            'idPrimerF'                   => ['required','string'],      // exists:TblPrimersF,idPrimers
+            'idPrimerR'                   => ['required','string'],      // exists:TblPrimersR,idPrimers
+            'tecnologia_secuenciacion'    => ['required','string'],
+            'consensusSequence'           => ['required','string'],
+            'fechaSecuenciacion'          => ['required','date'],
+            'sequencingStaff'             => ['required','string'],
+            'ordenSecuenciacion'          => ['required','string'],
+            'geneticAccessionNumber'      => ['required','string'],
+            'geneticAccessionURI'         => ['required','string'],
+        ];
+    }
+
 }

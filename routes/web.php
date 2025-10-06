@@ -39,6 +39,9 @@ use App\Http\Controllers\Web\TblmultimediaController;
 use App\Http\Controllers\Web\MeasurementorfactsController;
 use App\Http\Controllers\Web\TblextractionsController;
 use App\Http\Controllers\Web\TblregistroslaboratorioWebController;
+use App\Http\Controllers\Web\TblfechapcrWebController;
+use App\Http\Controllers\Web\TblprimersfController;
+use App\Http\Controllers\Web\TblprimersrController;
 use App\Http\Controllers\Ajax\OrganismController as AjaxOrganismController;
 use App\Http\Controllers\Ajax\RecordLevelController as AjaxRecordLevelController;
 use App\Http\Controllers\Ajax\LocationController as AjaxLocationController;
@@ -200,6 +203,18 @@ Route::middleware('auth')->group(function () {
     Route::resource('vocab-tblprimers-primer-direction', PrimerDirectionController::class)
         ->names('vocab-tblprimers-primer-direction')
         ->parameters(['vocab-tblprimers-primer-direction' => 'primerDirection']);
+
+    Route::resource('tbl-fecha-pcr', TblfechapcrWebController::class)
+        ->names('tbl-fecha-pcr')
+        ->parameters(['tbl-fecha-pcr' => 'fechaPcr']);
+
+    Route::resource('tbl-primers-f', TblprimersfController::class)
+        ->names('tbl-primers-f')
+        ->parameters(['tbl-primers-f' => 'tblprimersf']);
+
+    Route::resource('tbl-primers-r', TblprimersrController::class)
+        ->names('tbl-primers-r')
+        ->parameters(['tbl-primers-r' => 'tblprimersr']);
 
     // ==================== MEASUREMENTS ===================
     Route::resource('tbl-multimedia', TblmultimediaController::class)
