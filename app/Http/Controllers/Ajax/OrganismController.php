@@ -13,10 +13,10 @@ class OrganismController extends Controller
     {
         // Validación: si no pasas organismID, lo generamos (uuid)
         $data = $request->validate([
-            'organismID'               => ['nullable','string','max:255','unique:organism,organismID'],
-            'associatedOccurrences'    => ['nullable','string'],
-            'associatedOrganisms'      => ['nullable','string'],
-            'previousIdentifications'  => ['nullable','string'],
+            /* 'organismID'               => ['nullable','string','max:255','unique:organism,organismID'], */
+            'associatedOccurrences'    => ['required','string'],
+            'associatedOrganisms'      => ['required','string'],
+            'previousIdentifications'  => ['required','string']
         ]);
 
         if (empty($data['organismID'])) {

@@ -52,39 +52,53 @@
     <input type="text" name="kingdom" id="kingdom" class="input" value="{{ old('kingdom', $item->kingdom ?? '') }}">
     @error('kingdom') <small class="text-danger">{{ $message }}</small> @enderror
   </div>
+
   <div class="col-md-3">
     <label class="label" for="phylum">Phylum</label>
     <input type="text" name="phylum" id="phylum" class="input" value="{{ old('phylum', $item->phylum ?? '') }}">
+    @error('phylum') <small class="text-danger">{{ $message }}</small> @enderror
   </div>
+  
   <div class="col-md-3">
     <label class="label" for="class">Class</label>
     <input type="text" name="class" id="class" class="input" value="{{ old('class', $item->class ?? '') }}">
+    @error('class') <small class="text-danger">{{ $message }}</small> @enderror
   </div>
+
   <div class="col-md-3">
     <label class="label" for="order">Order</label>
     <input type="text" name="order" id="order" class="input" value="{{ old('order', $item->order ?? '') }}">
+    @error('order') <small class="text-danger">{{ $message }}</small> @enderror
   </div>
 
   <div class="col-md-3">
     <label class="label" for="family">Family</label>
     <input type="text" name="family" id="family" class="input" value="{{ old('family', $item->family ?? '') }}">
+    @error('family') <small class="text-danger">{{ $message }}</small> @enderror
   </div>
+
   <div class="col-md-3">
     <label class="label" for="genus">Genus</label>
     <input type="text" name="genus" id="genus" class="input" value="{{ old('genus', $item->genus ?? '') }}">
+    @error('genus') <small class="text-danger">{{ $message }}</small> @enderror
   </div>
+
   <div class="col-md-3">
     <label class="label" for="subgenus">Subgenus</label>
     <input type="text" name="subgenus" id="subgenus" class="input" value="{{ old('subgenus', $item->subgenus ?? '') }}">
+    @error('subgenus') <small class="text-danger">{{ $message }}</small> @enderror
   </div>
+
   <div class="col-md-3">
     <label class="label" for="specificEpithet">Specific epithet</label>
     <input type="text" name="specificEpithet" id="specificEpithet" class="input" value="{{ old('specificEpithet', $item->specificEpithet ?? '') }}">
+    @error('specificEpithet') <small class="text-danger">{{ $message }}</small> @enderror 
   </div>
 
   <div class="col-md-3">
     <label class="label" for="intraspecificEpithet">Intraspecific epithet</label>
     <input type="text" name="intraspecificEpithet" id="intraspecificEpithet" class="input" value="{{ old('intraspecificEpithet', $item->intraspecificEpithet ?? '') }}">
+    @error('intraspecificEpithet') <small class="text-danger">{{ $message }}</small> @enderror
   </div>
 
   <div class="col-md-3">

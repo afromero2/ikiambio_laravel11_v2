@@ -20,9 +20,11 @@
   </div>
 
   <div class="col-md-4">
-    <label class="label" for="license">License *</label>
+    <label class="label" for="license">License</label>
     <select name="license" id="license" class="input">
-      <option value="">— Selecciona —</option>
+      @if($licenses->count() > 1)
+        <option value="">— Selecciona —</option>
+      @endif
       @foreach($licenses as $opt)
         <option value="{{ $opt->license_id }}"
           @selected(old('license', $item->license ?? null) == $opt->license_id)>
@@ -36,7 +38,9 @@
   <div class="col-md-4">
     <label class="label" for="rightsHolder">Rights holder *</label>
     <select name="rightsHolder" id="rightsHolder" class="input">
-      <option value="">— Selecciona —</option>
+      @if($rightsHolders->count() > 1)
+        <option value="">— Selecciona —</option>
+      @endif
       @foreach($rightsHolders as $opt)
         <option value="{{ $opt->rightsHolder_id }}"
           @selected(old('rightsHolder', $item->rightsHolder ?? null) == $opt->rightsHolder_id)>
@@ -50,7 +54,9 @@
   <div class="col-md-4">
     <label class="label" for="accessRights">Access rights *</label>
     <select name="accessRights" id="accessRights" class="input">
-      <option value="">— Selecciona —</option>
+      @if($accessRights->count() > 1)
+        <option value="">— Selecciona —</option>
+      @endif
       @foreach($accessRights as $opt)
         <option value="{{ $opt->accessrights_id }}"
           @selected(old('accessRights', $item->accessRights ?? null) == $opt->accessrights_id)>
@@ -64,7 +70,9 @@
   <div class="col-md-4">
     <label class="label" for="institutionID">Institution ID *</label>
     <select name="institutionID" id="institutionID" class="input">
-      <option value="">— Selecciona —</option>
+      @if($institutionIds->count() > 1)
+        <option value="">— Selecciona —</option>
+      @endif
       @foreach($institutionIds as $opt)
         <option value="{{ $opt->institution_id }}"
           @selected(old('institutionID', $item->institutionID ?? null) == $opt->institution_id)>
@@ -78,7 +86,9 @@
   <div class="col-md-4">
     <label class="label" for="collectionID">Collection ID *</label>
     <select name="collectionID" id="collectionID" class="input">
-      <option value="">— Selecciona —</option>
+      @if($collectionIds->count() > 1)
+        <option value="">— Selecciona —</option>
+      @endif
       @foreach($collectionIds as $opt)
         <option value="{{ $opt->collection_id }}"
           @selected(old('collectionID', $item->collectionID ?? null) == $opt->collection_id)>
@@ -92,7 +102,9 @@
   <div class="col-md-4">
     <label class="label" for="institutionCode">Institution code *</label>
     <select name="institutionCode" id="institutionCode" class="input">
-      <option value="">— Selecciona —</option>
+      @if($institutionCodes->count() > 1)
+        <option value="">— Selecciona —</option>
+      @endif
       @foreach($institutionCodes as $opt)
         <option value="{{ $opt->institutionCode_id }}"
           @selected(old('institutionCode', $item->institutionCode ?? null) == $opt->institutionCode_id)>
@@ -106,7 +118,9 @@
   <div class="col-md-4">
     <label class="label" for="collectionCode">Collection code *</label>
     <select name="collectionCode" id="collectionCode" class="input">
-      <option value="">— Selecciona —</option>
+      @if($collectionCodes->count() > 1)
+          <option value="">— Selecciona —</option>
+      @endif
       @foreach($collectionCodes as $opt)
         <option value="{{ $opt->collectionCode_id }}"
           @selected(old('collectionCode', $item->collectionCode ?? null) == $opt->collectionCode_id)>
@@ -120,7 +134,9 @@
   <div class="col-md-4">
     <label class="label" for="ownerInstitutionCode">Owner Institution code *</label>
     <select name="ownerInstitutionCode" id="ownerInstitutionCode" class="input">
-      <option value="">— Selecciona —</option>
+      @if($ownerInstitutionCodes->count() > 1)
+        <option value="">— Selecciona —</option>
+      @endif
       @foreach($ownerInstitutionCodes as $opt)
         <option value="{{ $opt->ownerinstitutioncode_id }}"
           @selected(old('ownerInstitutionCode', $item->ownerInstitutionCode ?? null) == $opt->ownerinstitutioncode_id)>
@@ -134,7 +150,9 @@
   <div class="col-md-4">
     <label class="label" for="basisOfRecord">Basis of record *</label>
     <select name="basisOfRecord" id="basisOfRecord" class="input">
-      <option value="">— Selecciona —</option>
+      @if($basisOfRecords->count() > 1)
+        <option value="">— Selecciona —</option>
+      @endif
       @foreach($basisOfRecords as $opt)
         <option value="{{ $opt->basisofrecord_id }}"
           @selected(old('basisOfRecord', $item->basisOfRecord ?? null) == $opt->basisofrecord_id)>

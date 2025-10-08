@@ -12,13 +12,13 @@ class IdentificationController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'identificationID'                   => ['nullable','string','max:100','unique:identification,identificationID'],
-            'identificationQualifier'            => ['nullable','string','max:100'],
-            'typeStatus'                         => ['nullable','integer'], // FK
-            'identifiedBy'                       => ['nullable','string','max:255'],
-            'dateIdentified'                     => ['nullable','date'],
-            'identificationVerificationStatus'   => ['nullable','integer'], // FK
-            'identificationRemarks'              => ['nullable','string'],
+            /* 'identificationID'                   => ['nullable','string','max:100','unique:identification,identificationID'], */
+            'identificationQualifier'            => ['required','string','max:100'],
+            'typeStatus'                         => ['required','integer'], // FK
+            'identifiedBy'                       => ['required','string','max:255'],
+            'dateIdentified'                     => ['required','date'],
+            'identificationVerificationStatus'   => ['required','integer'], // FK
+            'identificationRemarks'              => ['required','string']
         ]);
 
         if (empty($data['identificationID'])) {

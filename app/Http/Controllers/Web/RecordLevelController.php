@@ -92,7 +92,7 @@ class RecordLevelController extends Controller
         return back()->with('ok', 'Eliminado');
     }
 
-    protected function rules($identification = null): array
+    protected function rules($recordLevel = null): array
     {
         return [
             'type'        => ['required','integer','exists:vocab_record_level_type,type_id'],

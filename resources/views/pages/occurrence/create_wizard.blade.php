@@ -227,7 +227,6 @@
 
         <small id="summary-org" class="text-muted d-block mt-1">—</small>
 
-
         {{-- ORGANISM: hidden real + label lectura + botón modal + acciones --}}
         <input type="hidden" name="organismID" id="organismID"
               value="{{ old('organismID', $item->organismID ?? '') }}">
@@ -340,7 +339,6 @@
         </div>
 
         <small id="summary-id" class="text-muted d-block mt-1">—</small>
-
 
 
         {{-- ===== Campos propios de OCCURRENCE ===== --}}
@@ -540,15 +538,14 @@
 
       </form>
 
-
        {{--------------- INICIO DE LA MODAL PARA EL PROCESO RECORD LEVEL ---------------------}}
 
         {{-- MODAL: Record Level --}}
         <div class="modal fade" id="modal-record-level" tabindex="-1" aria-hidden="true"> 
           <div class="modal-dialog modal-xl modal-dialog-scrollable">
             <div class="modal-content">
-              <div class="modal-header" style="background:#e7ab74;">
-                <h5 class="modal-title">Record level1</h5>
+              <div class="modal-header">
+                <h5 class="modal-title">RECORD LEVEL</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
               </div>
               <div class="modal-body">
@@ -574,10 +571,11 @@
                     'institutionCodes'      => $institutionCodes,
                     'collectionCodes'       => $collectionCodes,
                     'ownerInstitutionCodes' => $ownerInstitutionCodes,
-                    'basisOfRecords'        => $basisOfRecords,
+                    'basisOfRecords'        => $basisOfRecords
                   ])
-                  <div class="text-end mt-3">
+                  <div class="mt-3 d-flex gap-2">
                     <button type="submit" class="btn btn-primary">Guardar y usar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                   </div>
                 </form>
               </div>
@@ -709,6 +707,31 @@
             } catch {}
           }
 
+          function clearFieldErrors(form) {
+            form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+            form.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
+          }
+
+          function showFieldErrors(form, errors) {
+            // errors: { fieldName: [msg1, msg2], ... }
+            Object.entries(errors || {}).forEach(([name, messages]) => {
+              const msg = Array.isArray(messages) ? messages[0] : messages;
+              // Busca por name exacto. Ajusta si usas arrays: name="field[]"
+              const input = form.querySelector(`[name="${CSS.escape(name)}"]`)
+                        || form.querySelector(`[name="${CSS.escape(name)}[]"]`);
+
+              if (input) {
+                input.classList.add('is-invalid');
+                const fb = document.createElement('div');
+                fb.className = 'invalid-feedback';
+                fb.textContent = msg;
+
+                // Si usas Bootstrap, el .invalid-feedback debe ir justo después del input
+                input.insertAdjacentElement('afterend', fb);
+              }
+            });
+          }
+
           // Submit AJAX del formulario dentro de la modal
           const rlForm = document.getElementById('rl-modal-form');
           if (!rlForm) return;
@@ -722,6 +745,9 @@
             submitBtn?.setAttribute('disabled', 'disabled');
             if (submitBtn) submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Guardando...`;
 
+            // Limpia errores anteriores
+            clearFieldErrors(rlForm);
+
             try {
               const res = await fetch(rlForm.action, {
                 method: 'POST',
@@ -733,6 +759,14 @@
                 },
                 body: new FormData(rlForm)
               });
+
+              // Si hay errores de validación
+              if (res.status === 422) {
+                const j = await res.json().catch(() => ({}));
+                showFieldErrors(rlForm, j.errors);
+                /* showToast('Faltan campos por ser ingresados.', 'danger'); */
+                return;
+              }
 
               if (!res.ok) {
                 let msg = 'Error al guardar';
@@ -821,7 +855,7 @@
                 <hr class="my-3">
 
                 {{-- Form de creación/edición rápida --}}
-                <form id="org-modal-form" action="{{ route('ajax.organisms.store') }}" method="POST">
+                <form id="rec-modal-form" action="{{ route('ajax.organisms.store') }}" method="POST">
                   @csrf
 
                    @include('pages.organism.partials.form', [
@@ -919,16 +953,47 @@
               } catch {}
             }
 
+            // === Helpers para errores de validación ===
+            function clearFieldErrors(form) {
+              form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+              form.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
+            }
+
+            function showFieldErrors(form, errors) {
+              // errors: { fieldName: [msg1, msg2], ... }
+              Object.entries(errors || {}).forEach(([name, messages]) => {
+                const msg = Array.isArray(messages) ? messages[0] : messages;
+                // Busca por name exacto. Ajusta si usas arrays: name="field[]"
+                const input = form.querySelector(`[name="${CSS.escape(name)}"]`)
+                          || form.querySelector(`[name="${CSS.escape(name)}[]"]`);
+
+                if (input) {
+                  input.classList.add('is-invalid');
+                  const fb = document.createElement('div');
+                  fb.className = 'invalid-feedback';
+                  fb.textContent = msg;
+
+                  // Si usas Bootstrap, el .invalid-feedback debe ir justo después del input
+                  input.insertAdjacentElement('afterend', fb);
+                }
+              });
+            }
+
             // Submit AJAX del form en la modal
-            const orgForm   = document.getElementById('org-modal-form');
+            const orgForm   = document.getElementById('rec-modal-form');
             const submitBtn = orgForm?.querySelector('button[type="submit"]');
 
             orgForm?.addEventListener('submit', async function (e) {
               e.preventDefault();
 
+              console.log("modal:",submitBtn);
+
               const originalHTML = submitBtn?.innerHTML;
               submitBtn?.setAttribute('disabled','disabled');
               if (submitBtn) submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Guardando...`;
+
+              // Limpia errores anteriores
+              clearFieldErrors(orgForm);
 
               try {
                 const res = await fetch(orgForm.action, {
@@ -941,6 +1006,14 @@
                   },
                   body: new FormData(orgForm)
                 });
+
+                // Si hay errores de validación
+                if (res.status === 422) {
+                  const j = await res.json().catch(() => ({}));
+                  showFieldErrors(orgForm, j.errors);
+                  /* showToast('Faltan campos por ser ingresados.', 'danger'); */
+                  return;
+                }
 
                 if (!res.ok) {
                   let msg = 'Error al guardar';
@@ -1131,6 +1204,31 @@
             } catch {}
           }
 
+          function clearFieldErrors(form) {
+            form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+            form.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
+          }
+
+          function showFieldErrors(form, errors) {
+            // errors: { fieldName: [msg1, msg2], ... }
+            Object.entries(errors || {}).forEach(([name, messages]) => {
+              const msg = Array.isArray(messages) ? messages[0] : messages;
+              // Busca por name exacto. Ajusta si usas arrays: name="field[]"
+              const input = form.querySelector(`[name="${CSS.escape(name)}"]`)
+                        || form.querySelector(`[name="${CSS.escape(name)}[]"]`);
+
+              if (input) {
+                input.classList.add('is-invalid');
+                const fb = document.createElement('div');
+                fb.className = 'invalid-feedback';
+                fb.textContent = msg;
+
+                // Si usas Bootstrap, el .invalid-feedback debe ir justo después del input
+                input.insertAdjacentElement('afterend', fb);
+              }
+            });
+          }
+
           // Submit AJAX del form en la modal
           const locForm   = document.getElementById('loc-modal-form');
           const submitBtn = locForm?.querySelector('button[type="submit"]');
@@ -1141,6 +1239,8 @@
             const originalHTML = submitBtn?.innerHTML;
             submitBtn?.setAttribute('disabled','disabled');
             if (submitBtn) submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Guardando...`;
+
+            clearFieldErrors(locForm);
 
             try {
               const res = await fetch(locForm.action, {
@@ -1153,6 +1253,14 @@
                 },
                 body: new FormData(locForm)
               });
+
+              // Si hay errores de validación
+              if (res.status === 422) {
+                const j = await res.json().catch(() => ({}));
+                showFieldErrors(locForm, j.errors);
+                /* showToast('Faltan campos por ser ingresados.', 'danger'); */
+                return;
+              }
 
               if (!res.ok) {
                 let msg = 'Error al guardar';
@@ -1317,7 +1425,7 @@
           const taxShowTpl = @json(route('taxon.show', '__ID__'));
           const taxEditTpl = @json(route('taxon.edit', '__ID__'));
 
-          function showToastTaxon(message, variant = 'success') {
+          function showToast(message, variant = 'success') {
             const area = document.getElementById('toast-area');
             if (!area || !window.bootstrap) { alert(message); return; }
             const el = document.createElement('div');
@@ -1400,6 +1508,31 @@
             } catch {}
           }
 
+          function clearFieldErrors(form) {
+            form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+            form.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
+          }
+
+          function showFieldErrors(form, errors) {
+            // errors: { fieldName: [msg1, msg2], ... }
+            Object.entries(errors || {}).forEach(([name, messages]) => {
+              const msg = Array.isArray(messages) ? messages[0] : messages;
+              // Busca por name exacto. Ajusta si usas arrays: name="field[]"
+              const input = form.querySelector(`[name="${CSS.escape(name)}"]`)
+                        || form.querySelector(`[name="${CSS.escape(name)}[]"]`);
+
+              if (input) {
+                input.classList.add('is-invalid');
+                const fb = document.createElement('div');
+                fb.className = 'invalid-feedback';
+                fb.textContent = msg;
+
+                // Si usas Bootstrap, el .invalid-feedback debe ir justo después del input
+                input.insertAdjacentElement('afterend', fb);
+              }
+            });
+          }
+
           // Submit AJAX del form de la modal
           const taxForm = document.getElementById('tax-modal-form');
           const submitBtn = taxForm?.querySelector('button[type="submit"]');
@@ -1409,6 +1542,8 @@
             const original = submitBtn?.innerHTML;
             submitBtn?.setAttribute('disabled','disabled');
             if (submitBtn) submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Guardando...`;
+
+            clearFieldErrors(taxForm);
 
             try {
               const res = await fetch(taxForm.action, {
@@ -1421,6 +1556,13 @@
                 },
                 body: new FormData(taxForm)
               });
+
+              if (res.status === 422) {
+                const j = await res.json().catch(() => ({}));
+                showFieldErrors(taxForm, j.errors);
+                /* showToast('Faltan campos por ser ingresados.', 'danger'); */
+                return;
+              }
 
               if (!res.ok) {
                 let msg = 'Error al guardar';
@@ -1590,7 +1732,7 @@
             const idnShowTpl = @json(route('identification.show', '__ID__'));
             const idnEditTpl = @json(route('identification.edit', '__ID__'));
 
-            function toastIdn(message, variant='success') {
+            function showToast(message, variant='success') {
               const area = document.getElementById('toast-area');
               if (!area || !window.bootstrap) { alert(message); return; }
               const el = document.createElement('div');
@@ -1600,6 +1742,7 @@
                 <div class="toast-body">${message}</div>
                 <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
               </div>`;
+
               area.appendChild(el);
               const t = new bootstrap.Toast(el, { delay: 2500, autohide: true });
               t.show(); el.addEventListener('hidden.bs.toast', () => el.remove());
@@ -1675,7 +1818,7 @@
               closeModalById('modal-identification');
               window.unlockBodyScrollIfNoModal?.();
 
-              toastIdn('Identification guardada/asignada ✅','success');
+              showToast('Identification guardada/asignada ✅','success');
 
               try {
                 const draft = JSON.parse(localStorage.getItem('occ_wizard_occurrence_v2') || '{}');
@@ -1688,6 +1831,31 @@
               } catch {}
             }
 
+            function clearFieldErrors(form) {
+              form.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+              form.querySelectorAll('.invalid-feedback').forEach(el => el.remove());
+            }
+
+            function showFieldErrors(form, errors) {
+              // errors: { fieldName: [msg1, msg2], ... }
+              Object.entries(errors || {}).forEach(([name, messages]) => {
+                const msg = Array.isArray(messages) ? messages[0] : messages;
+                // Busca por name exacto. Ajusta si usas arrays: name="field[]"
+                const input = form.querySelector(`[name="${CSS.escape(name)}"]`)
+                          || form.querySelector(`[name="${CSS.escape(name)}[]"]`);
+
+                if (input) {
+                  input.classList.add('is-invalid');
+                  const fb = document.createElement('div');
+                  fb.className = 'invalid-feedback';
+                  fb.textContent = msg;
+
+                  // Si usas Bootstrap, el .invalid-feedback debe ir justo después del input
+                  input.insertAdjacentElement('afterend', fb);
+                }
+              });
+            }
+
             // Submit AJAX
             const idnForm = document.getElementById('idn-modal-form');
             const submitBtn = idnForm?.querySelector('button[type="submit"]');
@@ -1698,6 +1866,8 @@
               submitBtn?.setAttribute('disabled','disabled');
               if (submitBtn) submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Guardando...`;
 
+              clearFieldErrors(idnForm);
+
               try {
                 const res = await fetch(idnForm.action, {
                   method: 'POST',
@@ -1706,10 +1876,17 @@
                   body: new FormData(idnForm)
                 });
 
+                if (res.status === 422) {
+                  const j = await res.json().catch(() => ({}));
+                  showFieldErrors(idnForm, j.errors);
+                  /* showToast('Faltan campos por ser ingresados.', 'danger'); */
+                  return;
+                }
+
                 if (!res.ok) {
                   let msg = 'Error al guardar';
                   try { const j = await res.json(); if (j?.message) msg = j.message; } catch {}
-                  toastIdn(msg, 'danger');
+                  showToast(msg, 'danger');
                   return;
                 }
 
@@ -1717,7 +1894,7 @@
                 applyIdentification(data.id, data.label);
 
               } catch (err) {
-                toastIdn('Error de red o servidor.','danger');
+                showToast('Error de red o servidor.' + err.message,'danger');
               } finally {
                 if (submitBtn) { submitBtn.innerHTML = original || 'Guardar y usar'; submitBtn.removeAttribute('disabled'); }
               }
@@ -1751,7 +1928,7 @@
               $results.addEventListener('click', (e) => {
                 const btn = e.target.closest('.list-group-item'); if (!btn) return;
                 applyIdentification(btn.dataset.id, btn.dataset.label);
-                toastIdn('Identification asignada ✅');
+                showToast('Identification asignada ✅');
               });
             }
 

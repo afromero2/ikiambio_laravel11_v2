@@ -12,27 +12,27 @@ class TaxonController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'taxonID'               => ['nullable','string','max:100','unique:taxon,taxonID'],
-            'scientificNameID'      => ['nullable','string','max:100'],
+            /* 'taxonID'               => ['nullable','string','max:100','unique:taxon,taxonID'], */
+            'scientificNameID'      => ['required','string','max:100'],
             'scientificName'        => ['required','string','max:255'],
-            'namePublishedIn'       => ['nullable','string'],
-            'namePublishedInYear'   => ['nullable','integer'],
-            'higherClassification'  => ['nullable','string'],
-            'kingdom'               => ['nullable','string','max:100'],
-            'phylum'                => ['nullable','string','max:100'],
-            'class'                 => ['nullable','string','max:100'],
-            'order'                 => ['nullable','string','max:100'],
-            'family'                => ['nullable','string','max:100'],
-            'genus'                 => ['nullable','string','max:100'],
-            'subgenus'              => ['nullable','string','max:100'],
-            'specificEpithet'       => ['nullable','string','max:100'],
-            'intraspecificEpithet'  => ['nullable','string','max:100'],
-            'taxonRank'             => ['nullable','integer'], // FK a vocab rank
-            'verbatimTaxonRank'     => ['nullable','string','max:50'],
-            'scientificNameAuthorship' => ['nullable','string'],
-            'vernacularName'        => ['nullable','string'],
-            'taxonomicStatus'       => ['nullable','integer'], // FK a vocab status
-            'taxonRemarks'          => ['nullable','string'],
+            'namePublishedIn'       => ['required','string'],
+            'namePublishedInYear'   => ['required','integer'],
+            'higherClassification'  => ['required','string'],
+            'kingdom'               => ['required','string','max:100'],
+            'phylum'                => ['required','string','max:100'],
+            'class'                 => ['required','string','max:100'],
+            'order'                 => ['required','string','max:100'],
+            'family'                => ['required','string','max:100'],
+            'genus'                 => ['required','string','max:100'],
+            'subgenus'              => ['required','string','max:100'],
+            'specificEpithet'       => ['required','string','max:100'],
+            'intraspecificEpithet'  => ['required','string','max:100'],
+            'taxonRank'             => ['required','integer'], // FK a vocab rank
+            'verbatimTaxonRank'     => ['required','string','max:50'],
+            'scientificNameAuthorship' => ['required','string'],
+            'vernacularName'        => ['required','string'],
+            'taxonomicStatus'       => ['required','integer'], // FK a vocab status
+            'taxonRemarks'          => ['required','string']
         ]);
 
         if (empty($data['taxonID'])) {

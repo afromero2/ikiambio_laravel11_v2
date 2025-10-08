@@ -784,3 +784,16 @@ a:hover{ text-decoration:underline; }
   border-left: 1px dashed var(--ikiam-border);
   padding-left: .5rem;
 }
+
+.is-invalid{
+  border:2px solid #a34556 !important; 
+  color:#a34556 !important; 
+}
+
+.invalid-feedback, .text-danger{
+  color:#a34556 !important; 
+}
+
+.modal-header{
+  background:#62d599;color:#fFfFfF;
+}

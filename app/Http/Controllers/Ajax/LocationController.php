@@ -45,7 +45,7 @@ class LocationController extends Controller
             'georeferenceVerificationStatus' => ['required','integer'],
             'georeferenceRemarks' => ['nullable','string'], */
 
-            'locationID'               => ['required','string','max:255','unique:location,locationID'],
+            /* 'locationID'               => ['nullable','string','max:255','unique:location,locationID'], */
              'id_INEC'                  => ['required','string'],
             'higherGeographyID'        => ['required','string'],
             'continent'                => ['required','integer','exists:vocab_location_continent,continent_id'],
