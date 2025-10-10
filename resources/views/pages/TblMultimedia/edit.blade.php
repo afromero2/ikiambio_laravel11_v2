@@ -9,14 +9,10 @@
 @endif
 
 @if ($errors->any())
-  <div class="alert alert-danger">
-    <ul class="mb-0">
-      @foreach ($errors->all() as $err)
-        <li>{{ $err }}</li>
-      @endforeach
-    </ul>
-  </div>
-@endif
+        <div class="alert alert-danger">
+          {{ __('validation.txtValidacion') }}
+        </div>
+      @endif
 
 <form method="POST" action="{{ route('tbl-multimedia.update', $item) }}" class="card card-body">
   @csrf @method('PUT')
@@ -26,56 +22,67 @@
     <div>
       <label class="label">id_occ_bd</label>
       <input type="text" name="id_occ_bd" value="{{ old('id_occ_bd', isset($item)? $item->id_occ_bd : '') }}" class="input">
+      @error('id_occ_bd') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
 
     <div>
       <label class="label">Type</label>
       <input type="text" name="type" value="{{ old('type', isset($item)? $item->type : '') }}" class="input">
+      @error('type') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
 
     <div>
       <label class="label">Format</label>
       <input type="text" name="format" value="{{ old('format', isset($item)? $item->format : '') }}" class="input">
+      @error('format') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
 
     <div>
       <label class="label">Identifier</label>
       <textarea name="identifier" class="input" rows="3">{{ old('identifier', isset($item)? $item->identifier : '') }}</textarea>
+      @error('identifier') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
 
     <div>
       <label class="label">Title</label>
       <input type="text" name="title" value="{{ old('title', isset($item)? $item->title : '') }}" class="input">
+      @error('title') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
 
     <div>
       <label class="label">Description</label>
       <textarea name="description" class="input" rows="3">{{ old('description', isset($item)? $item->description : '') }}</textarea>
+      @error('description') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
 
     <div>
       <label class="label">Created</label>
       <input type="date" name="created" value="{{ old('created', isset($item)? $item->created : '') }}" class="input">
+      @error('created') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
 
     <div>
       <label class="label">Creator</label>
       <input type="text" name="creator" value="{{ old('creator', isset($item)? $item->creator : '') }}" class="input">
+      @error('creator') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
 
     <div>
       <label class="label">Contributor</label>
       <input type="text" name="contributor" value="{{ old('contributor', isset($item)? $item->contributor : '') }}" class="input">
+      @error('contributor') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
 
     <div>
       <label class="label">Publisher</label>
       <input type="text" name="publisher" value="{{ old('publisher', isset($item)? $item->publisher : '') }}" class="input">
+      @error('publisher') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
 
     <div>
       <label class="label">License</label>
       <input type="text" name="license" value="{{ old('license', isset($item)? $item->license : '') }}" class="input">
+      @error('license') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
   </div>
 

@@ -9,27 +9,25 @@
 @endif
 
 @if ($errors->any())
-  <div class="alert alert-danger">
-    <ul class="mb-0">
-      @foreach ($errors->all() as $err)
-        <li>{{ $err }}</li>
-      @endforeach
-    </ul>
-  </div>
-@endif
+        <div class="alert alert-danger">
+          {{ __('validation.txtValidacion') }}
+        </div>
+      @endif
 <form method="POST" action="{{ route('vocab-identification-verification-status.store') }}" class="card card-body">
   @csrf
 
   <div class="form-grid">
 
     <div>
-      <label class="label">Identificationverificationstatus value *</label>
+      <label class="label">Identificationverificationstatus value</label>
       <input type="text" name="identificationVerificationStatus_value" value="{{ old('identificationVerificationStatus_value', isset($item)? $item->identificationVerificationStatus_value : '') }}" class="input">
+      @error('identificationVerificationStatus_value') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
 
     <div>
       <label class="label">Description</label>
       <textarea name="description" class="input" rows="3">{{ old('description', isset($item)? $item->description : '') }}</textarea>
+      @error('description') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
   </div>
 

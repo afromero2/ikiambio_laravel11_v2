@@ -9,14 +9,10 @@
 @endif
 
 @if ($errors->any())
-  <div class="alert alert-danger">
-    <ul class="mb-0">
-      @foreach ($errors->all() as $err)
-        <li>{{ $err }}</li>
-      @endforeach
-    </ul>
-  </div>
-@endif
+        <div class="alert alert-danger">
+          {{ __('validation.txtValidacion') }}
+        </div>
+      @endif
 
 <form method="POST" action="{{ route('measurement-or-facts.update', $item) }}" class="card card-body">
   @csrf @method('PUT')
@@ -26,46 +22,55 @@
     <div>
       <label class="label">Id occ bd</label>
       <input type="text" name="id_occ_bd" value="{{ old('id_occ_bd', isset($item)? $item->id_occ_bd : '') }}" class="input">
+      @error('id_occ_bd') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
 
     <div>
       <label class="label">Measurementtype</label>
       <input type="text" name="measurementType" value="{{ old('measurementType', isset($item)? $item->measurementType : '') }}" class="input">
+      @error('measurementType') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
 
     <div>
       <label class="label">Measurementvalue</label>
       <input type="text" name="measurementValue" value="{{ old('measurementValue', isset($item)? $item->measurementValue : '') }}" class="input">
+      @error('measurementValue') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
 
     <div>
       <label class="label">Measurementaccuracy</label>
       <input type="text" name="measurementAccuracy" value="{{ old('measurementAccuracy', isset($item)? $item->measurementAccuracy : '') }}" class="input">
+      @error('measurementAccuracy') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
 
     <div>
       <label class="label">Measurementunit</label>
       <input type="text" name="measurementUnit" value="{{ old('measurementUnit', isset($item)? $item->measurementUnit : '') }}" class="input">
+      @error('measurementUnit') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
 
     <div>
       <label class="label">Measurementdeterminedby</label>
       <input type="text" name="measurementDeterminedBy" value="{{ old('measurementDeterminedBy', isset($item)? $item->measurementDeterminedBy : '') }}" class="input">
+      @error('measurementDeterminedBy') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
 
     <div>
       <label class="label">Measurementdetermineddate</label>
       <input type="date" name="measurementDeterminedDate" value="{{ old('measurementDeterminedDate', isset($item)? $item->measurementDeterminedDate : '') }}" class="input">
+      @error('measurementDeterminedDate') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
 
     <div>
       <label class="label">Measurementmethod</label>
       <textarea name="measurementMethod" class="input" rows="3">{{ old('measurementMethod', isset($item)? $item->measurementMethod : '') }}</textarea>
+      @error('measurementMethod') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
 
     <div>
       <label class="label">Measurementremarks</label>
       <textarea name="measurementRemarks" class="input" rows="3">{{ old('measurementRemarks', isset($item)? $item->measurementRemarks : '') }}</textarea>
+      @error('measurementRemarks') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
   </div>
 

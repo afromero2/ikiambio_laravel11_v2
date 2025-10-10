@@ -11,14 +11,10 @@
 @endif
 
 @if ($errors->any())
-  <div class="alert alert-danger">
-    <ul class="mb-0">
-      @foreach ($errors->all() as $err)
-        <li>{{ $err }}</li>
-      @endforeach
-    </ul>
-  </div>
-@endif
+        <div class="alert alert-danger">
+          {{ __('validation.txtValidacion') }}
+        </div>
+      @endif
 
 <form method="POST" action="{{ route('ikiambio-users.store') }}" class="card card-body">
   @csrf

@@ -9,14 +9,10 @@
 @endif
 
 @if ($errors->any())
-  <div class="alert alert-danger">
-    <ul class="mb-0">
-      @foreach ($errors->all() as $err)
-        <li>{{ $err }}</li>
-      @endforeach
-    </ul>
-  </div>
-@endif
+        <div class="alert alert-danger">
+          {{ __('validation.txtValidacion') }}
+        </div>
+      @endif
 
 <form method="POST" action="{{ route('vocab-record-level-owner-institution-code.update', $item) }}" class="card card-body">
   @csrf @method('PUT')
@@ -24,13 +20,15 @@
   <div class="form-grid">
 
     <div>
-      <label class="label">Ownerinstitutioncode value *</label>
+      <label class="label">Ownerinstitutioncode value</label>
       <input type="text" name="ownerinstitutioncode_value" value="{{ old('ownerinstitutioncode_value', isset($item)? $item->ownerinstitutioncode_value : '') }}" class="input">
+      @error('ownerinstitutioncode_value') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
 
     <div>
       <label class="label">Description</label>
       <textarea name="description" class="input" rows="3">{{ old('description', isset($item)? $item->description : '') }}</textarea>
+      @error('description') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
   </div>
 

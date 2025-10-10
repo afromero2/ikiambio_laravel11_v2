@@ -107,6 +107,7 @@ class TblextractionsController extends Controller
             'concentrationUnit'                  => ['required','string'],
             'ratioOfAbsorbance260_280'           => ['required','numeric'],
             'ratioOfAbsorbance260_230'           => ['required','numeric'],
+            /* 'ratioOfAbsorbance260_230'           => ['required', 'regex:/^[0-9]+$/'], */
             'preservationType'                   => ['required','string'],
             'preservationTemperature'            => ['required','string'],
             'preservationDateBegin'              => ['required','date'],

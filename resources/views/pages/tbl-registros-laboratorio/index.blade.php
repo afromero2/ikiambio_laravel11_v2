@@ -15,7 +15,7 @@
           <th>#</th>
           <th>Extracción</th>
           <th>Vol ADN PCR</th>
-          <th>Amp</th>
+          <th>Ampl. Succ Det</th>
           <th>Staff</th>
           <th class="text-end">Acciones</th>
         </tr>
@@ -26,7 +26,7 @@
           <td>{{ $row->idRegistrosLaboratorio }}</td>
           <td>{{ $row->idExtracciones }}</td>
           <td>{{ $row->vol_ADN_PCR ?? '—' }}</td>
-          <td>{{ isset($row->amplificationSuccess) ? ($row->amplificationSuccess ? 'Sí' : 'No') : '—' }}</td>
+          <td>{{ isset($row->amplificationSuccessDetails) ? ($row->amplificationSuccessDetails ? 'Sí' : 'No') : '—' }}</td>
           <td>{{ $row->sequencingStaff ?? '—' }}</td>
           <td class="text-end text-nowrap">
             <a href="{{ route('tbl-registros-laboratorio.show', $row) }}" class="btn btn-outline-secondary btn-sm" title="Ver">

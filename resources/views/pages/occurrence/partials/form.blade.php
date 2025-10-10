@@ -13,7 +13,9 @@
   <div class="col-md-4">
     <label class="label" for="record_level_id">Record level</label>
     <select name="record_level_id" id="record_level_id" class="input">
-      <option value="">— Selecciona —</option>
+      @if($recordLevels->count() > 1)
+        <option value="">— Selecciona —</option>
+      @endif
       @foreach($recordLevels as $opt)
         <option value="{{ $opt->record_level_id }}"
           @selected(old('record_level_id', $item->record_level_id ?? null) == $opt->record_level_id)>
@@ -63,7 +65,9 @@
   <div class="col-md-4">
     <label class="label" for="organismQuantityType">Organism Quantity Type *</label>
     <select name="organismQuantityType" id="organismQuantityType" class="input">
-      <option value="">— Selecciona —</option>
+      @if($oqtypes->count() > 1)
+        <option value="">— Selecciona —</option>
+      @endif
       @foreach($oqtypes as $opt)
         <option value="{{ $opt->oqtype_id }}"
           @selected(old('organismQuantityType', $item->organismQuantityType ?? null) == $opt->oqtype_id)>
@@ -77,7 +81,9 @@
   <div class="col-md-4">
     <label class="label" for="sex">Sex *</label>
     <select name="sex" id="sex" class="input">
-      <option value="">— Selecciona —</option>
+      @if($sexes->count() > 1)
+        <option value="">— Selecciona —</option>
+      @endif
       @foreach($sexes as $opt)
         <option value="{{ $opt->sex_id }}"
           @selected(old('sex', $item->sex ?? null) == $opt->sex_id)>
@@ -91,7 +97,9 @@
   <div class="col-md-4">
     <label class="label" for="lifeStage">Life stage *</label>
     <select name="lifeStage" id="lifeStage" class="input">
-      <option value="">— Selecciona —</option>
+      @if($lifeStages->count() > 1)
+        <option value="">— Selecciona —</option>
+      @endif
       @foreach($lifeStages as $opt)
         <option value="{{ $opt->lifestage_id }}"
           @selected(old('lifeStage', $item->lifeStage ?? null) == $opt->lifestage_id)>
@@ -105,7 +113,9 @@
   <div class="col-md-4">
     <label class="label" for="reproductiveCondition">Reproductive condition *</label>
     <select name="reproductiveCondition" id="reproductiveCondition" class="input">
-      <option value="">— Selecciona —</option>
+      @if($reproConds->count() > 1)
+        <option value="">— Selecciona —</option>
+      @endif
       @foreach($reproConds as $opt)
         <option value="{{ $opt->reprocond_id }}"
           @selected(old('reproductiveCondition', $item->reproductiveCondition ?? null) == $opt->reprocond_id)>
@@ -119,7 +129,9 @@
   <div class="col-md-4">
     <label class="label" for="establishmentMeans">Establishment means *</label>
     <select name="establishmentMeans" id="establishmentMeans" class="input">
-      <option value="">— Selecciona —</option>
+      @if($estabMeans->count() > 1)
+        <option value="">— Selecciona —</option>
+      @endif
       @foreach($estabMeans as $opt)
         <option value="{{ $opt->estabmeans_id }}"
           @selected(old('establishmentMeans', $item->establishmentMeans ?? null) == $opt->estabmeans_id)>
@@ -133,7 +145,9 @@
   <div class="col-md-4">
     <label class="label" for="disposition">Disposition *</label>
     <select name="disposition" id="disposition" class="input">
-      <option value="">— Selecciona —</option>
+      @if($dispositions->count() > 1)
+        <option value="">— Selecciona —</option>
+      @endif
       @foreach($dispositions as $opt)
         <option value="{{ $opt->disposition_id }}"
           @selected(old('disposition', $item->disposition ?? null) == $opt->disposition_id)>
@@ -410,7 +424,9 @@
       <div class="col-md-4">
         <label class="label" for="location_continent">Continent *</label>
         <select name="location_continent" id="location_continent" class="input">
-          <option value="">— Selecciona —</option>
+          @if($continents->count() > 1)
+            <option value="">— Selecciona —</option>
+          @endif
           @foreach($continents as $opt) {{-- recibe: continent_id, continent_value --}}
             <option value="{{ $opt->continent_id }}"
               @selected(old('location_continent') == $opt->continent_id)>
@@ -533,7 +549,9 @@
       <div class="col-md-4">
         <label class="label" for="location_verbatimSRS">Verbatim SRS *</label>
         <select name="location_verbatimSRS" id="location_verbatimSRS" class="input">
-          <option value="">— Selecciona —</option>
+          @if($verbatimSrs->count() > 1)
+            <option value="">— Selecciona —</option>
+          @endif
           @foreach($verbatimSrs as $opt) {{-- recibe: verbatimSRS_id, verbatimSRS_value --}}
             <option value="{{ $opt->verbatimSRS_id }}"
               @selected(old('location_verbatimSRS') == $opt->verbatimSRS_id)>
@@ -558,7 +576,9 @@
       <div class="col-md-4">
         <label class="label" for="location_georeferenceVerificationStatus">Georef. verification status *</label>
         <select name="location_georeferenceVerificationStatus" id="location_georeferenceVerificationStatus" class="input">
-          <option value="">— Selecciona —</option>
+          @if($georefStatuses->count() > 1)
+            <option value="">— Selecciona —</option>
+          @endif
           @foreach($georefStatuses as $opt) {{-- georef_status_id, georef_status_value --}}
             <option value="{{ $opt->georef_status_id }}"
               @selected(old('location_georeferenceVerificationStatus') == $opt->georef_status_id)>

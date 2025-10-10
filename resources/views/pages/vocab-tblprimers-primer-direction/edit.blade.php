@@ -9,14 +9,10 @@
 @endif
 
 @if ($errors->any())
-  <div class="alert alert-danger">
-    <ul class="mb-0">
-      @foreach ($errors->all() as $err)
-        <li>{{ $err }}</li>
-      @endforeach
-    </ul>
-  </div>
-@endif
+        <div class="alert alert-danger">
+          {{ __('validation.txtValidacion') }}
+        </div>
+      @endif
 
 <form method="POST" action="{{ route('vocab-tblprimers-primer-direction.update', $item) }}" class="card card-body">
   @csrf @method('PUT')
@@ -26,11 +22,13 @@
     <div>
       <label class="label">Primerdirection value *</label>
       <input type="text" name="primerdirection_value" value="{{ old('primerdirection_value', isset($item)? $item->primerdirection_value : '') }}" class="input">
+      @error('primerdirection_value') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
 
     <div>
       <label class="label">Description</label>
       <textarea name="description" class="input" rows="3">{{ old('description', isset($item)? $item->description : '') }}</textarea>
+      @error('description') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
   </div>
 

@@ -104,7 +104,9 @@
   <div class="col-md-3">
     <label class="label" for="taxonRank">Taxon Rank</label>
     <select name="taxonRank" id="taxonRank" class="input">
-      <option value="">— Selecciona —</option>
+      @if($taxonRanks->count() > 1)
+        <option value="">— Selecciona —</option>
+      @endif
       @foreach($taxonRanks as $opt)
         <option value="{{ $opt->taxonRank_id }}"
           @selected(old('taxonRank', $item->taxonRank ?? null) == $opt->taxonRank_id)>
@@ -137,7 +139,9 @@
   <div class="col-md-6">
     <label class="label" for="taxonomicStatus">Taxonomic Status</label>
     <select name="taxonomicStatus" id="taxonomicStatus" class="input">
-      <option value="">— Selecciona —</option>
+      @if($taxonomicStatuses->count() > 1)
+        <option value="">— Selecciona —</option>
+      @endif
       @foreach($taxonomicStatuses as $opt)
         <option value="{{ $opt->taxonomicStatus_id }}"
           @selected(old('taxonomicStatus', $item->taxonomicStatus ?? null) == $opt->taxonomicStatus_id)>

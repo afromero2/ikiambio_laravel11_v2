@@ -9,27 +9,25 @@
 @endif
 
 @if ($errors->any())
-  <div class="alert alert-danger">
-    <ul class="mb-0">
-      @foreach ($errors->all() as $err)
-        <li>{{ $err }}</li>
-      @endforeach
-    </ul>
-  </div>
-@endif
+        <div class="alert alert-danger">
+          {{ __('validation.txtValidacion') }}
+        </div>
+      @endif
 
 <form method="POST" action="{{ route('vocab-record-level-rights-holder.store') }}" class="card card-body">
   @csrf
 
   <div class="form-grid">
     <div>
-      <label class="label">rightsHolder_value *</label>
+      <label class="label">RightsHolder value</label>
       <input type="text" name="rightsHolder_value" value="{{ old('rightsHolder_value') }}" class="input">
+      @error('rightsHolder_value') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
 
     <div>
       <label class="label">description</label>
       <textarea name="description" class="input" rows="3">{{ old('description') }}</textarea>
+      @error('description') <small class="text-danger">{{ $message }}</small> @enderror
     </div>
   </div>
 

@@ -8,7 +8,9 @@
   <div class="col-md-4">
     <label class="label" for="type">Type *</label>
     <select name="type" id="type" class="input">
-      <option value="">— Selecciona —</option>
+      @if($types->count() > 1)
+        <option value="">— Selecciona —</option>
+      @endif
       @foreach($types as $opt)
         <option value="{{ $opt->type_id }}"
           @selected(old('type', $item->type ?? null) == $opt->type_id)>

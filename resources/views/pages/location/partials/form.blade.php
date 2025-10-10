@@ -34,7 +34,9 @@
   <div class="col-md-4">
     <label class="label" for="continent">Continent *</label>
     <select name="continent" id="continent" class="input">
-      <option value="">— Selecciona —</option>
+      @if($continents->count() > 1)
+        <option value="">— Selecciona —</option>
+      @endif
       @foreach($continents as $opt)
         <option value="{{ $opt->continent_id }}"
           @selected(old('continent', $item->continent ?? null) == $opt->continent_id)>
@@ -177,7 +179,9 @@
   <div class="col-md-4">
     <label class="label" for="verbatimSRS">Verbatim SRS *</label>
     <select name="verbatimSRS" id="verbatimSRS" class="input">
-      <option value="">— Selecciona —</option>
+      @if($verbatimSrs->count() > 1)
+        <option value="">— Selecciona —</option>
+      @endif
       @foreach($verbatimSrs as $opt)
         <option value="{{ $opt->verbatimSRS_id }}"
           @selected(old('verbatimSRS', $item->verbatimSRS ?? null) == $opt->verbatimSRS_id)>
@@ -205,7 +209,9 @@
   <div class="col-md-4">
     <label class="label" for="georeferenceVerificationStatus">Georef. verification status *</label>
     <select name="georeferenceVerificationStatus" id="georeferenceVerificationStatus" class="input">
-      <option value="">— Selecciona —</option>
+      @if($georefStatuses->count() > 1)
+        <option value="">— Selecciona —</option>
+      @endif
       @foreach($georefStatuses as $opt)
         <option value="{{ $opt->georef_status_id }}"
           @selected(old('georeferenceVerificationStatus', $item->georeferenceVerificationStatus ?? null) == $opt->georef_status_id)>
