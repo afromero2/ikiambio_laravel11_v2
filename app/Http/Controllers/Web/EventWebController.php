@@ -38,7 +38,10 @@ class EventWebController extends Controller
                 $data['eventID'] = (string) Str::uuid();
             }
             Event::create($data);
-            return redirect()->route('location.index')->with('ok','Creado');
+
+            $page = (int) $request->input('page', $request->query('page', 1)); 
+
+            return redirect()->route('location.index',['page' => max(1, $page)])->with('ok','Creado:'.$page);
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo actualizar.')->withInput();
         }

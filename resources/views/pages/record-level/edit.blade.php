@@ -3,6 +3,8 @@
 @section('title','Record Level — Editar')
 @section('page_title','Editar Record Level')
 
+@php $page = request('page', 1); @endphp
+
 @section('content')
 <div class="card card-body">
 
@@ -20,12 +22,12 @@
     </div>
   @endif
 
-  <form method="POST" action="{{ route('record-level.update', $item) }}">
+  <form method="POST" action="{{ route('record-level.update', ['recordLevel' => $item->record_level_id, 'page' => $page]) }} class="row g-3 btnForms"">
     @csrf @method('PUT')
     @include('pages.record-level.partials.form', ['item' => $item])
     <div class="mt-3">
       <button class="btn btn-primary">Actualizar</button>
-      <a class="btn btn-outline-secondary" href="{{ route('record-level.index') }}">Volver</a>
+      <a class="btn btn-outline-secondary" href="{{ route('record-level.index',['page' => $page]) }}">Volver</a>
     </div>
   </form>
 </div>

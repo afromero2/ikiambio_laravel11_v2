@@ -4,6 +4,8 @@
 @section('content')
 <h1 class="h4" style="margin:0 0 12px 0;">Nuevo — Event</h1>
 
+@php $page = request('page', 1); @endphp
+
 @if (session('ok'))
   <div class="alert alert-success">{{ session('ok') }}</div>
 @endif
@@ -88,7 +90,7 @@
 
   <div style="margin-top:12px;">
     <button class="btn primary">Guardar</button>
-    <a href="{{ route('location.index') }}" class="btn">Cancelar</a>
+    <a href="{{ route('location.index', ['page' => max(1, $page)]) }}" class="btn">Cancelar</a>
   </div>
 </form>
 @endsection

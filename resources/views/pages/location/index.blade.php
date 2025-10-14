@@ -48,7 +48,7 @@
                
                 {{-- Tabla de eventos de esta location --}}
                 @if($row->events->isEmpty())
-                  <a href="{{ route('event.create', ['location' => $row->locationID]) }}"
+                  <a href="{{ route('event.create', ['location' => $row->locationID, 'page' => $page]) }}"
                     class="btn btn-sm btn-outline-primary">
                     Event +
                   </a><br/>
@@ -72,10 +72,12 @@
                       @foreach($row->events as $ev)
                         <tr>
                           <td><span style="font-size:13px">{{ $ev->fieldNotes}}</span>
-                            <a href="{{ route('event.show', $ev->eventID) }}" class="btn btn-sm"><i class="fa fa-eye"></i></a>
-                            <a href="{{ route('event.edit', $ev->eventID) }}" class="btn btn-sm"><i class="fa fa-edit"></i></a>
-                            <form style="display:inline" method="POST" action="{{ route('event.destroy', $ev) }}" onsubmit="return confirm('¿Eliminar?')">
+                            <a href="{{ route('event.show', ['event' => $ev->eventID, 'page' => $page]) }}" class="btn btn-sm"><i class="fa fa-eye"></i></a>
+                            <a href="{{ route('event.edit', ['event' => $ev->eventID, 'page' => $page]) }}" class="btn btn-sm"><i class="fa fa-edit"></i></a>
+                            
+                            <form style="display:inline" method="POST" action="{{ route('event.destroy', ['event' => $ev ?? $event, 'page' => $page]) }}" onsubmit="return confirm('¿Eliminar?')">
                               @csrf @method('DELETE')
+                              <input type="hidden" name="page" value="{{ $page }}">
                               <button class="btn ghost " type="submit"><i class="fa fa-trash"></i></button>
                             </form>
                           </td>

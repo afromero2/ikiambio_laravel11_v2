@@ -53,7 +53,7 @@
       </dl>
 
       <div class="d-flex gap-2">
-        <a href="{{ route('taxon.index',['taxon'=>$item, 'page'=>$page]) }}" class="btn btn-light">Volver</a>
+        <a href="{{ route('taxon.index',['page'=>$page]) }}" class="btn btn-light">Volver</a>
         <a href="{{ route('taxon.edit',['taxon'=>$item->taxonID, 'page'=>$page]) }}" class="btn btn-primary">Editar</a>
       </div>
     </div>

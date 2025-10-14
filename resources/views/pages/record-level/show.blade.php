@@ -3,6 +3,8 @@
 @section('title','Record Level — Detalle')
 @section('page_title','Detalle Record Level')
 
+@php $page = request('page', 1); @endphp
+
 @section('content')
 <div class="card card-body">
   <dl class="row">
@@ -65,8 +67,8 @@
   </dl>
 
   <div class="mt-2">
-    <a class="btn btn-outline-secondary" href="{{ route('record-level.index') }}">Volver</a>
-    <a class="btn btn-primary" href="{{ route('record-level.edit',$item) }}">Editar</a>
+    <a class="btn btn-outline-secondary" href="{{ route('record-level.index', ['page' => $page]) }}">Volver</a>
+    <a class="btn btn-primary" href="{{ route('record-level.edit',['recordLevel' => $item->record_level_id, 'page' => $page]) }}">Editar</a>
   </div>
 </div>
 @endsection

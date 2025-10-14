@@ -111,7 +111,7 @@
       </dl>
 
       <div class="d-flex gap-2 btnForms">
-        <a href="{{ route('location.index',['location'=>$item->locationID, 'page'=>$page]) }}" class="btn btn-light">Volver</a>
+        <a href="{{ route('location.index',['page'=>$page]) }}" class="btn btn-light">Volver</a>
         @if(auth()->user()->is_admin)
           {{-- <a href="{{ route('location.edit',$item->locationID) }}" class="btn btn-primary">Editar</a> --}}
           <a href="{{ route('location.edit',['location'=>$item->locationID, 'page'=>$page]) }}" class="btn btn-primary">Editar</a>

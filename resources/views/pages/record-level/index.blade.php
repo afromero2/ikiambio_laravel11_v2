@@ -33,32 +33,34 @@
             </tr>
           </thead>
           <tbody>
-
-          @foreach($items as $row)
-            <tr>
-              <td>{{ $row->record_level_id }}</td>
-              <td>{{ $row->typeRef?->type_value }}</td>
-              <td>{{ $row->licenseRef?->license_value }}</td>
-              <td>{{ $row->rightsHolderRef?->rightsHolder_value }}</td>
-              <td>{{ $row->accessRightsRef?->accessrights_value }}</td>
-             {{--  <td>{{ $row->institutionIdRef?->institutionID_value }}</td>
-              <td> {{ $row->collectionIdRef?->collection_value }}</td>
-              <td>{{ $row->institutionCodeRef?->institutionCode_value }}</td>
-              <td>{{ $row->collectionCodeRef?->collectionCode_value }}</td>
-              <td>{{ $row->ownerInstitutionCodeRef?->ownerinstitutioncode_value }}</td> --}}
-              <td>{{ $row->basisOfRecordRef?->basisofrecord_value }}</td>
-                            <td>{{ $row->language }}</td>
-              <td>{{ optional($row->modified)->format('Y-m-d H:i') }}</td>
-              <td class="text-nowrap">
-                <a href="{{ route('record-level.show',$row) }}" class="btn btn-sm btn-outline-secondary"><i class="fa fa-eye"></i></a>
-                <a href="{{ route('record-level.edit',$row) }}" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>
-                <form action="{{ route('record-level.destroy',$row) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar registro?')">
-                  @csrf @method('DELETE')
-                  <button class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
-                </form>
-              </td>
-            </tr>
-          @endforeach
+            @php $page = $items->currentPage() ?? old('page', request('page', 1)); @endphp
+            @foreach($items as $row)
+              <tr>
+                <td>{{ $row->record_level_id }}</td>
+                <td>{{ $row->typeRef?->type_value }}</td>
+                <td>{{ $row->licenseRef?->license_value }}</td>
+                <td>{{ $row->rightsHolderRef?->rightsHolder_value }}</td>
+                <td>{{ $row->accessRightsRef?->accessrights_value }}</td>
+              {{--  <td>{{ $row->institutionIdRef?->institutionID_value }}</td>
+                <td> {{ $row->collectionIdRef?->collection_value }}</td>
+                <td>{{ $row->institutionCodeRef?->institutionCode_value }}</td>
+                <td>{{ $row->collectionCodeRef?->collectionCode_value }}</td>
+                <td>{{ $row->ownerInstitutionCodeRef?->ownerinstitutioncode_value }}</td> --}}
+                <td>{{ $row->basisOfRecordRef?->basisofrecord_value }}</td>
+                              <td>{{ $row->language }}</td>
+                <td>{{ optional($row->modified)->format('Y-m-d H:i') }}</td>
+                <td class="text-nowrap">
+                                
+                  <a href="{{ route('record-level.show',['recordLevel' => $row->record_level_id, 'page' => $page]) }}" class="btn btn-sm btn-outline-secondary"><i class="fa fa-eye"></i></a>
+                  <a href="{{ route('record-level.edit',['recordLevel' => $row->record_level_id, 'page' => $page]) }}" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a>
+                  <form action="{{ route('record-level.destroy',['recordLevel' => $row ?? $location, 'page' => $page]) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar registro?')">
+                    @csrf @method('DELETE')
+                    <input type="hidden" name="page" value="{{ $page }}">
+                    <button class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
+                  </form>
+                </td>
+              </tr>
+            @endforeach
           </tbody>
         </table>
       </div>

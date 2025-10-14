@@ -29,7 +29,9 @@ class RecordLevelController extends Controller
             'typeRef','licenseRef','rightsHolderRef','accessRightsRef',
             'institutionIdRef','collectionIdRef','institutionCodeRef','collectionCodeRef',
             'ownerInstitutionCodeRef','basisOfRecordRef',
-        ])->orderByDesc('record_level_id')->paginate(15);
+        ])
+        ->orderByDesc('record_level_id')
+        ->paginate(4);
 
         return view('pages.record-level.index', compact('items'));
     }
@@ -77,19 +79,26 @@ class RecordLevelController extends Controller
         try {
             $data = $request->validate($this->rules($recordLevel));
             $recordLevel->update($data);
-            return redirect()->route('record-level.index')->with('ok', 'Actualizado');
+
+            $page = (int) $request->input('page', $request->query('page', 1));
+
+            return redirect()->route('record-level.index', ['page' => max(1, $page)])->with('ok','Record level actualizado');
+
+            /* return redirect()->route('record-level.index')->with('ok', 'Actualizado'); */
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo actualizar.')->withInput();
         }
     }
 
-    public function destroy(RecordLevel $recordLevel)
+    public function destroy(Request $request, RecordLevel $recordLevel)
     {
         DB::transaction(function () use ($recordLevel) {
             $recordLevel->delete();
         });
 
-        return back()->with('ok', 'Eliminado');
+        $page = (int) $request->input('page', $request->query('page', 1));
+        return redirect()->route('record-level.index', ['page' => max(1, $page)])->with('ok', 'Record level eliminado');
+        /* return back()->with('ok', 'Eliminado'); */
     }
 
     protected function rules($recordLevel = null): array

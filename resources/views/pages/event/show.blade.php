@@ -1,6 +1,8 @@
 @extends('layouts.sidebar')
 @section('page_title','Detalle — Event')
 
+@php $page = request('page', 1); @endphp
+
 @section('content')
 <h1 class="h4" style="margin:0 0 12px 0;">Detalle — Event #{ $item->eventID }</h1>
 
@@ -34,7 +36,7 @@
     </dl>
 
     <div style="margin-top:12px;">
-      <a class="btn" href="{{ route('location.index') }}">Volver</a>
+      <a class="btn" href="{{ route('location.index',['page'=>$page]) }}">Volver</a>
       <a class="btn" href="{{ route('event.edit', $item) }}">Editar</a>
     </div>
   </div>
