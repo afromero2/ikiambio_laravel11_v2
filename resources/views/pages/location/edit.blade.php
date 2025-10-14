@@ -3,6 +3,8 @@
 @section('title','Location — Editar')
 @section('page_title','Editar Location')
 
+@php $page = request('page', 1); @endphp
+
 @section('content')
   <div class="card">
     <div class="card-body">
@@ -21,13 +23,13 @@
         </div>
       @endif
 
-      <form method="POST" action="{{ route('location.update',$item->locationID) }}" class="row g-3 btnForms">
+      <form method="POST" action="{{ route('location.update',['location' => $item->locationID, 'page' => $page]) }}" class="row g-3 btnForms">
         @csrf @method('PUT')
         @include('pages.location.partials.form', get_defined_vars())
         @if(auth()->user()->is_admin)
           <div class="col-12"><button class="btn btn-primary">Actualizar</button>
         @endif  
-        <a class="btn btn-outline-secondary" href="{{ route('location.index') }}">Volver</a>
+        <a class="btn btn-outline-secondary" href="{{ route('location.index',['page' => $page]) }}">Volver</a>
         </div>
       </form>
     </div>

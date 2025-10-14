@@ -3,6 +3,8 @@
 @section('title','Taxon — Editar')
 @section('page_title','Editar Taxon')
 
+@php $page = request('page', 1); @endphp
+
 @section('content')
   <div class="card">
     <div class="card-body">
@@ -21,7 +23,8 @@
         </div>
       @endif
 
-      <form method="POST" action="{{ route('taxon.update',$item->taxonID) }}" class="row g-3 btnForms">
+      <form method="POST" action="{{ route('taxon.update',['taxon' => $item->taxonID, 'page' => $page]) }}" class="row g-3 btnForms">
+        
         @csrf @method('PUT')
 
         @include('pages.taxon.partials.form', [
@@ -32,7 +35,7 @@
 
         <div class="col-12 d-flex gap-2">
           <button class="btn btn-primary">Actualizar</button>
-          <a href="{{ route('taxon.index') }}" class="btn btn-light">Cancelar</a>
+          <a href="{{ route('taxon.index',['page' => $page]) }}" class="btn btn-light">Cancelar</a>
         </div>
       </form>
     </div>

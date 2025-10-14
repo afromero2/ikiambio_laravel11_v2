@@ -3,6 +3,8 @@
 @section('title','Taxon — Detalle')
 @section('page_title','Detalle Taxon')
 
+@php $page = request('page', 1); @endphp
+
 @section('content')
   <div class="card">
     <div class="card-body btnForms">
@@ -51,8 +53,8 @@
       </dl>
 
       <div class="d-flex gap-2">
-        <a href="{{ route('taxon.index') }}" class="btn btn-light">Volver</a>
-        <a href="{{ route('taxon.edit',$item->taxonID) }}" class="btn btn-primary">Editar</a>
+        <a href="{{ route('taxon.index',['taxon'=>$item, 'page'=>$page]) }}" class="btn btn-light">Volver</a>
+        <a href="{{ route('taxon.edit',['taxon'=>$item->taxonID, 'page'=>$page]) }}" class="btn btn-primary">Editar</a>
       </div>
     </div>
   </div>

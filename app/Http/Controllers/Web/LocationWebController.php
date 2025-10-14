@@ -37,7 +37,7 @@ class LocationWebController extends Controller
         ])
         ->withCount('events')        // $location->events_count disponible en la vista
         ->orderBy('locationID')
-        ->paginate(15);    
+        ->paginate(4);    
 
         return view('pages.location.index', compact('items'));
     }
@@ -87,19 +87,28 @@ class LocationWebController extends Controller
         try {
             $data = $request->validate($this->rules($location));
             $location->update($data);
-            return redirect()->route('location.index', $location->locationID)->with('ok', 'Location actualizado');
+
+            $page = (int) $request->input('page', $request->query('page', 1));
+
+            /* return redirect()->route('location.index', $location->locationID)->with('ok', 'Location actualizado'); */
+
+            return redirect()->route('location.index', ['page' => max(1, $page)])->with('ok','Location actualizado');
+
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo actualizar.')->withInput();
         }
     }
 
-    public function destroy(Location $location)
+    public function destroy(Request $request, Location $location)
     {
         DB::transaction(function () use ($location) {
             $location->delete();
         });
 
-        return redirect()->route('location.index')->with('ok', 'Location eliminado');
+        $page = (int) $request->input('page', $request->query('page', 1));
+
+        /* return redirect()->route('location.index')->with('ok', 'Location eliminado'); */
+        return redirect()->route('location.index', ['page' => max(1, $page)])->with('ok', 'Location eliminado');
     }
 
     protected function rules($location = null): array

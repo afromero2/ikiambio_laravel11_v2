@@ -34,6 +34,7 @@
           </tr>
         </thead>
         <tbody>
+          @php $page = $items->currentPage() ?? old('page', request('page', 1)); @endphp
           @forelse($items as $row)
             <tr>
               <td>{{ $row->locationID }}</td>
@@ -86,11 +87,12 @@
                 
               </td>
               <td class="text-center">
-                <a href="{{ route('location.show',$row->locationID) }}" class="btn"><i class="fa fa-eye"></i></a>
-                <a href="{{ route('location.edit',$row->locationID) }}" class="btn"><i class="fa fa-edit"></i></a>
-                <form action="{{ route('location.destroy',$row->locationID) }}" method="POST" class="d-inline"
+                <a href="{{ route('location.show',['location' => $row->locationID, 'page' => $page]) }}" class="btn"><i class="fa fa-eye"></i></a>
+                <a href="{{ route('location.edit',['location' => $row->locationID, 'page' => $page]) }}" class="btn"><i class="fa fa-edit"></i></a>
+                <form action="{{ route('location.destroy', ['location' => $row ?? $location, 'page' => $page]) }}" method="POST" class="d-inline"
                       onsubmit="return confirm('¿Eliminar este registro?')">
                   @csrf @method('DELETE')
+                  <input type="hidden" name="page" value="{{ $page }}">
                   <button class="btn btn-outline-danger"><i class="fa fa-trash"></i></button>
                 </form>
               </td>

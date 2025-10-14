@@ -68,19 +68,28 @@ class TaxonWebController extends Controller
         try {
             $data = $request->validate($this->rules($taxon));
             $taxon->update($data);
-            return redirect()->route('taxon.index', $taxon->taxonID)->with('ok','Actualizado');
+
+             // Toma la página desde el form o el querystring; fallback = 1
+            $page = (int) $request->input('page', $request->query('page', 1)); 
+
+            return redirect()->route('taxon.index', ['page' => max(1, $page)])->with('ok','Actualizado');
+
+            /* return redirect()->route('taxon.index', ['page' => max(1, $page)])->with('ok', 'Actualizado'); */
+
         } catch (QueryException $e) {
             return back()->withErrors('No se pudo actualizar.')->withInput();
         }
     }
 
-    public function destroy(Taxon $taxon)
+    public function destroy(Request $request, Taxon $taxon)
     {
         DB::transaction(function () use ($taxon) {
             $taxon->delete();
         });
 
-        return redirect()->route('taxon.index')->with('ok','Taxon eliminado');
+        $page = (int) $request->input('page', $request->query('page', 1));
+        /* return redirect()->route('taxon.index')->with('ok','Taxon eliminado'); */
+        return redirect()->route('taxon.index', ['page' => max(1, $page)])->with('ok', 'Taxon eliminado');
     }
 
     protected function rules($taxon = null): array

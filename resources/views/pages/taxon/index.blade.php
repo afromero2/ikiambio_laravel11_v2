@@ -27,6 +27,7 @@
           </tr>
         </thead>
         <tbody>
+          @php $page = $items->currentPage() ?? old('page', request('page', 1)); @endphp
           @forelse($items as $row)
             <tr>
               <td class="fw-semibold">{{ $row->taxonID }}</td>
@@ -34,11 +35,12 @@
               <td>{{ $row->taxonRankRef?->taxonRank_value }}</td>
               <td>{{ $row->taxonomicStatusRef?->taxonomicStatus_value }}</td>
               <td class="text-end">
-                <a href="{{ route('taxon.show',$row->taxonID) }}" class="btn btn-sm btn-outline-secondary"><i class="fa fa-eye"></i></a>
-                <a href="{{ route('taxon.edit',$row->taxonID) }}" class="btn btn-sm btn-outline-primary"><i class="fa fa-edit"></i></a>
-                <form action="{{ route('taxon.destroy',$row->taxonID) }}" method="POST" class="d-inline"
+                <a href="{{ route('taxon.show',['taxon' => $row->taxonID, 'page' => $page]) }}" class="btn btn-sm btn-outline-secondary"><i class="fa fa-eye"></i></a>
+                <a href="{{ route('taxon.edit',['taxon' => $row->taxonID, 'page' => $page]) }}" class="btn btn-sm btn-outline-primary"><i class="fa fa-edit"></i></a>
+                <form action="{{ route('taxon.destroy',['taxon' => $row ?? $taxon, 'page' => $page]) }}" method="POST" class="d-inline"
                       onsubmit="return confirm('¿Eliminar este registro?')">
                   @csrf @method('DELETE')
+                  <input type="hidden" name="page" value="{{ $page }}">
                   <button class="btn btn-sm btn-outline-danger"><i class="fa fa-trash"></i></button>
                 </form>
               </td>

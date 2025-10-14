@@ -3,6 +3,8 @@
 @section('title','Location — Detalle')
 @section('page_title','Detalle Location')
 
+@php $page = request('page', 1); @endphp
+
 @section('content')
   <div class="card">
     <div class="card-body">
@@ -92,23 +94,6 @@
         <dt class="col-md-3">GeoreferenceRemarks</dt>
         <dd class="col-md-9">{{ $item->georeferenceRemarks }}</dd>
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-
-        
-
-  
-
-
-
         <dt class="col-md-3">Verbatim SRS</dt>
         <dd class="col-md-9">{{ $item->verbatimSrsRef?->verbatimSRS_value }}</dd>
 
@@ -126,9 +111,10 @@
       </dl>
 
       <div class="d-flex gap-2 btnForms">
-        <a href="{{ route('location.index') }}" class="btn btn-light">Volver</a>
+        <a href="{{ route('location.index',['location'=>$item->locationID, 'page'=>$page]) }}" class="btn btn-light">Volver</a>
         @if(auth()->user()->is_admin)
-          <a href="{{ route('location.edit',$item->locationID) }}" class="btn btn-primary">Editar</a>
+          {{-- <a href="{{ route('location.edit',$item->locationID) }}" class="btn btn-primary">Editar</a> --}}
+          <a href="{{ route('location.edit',['location'=>$item->locationID, 'page'=>$page]) }}" class="btn btn-primary">Editar</a>
         @endif
       </div>
     </div>

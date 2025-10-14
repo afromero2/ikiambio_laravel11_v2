@@ -27,8 +27,9 @@ class DatabaseSeeder extends Seeder
         // call seeder
         $this->call([
             //VocabSeeder::class,      // <-- nuestro seeder de vocabularios
-            UsersTableSeeder::class,
+            //UsersTableSeeder::class,
             /* TaxonAllInOneSeeder::class, */
+            $this->call(LocationSeeder::class)
         ]);
 
 
