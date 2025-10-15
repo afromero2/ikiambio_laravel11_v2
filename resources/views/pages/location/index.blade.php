@@ -17,18 +17,38 @@
     <div class="alert alert-danger">{{ $errors->first() }}</div>
   @endif
 
+  <form method="GET" action="{{ route('location.index') }}" class="mb-2 d-flex gap-2">
+    <input type="text" name="q" value="{{ $q }}" class="form-control" placeholder="Buscar...">
+    <input type="hidden" name="per_page" value="{{ $perPage }}">
+    <button class="btn btn-primary">Buscar</button>
+    <a href="{{ route('location.index', ['clear' => 1]) }}"
+      class="btn btn-outline-secondary">Limpiar</a>
+  </form>
+
+  <form method="GET" action="{{ route('location.index') }}" class="mb-3 d-flex align-items-center gap-2">
+    {{-- preserva q al cambiar per_page --}}
+    <input type="hidden" name="q" value="{{ $q }}">
+    <label class="form-label m-0">Mostrar</label>
+    <select name="per_page" class="form-select w-auto" onchange="this.form.submit()">
+      @foreach($allowed as $size)
+        <option value="{{ $size }}" @selected($perPage === $size)>{{ $size }}</option>
+      @endforeach
+    </select>
+    <span>por página</span>
+  </form>
+
   <div class="card">
     <div class="card-body table-responsive">
       <table class="table align-middle">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Locality</th>
-            <th>Country</th>
-            <th>State/Province</th>
-            <th>Continent</th>
-            <th>Verbatim SRS</th>
-            <th>Georef. Status</th>
+            <th>locationID</th>
+            <th>higherGeographyID</th>
+            <th>country</th>
+            <th>stateProvince</th>
+            <th>municipality</th>
+            <th>locality</th>
+            <th>verbatimLocality</th>
             <th class="text-center">Eventos asociados</th>
             <th class="text-center">Acciones</th>
           </tr>
@@ -38,12 +58,12 @@
           @forelse($items as $row)
             <tr>
               <td>{{ $row->locationID }}</td>
-              <td>{{ $row->locality }}</td>
+              <td>{{ $row->higherGeographyID }}</td>
               <td>{{ $row->country }}</td>
               <td>{{ $row->stateProvince }}</td>
-              <td>{{ $row->continentRef?->continent_value }}</td>
-              <td>{{ $row->verbatimSrsRef?->verbatimSRS_value }}</td>
-              <td>{{ $row->georefStatusRef?->georef_status_value }}</td>
+              <td>{{ $row->municipality }}</td>
+              <td>{{ $row->locality }}</td>
+              <td>{{ $row->verbatimLocality }}</td>
               <td class="text-nowrap">
                
                 {{-- Tabla de eventos de esta location --}}
@@ -52,7 +72,7 @@
                     class="btn btn-sm btn-outline-primary">
                     Event +
                   </a><br/>
-                  <div class="text-muted mt-2">Sin eventos para esta ubicación.</div>
+                  <div class="text-muted mt-2">Sin eventos asociados.</div>
                 @else
                   <table class="table table-sm table-bordered mt-2">
                     <thead>

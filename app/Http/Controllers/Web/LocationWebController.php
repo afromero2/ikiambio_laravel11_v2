@@ -16,7 +16,7 @@ use Illuminate\Database\QueryException;
 
 class LocationWebController extends Controller
 {
-    public function index()
+    /* public function index()
     {   
         $items = Location::with([
             'continentRef',
@@ -40,7 +40,66 @@ class LocationWebController extends Controller
         ->paginate(4);    
 
         return view('pages.location.index', compact('items'));
-    }
+    } */
+
+    public function index(Request $request)
+    {
+       
+        $sessionKey = 'location.filters';
+
+        if ($request->has('clear')) {
+            session()->forget($sessionKey);
+            return redirect()->route('location.index');
+        }
+        
+        $q = trim($request->get('q', ''));
+        $allowed = [1, 2, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 100, 200, 300, 500, 1000];
+        $perPage = (int) $request->query('per_page', (int) session("$sessionKey.per_page", 25));
+        $q = $request->query('q', session("$sessionKey.q", ''));
+        if (!in_array($perPage, $allowed, true)) {
+            $perPage = 25;
+        }
+        
+        session([$sessionKey => ['q' => $q, 'per_page' => $perPage]]);
+
+        $items = \App\Models\Location::query()
+            ->when($q !== '', function ($query) use ($q) {
+                $query->where(function($qq) use ($q){
+                    $qq->where('locationID', 'ILIKE', "%{$q}%")
+                    ->orWhere('id_INEC', 'ILIKE', "%{$q}%")
+                    ->orWhere('higherGeographyID', 'ILIKE', "%{$q}%")
+                    ->orWhere('continent', 'ILIKE', "%{$q}%")
+                    ->orWhere('waterBody', 'ILIKE', "%{$q}%")
+                    ->orWhere('islandGroup', 'ILIKE', "%{$q}%")
+                    ->orWhere('island', 'ILIKE', "%{$q}%")
+                    ->orWhere('country', 'ILIKE', "%{$q}%")
+                    ->orWhere('countryCode', 'ILIKE', "%{$q}%")
+                    ->orWhere('stateProvince', 'ILIKE', "%{$q}%")
+                    ->orWhere('county', 'ILIKE', "%{$q}%")
+                    ->orWhere('municipality', 'ILIKE', "%{$q}%")
+                    ->orWhere('locality', 'ILIKE', "%{$q}%")
+                    ->orWhere('verbatimLocality', 'ILIKE', "%{$q}%")
+                    ->orWhere('verbatimElevation', 'ILIKE', "%{$q}%")
+                    ->orWhere('verbatimDepth', 'ILIKE', "%{$q}%")
+                    ->orWhere('locationRemarks', 'ILIKE', "%{$q}%")
+                    ->orWhere('decimalLongitude', 'ILIKE', "%{$q}%")
+                    ->orWhere('geodeticDatum', 'ILIKE', "%{$q}%")
+                    ->orWhere('verbatimLatitude', 'ILIKE', "%{$q}%")
+                    ->orWhere('verbatimLongitude', 'ILIKE', "%{$q}%")
+                    ->orWhere('verbatimCoordinateSystem', 'ILIKE', "%{$q}%")
+                    ->orWhere('verbatimSRS', 'ILIKE', "%{$q}%")
+                    ->orWhere('georeferencedBy', 'ILIKE', "%{$q}%")
+                    ->orWhere('georeferencedDate', 'ILIKE', "%{$q}%")
+                    ->orWhere('georeferenceVerificationStatus', 'ILIKE', "%{$q}%")
+                    ->orWhere('georeferenceRemarks', 'ILIKE', "%{$q}%");
+                });
+            })
+            ->orderBy('locationID')
+            ->paginate($perPage)
+            ->withQueryString(); // ← mantiene ?q y ?page
+
+        return view('pages.location.index', compact('items', 'q', 'perPage', 'allowed'));
+    }    
 
     public function create()
     {

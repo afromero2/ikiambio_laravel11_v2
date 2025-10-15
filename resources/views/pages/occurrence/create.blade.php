@@ -12,7 +12,7 @@
     <div class="alert alert-success">{{ session('ok') }}</div>
   @endif
 
-  @if ($errors->any())
+ {{--  @if ($errors->any())
     <div class="alert alert-danger">
       <strong>Revisa los siguientes errores:</strong>
       <ul class="mb-0">
@@ -20,6 +20,12 @@
           <li>{{ $error }}</li>
         @endforeach
       </ul>
+    </div>
+  @endif --}}
+
+  @if ($errors->any())
+    <div class="alert alert-danger">
+      {{ __('validation.txtValidacion') }}
     </div>
   @endif
 

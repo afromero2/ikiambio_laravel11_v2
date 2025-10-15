@@ -23,7 +23,7 @@ use Illuminate\Validation\Rule;
 
 class RecordLevelController extends Controller
 {
-    public function index()
+    /* public function index()
     {
         $items = RecordLevel::with([
             'typeRef','licenseRef','rightsHolderRef','accessRightsRef',
@@ -34,6 +34,57 @@ class RecordLevelController extends Controller
         ->paginate(4);
 
         return view('pages.record-level.index', compact('items'));
+    } */
+
+    public function index(Request $request)
+    {
+        $sessionKey = 'record_level.filters';
+
+        if ($request->has('clear')) {
+            session()->forget($sessionKey);
+            return redirect()->route('record-level.index');
+        }
+        
+        $q = trim($request->get('q', ''));
+        $allowed = [1, 2, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 100, 200, 300, 500, 1000];
+        $perPage = (int) $request->query('per_page', (int) session("$sessionKey.per_page", 25));
+        $q = $request->query('q', session("$sessionKey.q", ''));
+        if (!in_array($perPage, $allowed, true)) {
+            $perPage = 25;
+        }
+        
+        session([$sessionKey => ['q' => $q, 'per_page' => $perPage]]);
+
+        $items = RecordLevel::query()
+            ->when($q !== '', function ($query) use ($q) {
+                $query->where(function ($qq) use ($q) {
+                    // Si record_level_id es numérico, lo casteamos a texto para buscar
+                    $qq->whereRaw('CAST("record_level_id" AS TEXT) ILIKE ?', ["%{$q}%"])
+                    ->orWhere('type', 'ILIKE', "%{$q}%")
+                    ->orWhere('language', 'ILIKE', "%{$q}%")
+                    ->orWhere('license', 'ILIKE', "%{$q}%")
+                    ->orWhere('rightsHolder', 'ILIKE', "%{$q}%")
+                    ->orWhere('accessRights', 'ILIKE', "%{$q}%")
+                    ->orWhere('bibliographicCitation', 'ILIKE', "%{$q}%")
+                    ->orWhere('references', 'ILIKE', "%{$q}%")
+                    ->orWhere('institutionID', 'ILIKE', "%{$q}%")
+                    ->orWhere('collectionID', 'ILIKE', "%{$q}%")
+                    ->orWhere('datasetID', 'ILIKE', "%{$q}%")
+                    ->orWhere('institutionCode', 'ILIKE', "%{$q}%")
+                    ->orWhere('collectionCode', 'ILIKE', "%{$q}%")
+                    ->orWhere('datasetName', 'ILIKE', "%{$q}%")
+                    ->orWhere('ownerInstitutionCode', 'ILIKE', "%{$q}%")
+                    ->orWhere('basisOfRecord', 'ILIKE', "%{$q}%")
+                    ->orWhere('informationWithheld', 'ILIKE', "%{$q}%")
+                    ->orWhere('dataGeneralizations', 'ILIKE', "%{$q}%")
+                    ->orWhereRaw('CAST("modified" AS TEXT) ILIKE ?', ["%{$q}%"]); // fecha/hora
+                });
+            })
+            ->orderBy('record_level_id')
+            ->paginate($perPage)
+            ->withQueryString();
+
+        return view('pages.record-level.index', compact('items', 'q', 'perPage', 'allowed'));
     }
 
     public function create()

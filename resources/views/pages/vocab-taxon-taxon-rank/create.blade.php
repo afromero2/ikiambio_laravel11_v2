@@ -13,6 +13,7 @@
           {{ __('validation.txtValidacion') }}
         </div>
       @endif
+      
 <form method="POST" action="{{ route('vocab-taxon-taxon-rank.store') }}" class="card card-body">
   @csrf
 

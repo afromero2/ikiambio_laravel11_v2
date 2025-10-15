@@ -14,6 +14,27 @@
   @if(session('ok')) <div class="alert alert-success">{{ session('ok') }}</div> @endif
   @if($errors->any()) <div class="alert alert-danger">{{ $errors->first() }}</div> @endif
 
+  <form method="GET" action="{{ route('taxon.index') }}" class="mb-2 d-flex gap-2">
+    <input type="text" name="q" value="{{ $q }}" class="form-control" placeholder="Buscar...">
+    <input type="hidden" name="per_page" value="{{ $perPage }}">
+    <button class="btn btn-primary">Buscar</button>
+    <a href="{{ route('taxon.index', ['clear' => 1]) }}"
+      class="btn btn-outline-secondary">Limpiar</a>
+  </form>
+
+  <form method="GET" action="{{ route('taxon.index') }}" class="mb-3 d-flex align-items-center gap-2">
+    <input type="hidden" name="q" value="{{ $q }}">
+    <label class="form-label m-0">Mostrar</label>
+    <select name="per_page" class="form-select w-auto" onchange="this.form.submit()">
+      @foreach($allowed as $size)
+        <option value="{{ $size }}" @selected($perPage === $size)>{{ $size }}</option>
+      @endforeach
+    </select>
+    <span>por página</span>
+  </form>
+
+
+
   <div class="card">
     <div class="card-body table-responsive">
       <table class="table align-middle"> 

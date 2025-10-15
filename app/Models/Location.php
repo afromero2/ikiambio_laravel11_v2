@@ -13,6 +13,10 @@ class Location extends Model
     protected $keyType = 'string';
     public $timestamps = false;
 
+    // (opcional, por si acaso)
+    const CREATED_AT = null;
+    const UPDATED_AT = null;
+
     protected $fillable = [
         'locationID','id_INEC','higherGeographyID','continent','waterBody',
         'islandGroup','island','country','countryCode','stateProvince','county',
@@ -25,7 +29,7 @@ class Location extends Model
     protected $casts = [
         'decimalLatitude' => 'float',
         'decimalLongitude' => 'float',
-        'georeferencedDate' => 'date:Y-m-d',
+        'georeferencedDate' => 'date:Y-m-d'
     ];
 
     // app/Models/Location.php

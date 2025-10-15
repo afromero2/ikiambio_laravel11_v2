@@ -5,18 +5,10 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\LazyCollection;
-use Illuminate\Support\Str;
 
 class LocationSeeder extends Seeder
 {
-    /**
-     * Ruta del CSV (ajústala si deseas).
-     */
-    protected string $csvPath = 'app/seed/locations.csv';
-
-    /**
-     * Tamaño de lote para upsert.
-     */
+    protected string $csvPath = 'app/seed/location.csv';
     protected int $chunkSize = 1000;
 
     public function run(): void
@@ -29,69 +21,59 @@ class LocationSeeder extends Seeder
 
         $rows = $this->streamCsv($fullPath);
 
-        $now = now();
-
-        $rows->chunk($this->chunkSize)->each(function ($chunk) use ($now) {
+        $rows->chunk($this->chunkSize)->each(function ($chunk) {
             $payload = [];
 
             foreach ($chunk as $row) {
-                // Normaliza: '' -> null y trimea
+                // normaliza: '' → null
                 $clean = [];
                 foreach ($row as $k => $v) {
-                    $key = trim((string) $k);
-                    $val = is_null($v) ? null : trim((string) $v);
+                    $key = trim((string)$k);
+                    $val = is_null($v) ? null : trim((string)$v);
                     $clean[$key] = ($val === '') ? null : $val;
                 }
 
-                // Campos de auditoría (si los tienes)
-                $clean['created_at'] = $now;
-                $clean['updated_at'] = $now;
-
-                // Seguridad: exige locationID
                 if (empty($clean['locationID'])) {
-                    // Saltar fila sin locationID
-                    continue;
+                    continue; // imprescindible
+                }
+
+                // Casters simples opcionales (si tus columnas NUMERIC/DATE lo requieren)
+                foreach (['decimalLatitude','decimalLongitude'] as $num) {
+                    if (isset($clean[$num]) && $clean[$num] !== null) {
+                        $clean[$num] = is_numeric($clean[$num]) ? $clean[$num] : null;
+                    }
+                }
+                if (!empty($clean['georeferencedDate'])) {
+                    // Postgres aceptará 'YYYY-MM-DD' tal cual si viene en ese formato
                 }
 
                 $payload[] = $clean;
             }
 
-            if (empty($payload)) {
-                return;
+            if ($payload) {
+                $all = array_keys($payload[0]);
+                $updateCols = array_values(array_diff($all, ['locationID'])); // no tocar PK
+
+                DB::table('location')->upsert($payload, ['locationID'], $updateCols);
             }
-
-            // Columnas a actualizar = todas menos la clave
-            $allColumns = array_keys($payload[0]);
-            $updateCols = array_values(array_diff($allColumns, ['locationID']));
-
-            // UPSERT por locationID (requiere PK/UNIQUE en locationID)
-            DB::table('location')->upsert($payload, ['locationID'], $updateCols);
         });
 
-        $this->command?->info('Seeder Location: completado.');
+        $this->command?->info('Seeder Location completado.');
     }
 
-    /**
-     * Lee el CSV como LazyCollection (streaming).
-     */
     protected function streamCsv(string $path): LazyCollection
     {
         return LazyCollection::make(function () use ($path) {
-            $handle = fopen($path, 'r');
-            if ($handle === false) {
-                yield from [];
-                return;
-            }
+            $h = fopen($path, 'r');
+            if ($h === false) { return; }
 
             $header = null;
             try {
-                while (($row = fgetcsv($handle)) !== false) {
-                    // Detecta separador si fuera necesario (aquí suponemos coma)
+                while (($row = fgetcsv($h)) !== false) {
                     if ($header === null) {
-                        $header = array_map(fn($h) => trim((string)$h), $row);
+                        $header = array_map('trim', $row);
                         continue;
                     }
-                    // Combina encabezados con fila
                     $assoc = [];
                     foreach ($header as $i => $col) {
                         $assoc[$col] = $row[$i] ?? null;
@@ -99,7 +81,7 @@ class LocationSeeder extends Seeder
                     yield $assoc;
                 }
             } finally {
-                fclose($handle);
+                fclose($h);
             }
         });
     }

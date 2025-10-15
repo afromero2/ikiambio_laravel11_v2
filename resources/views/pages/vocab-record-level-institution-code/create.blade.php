@@ -9,10 +9,11 @@
 @endif
 
 @if ($errors->any())
-        <div class="alert alert-danger">
-          {{ __('validation.txtValidacion') }}
-        </div>
-      @endif
+  <div class="alert alert-danger">
+    {{ __('validation.txtValidacion') }}
+  </div>
+@endif
+
 <form method="POST" action="{{ route('vocab-record-level-institution-code.store') }}" class="card card-body">
   @csrf
 
