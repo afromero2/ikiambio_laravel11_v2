@@ -79,13 +79,13 @@
                       <tr>
                         {{-- <th>Fecha</th>
                         <th>Hora</th> --}}
-                        @if($row->events_count == 0)
+                       {{--  @if($row->events_count == 0)
                         <th><a href="{{ route('event.create', ['location' => $row->locationID]) }}"
                               class="btn btn-sm btn-outline-primary">
                               Event +
                             </a><br/>
                         </th>
-                        @endif    
+                        @endif  --}}   
                       </tr>
                     </thead>
                     <tbody>

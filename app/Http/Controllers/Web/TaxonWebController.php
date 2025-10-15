@@ -35,7 +35,17 @@ class TaxonWebController extends Controller
         $q = trim($request->get('q', ''));
         $allowed = [1, 2, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 100, 200, 300, 500, 1000];
         $perPage = (int) $request->query('per_page', (int) session("$sessionKey.per_page", 25));
-        $q = $request->query('q', session("$sessionKey.q", ''));
+        
+        /* $q = $request->query('q', session("$sessionKey.q", '')); */
+
+        $q = $request->has('q')? trim((string) $request->query('q', '')): (string) session("$sessionKey.q", '');
+
+        if ($request->has('q') && $q === '') {
+            session([$sessionKey => ['q' => '', 'per_page' => $perPage]]);
+            // Redirige para quitar ?q= de la URL y evitar confusiones visuales
+            return redirect()->route('taxon.index', ['per_page' => $perPage]);
+        }
+
         if (!in_array($perPage, $allowed, true)) {
             $perPage = 25;
         }
