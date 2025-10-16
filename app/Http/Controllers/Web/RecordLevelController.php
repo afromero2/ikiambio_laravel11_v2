@@ -41,7 +41,7 @@ class RecordLevelController extends Controller
         $sessionKey = 'record_level.filters';
 
         if ($request->has('clear')) {
-            session()->forget($sessionKey);
+            session()->forget("$sessionKey.q");
             return redirect()->route('record-level.index');
         }
         

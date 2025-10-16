@@ -28,7 +28,7 @@ class TaxonWebController extends Controller
         $sessionKey = 'taxon.filters';
 
         if ($request->has('clear')) {
-            session()->forget($sessionKey);
+             session()->forget("$sessionKey.q");
             return redirect()->route('taxon.index');
         }
 

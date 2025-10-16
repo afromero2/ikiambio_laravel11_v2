@@ -4,6 +4,8 @@
 
 @section('title','Crear Occurrence — Wizard')
 
+@php $page = request('page', 1); @endphp
+
 @section('content')
 <div class="container-xxl">
   <h3 class="mb-3">Nueva Ocurrencia</h3>
@@ -176,9 +178,8 @@
         });
       </script>
       @endif
-
-      {{-- <form id="occ-form" method="POST" action="{{ route('occurrence.store') }}"> --}}
-      <form id="occ-form" method="POST" action="{{ $isEdit ? route('occurrence.update',$item) : route('occurrence.store') }}">
+      
+      <form id="occ-form" method="POST" action="{{ $isEdit ? route('occurrence.update',['occurrence' => $item->id_occ_bd, 'page' => $page]) : route('occurrence.store') }}">
         @csrf
 
         {{-- Si es edición, usar método PATCH --}}
@@ -530,7 +531,7 @@
 
         <div class="mt-3">
           <button type="submit" class="btn btn-success">Guardar</button>
-          <a class="btn" href="{{ route('occurrence.index') }}">Cancelar</a>
+          <a class="btn" href="{{ route('occurrence.index', ['occurrence' => $item->id_occ_bd, 'page' => $page]) }}">Cancelarx</a>
           @if(!$isEdit)
             <button type="button" id="btn-clear-all" class="btn btn-sm btn-outline-secondary" style="float:right">Limpiar borradores y vínculos</button>
           @endif

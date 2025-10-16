@@ -3,6 +3,8 @@
 @section('title','Occurrence — Editar')
 @section('page_title','Editar Occurrence')
 
+@php $page = request('page', 1); @endphp
+
 @section('content')
 <div class="card card-body">
 
@@ -33,7 +35,7 @@
     ])
     <div class="mt-3">
       <button class="btn btn-primary">Actualizar</button>
-      <a class="btn btn-outline-secondary" href="{{ route('occurrence.index') }}">Volver</a>
+      <a class="btn btn-outline-secondary" href="{{ route('occurrence.index', ['occurrence' => $item->id_occ_bd, 'page' => $page]) }}">Volver</a>
     </div>
   </form>
 </div>

@@ -48,7 +48,7 @@ class LocationWebController extends Controller
         $sessionKey = 'location.filters';
 
         if ($request->has('clear')) {
-            session()->forget($sessionKey);
+            session()->forget("$sessionKey.q");
             return redirect()->route('location.index');
         }
         

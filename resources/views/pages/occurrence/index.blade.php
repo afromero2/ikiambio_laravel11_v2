@@ -11,6 +11,26 @@
 
   </div>
 
+  <form method="GET" action="{{ route('occurrence.index') }}" class="mb-2 d-flex gap-2">
+    <input type="text" name="q" value="{{ $q }}" class="form-control" placeholder="Buscar...">
+    <input type="hidden" name="per_page" value="{{ $perPage }}">
+    <button class="btn btn-primary">Buscar</button>
+    <a href="{{ route('occurrence.index', ['clear' => 1]) }}"
+      class="btn btn-outline-secondary">Limpiar</a>
+  </form>
+
+  <form method="GET" action="{{ route('occurrence.index') }}" class="mb-3 d-flex align-items-center gap-2">
+    {{-- preserva q al cambiar per_page --}}
+    <input type="hidden" name="q" value="{{ $q }}">
+    <label class="form-label m-0">Mostrar</label>
+    <select name="per_page" class="form-select w-auto" onchange="this.form.submit()">
+      @foreach($allowed as $size)
+        <option value="{{ $size }}" @selected($perPage === $size)>{{ $size }}</option>
+      @endforeach
+    </select>
+    <span>por página</span>
+  </form>
+
   <div class="card-body">
     @if($items->count())
       <div class="table-responsive">
@@ -33,6 +53,7 @@
             </tr>
           </thead>
           <tbody>
+            @php $page = $items->currentPage() ?? old('page', request('page', 1)); @endphp
             @foreach($items as $row)
               <tr>
                 <td>{{ $row->id_occ_bd }}</td>
@@ -161,10 +182,11 @@
                   {{-- <a href="{{ route('occurrence.edit',$row) }}" class="btn btn-sm btn-primary">Extractions</a><br/> --}}
                 </td>
                 <td class="text-nowrap">
-                  <a href="{{ route('occurrence.show',$row) }}" class="btn btn-sm btn-outline-secondary"><i class="fa fa-eye"></i></a><br/>
-                  <a href="{{ route('occurrence.edit',$row) }}" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a><br/>
-                  <form action="{{ route('occurrence.destroy',$row) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar registro?')">
+                  <a href="{{ route('occurrence.show',['occurrence' => $row->id_occ_bd, 'page' => $page]) }}" class="btn btn-sm btn-outline-secondary"><i class="fa fa-eye"></i></a><br/>
+                  <a href="{{ route('occurrence.edit',['occurrence' => $row->id_occ_bd, 'page' => $page]) }}" class="btn btn-sm btn-primary"><i class="fa fa-edit"></i></a><br/>
+                  <form action="{{ route('occurrence.destroy',['occurrence' => $row ?? $occurrence, 'page' => $page]) }}" method="POST" class="d-inline" onsubmit="return confirm('¿Eliminar registro?')">
                     @csrf @method('DELETE')
+                    <input type="hidden" name="page" value="{{ $page }}">
                     <button class="btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
                   </form>
                 </td>

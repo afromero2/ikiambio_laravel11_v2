@@ -54,9 +54,34 @@ use Illuminate\Validation\Rule;
 
 class OccurrenceController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $items = Occurrence::with([
+         $sessionKey = 'occurrence.filters';
+
+        if ($request->has('clear')) {
+            session()->forget("$sessionKey.q");
+            return redirect()->route('occurrence.index');
+        }
+        
+        $q = trim($request->get('q', ''));
+        $allowed = [1, 2, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 100, 200, 300, 500, 1000];
+        $perPage = (int) $request->query('per_page', (int) session("$sessionKey.per_page", 25));
+
+        $q = $request->has('q')? trim((string) $request->query('q', '')): (string) session("$sessionKey.q", '');
+
+        if ($request->has('q') && $q === '') {
+            session([$sessionKey => ['q' => '', 'per_page' => $perPage]]);
+            // Redirige para quitar ?q= de la URL y evitar confusiones visuales
+            return redirect()->route('occurrence.index', ['per_page' => $perPage]);
+        }
+
+        if (!in_array($perPage, $allowed, true)) {
+            $perPage = 25;
+        }
+        
+        session([$sessionKey => ['q' => $q, 'per_page' => $perPage]]);
+        
+        /* $items = Occurrence::with([
             'recordLevelRef',
             'organismQuantityTypeRef','sexRef','lifeStageRef','reproductiveConditionRef',
             'establishmentMeansRef','dispositionRef',
@@ -95,9 +120,81 @@ class OccurrenceController extends Controller
         ])
         ->withCount(['measurements','multimedia','extractions'])
         ->orderByDesc('id_occ_bd')
-        ->paginate(15);
+        ->paginate($perPage); */
 
-        return view('pages.occurrence.index', compact('items'));
+        $items = Occurrence::query()
+            ->with([
+                'recordLevelRef',
+                'organismQuantityTypeRef','sexRef','lifeStageRef','reproductiveConditionRef',
+                'establishmentMeansRef','dispositionRef',
+                'organismRef',
+                'measurements' => function ($q2) {
+                    $q2->select([
+                        'measurementID',
+                        'id_occ_bd',
+                        'measurementType',
+                        'measurementValue'
+                    ])->orderByDesc('measurementID');
+                },
+                'multimedia' => function ($q2) {
+                    $q2->select([
+                        'idMultimedia',
+                        'id_occ_bd',
+                        'type',
+                        'format',
+                        'identifier',
+                        'title'
+                    ])->orderByDesc('idMultimedia');
+                },
+                'extractions' => function ($q2) {
+                    $q2->select([
+                        'idExtracciones',
+                        'id_occ_bd',
+                        'volume',
+                        'volumeUnit',
+                        'concentration',
+                        'concentrationUnit'
+                    ])->orderByDesc('idExtracciones');
+                },
+            ])
+            ->when($q !== '', function ($query) use ($q) {
+                $like = "%{$q}%";
+                $query->where(function ($qq) use ($like) {
+                    // Campos texto en occurrence
+                    $qq->whereRaw('"occurrenceID" ILIKE ?', [$like])
+                    ->orWhereRaw('"catalogNumber" ILIKE ?', [$like])
+                    ->orWhereRaw('"recordNumber" ILIKE ?', [$like])
+                    ->orWhereRaw('"recordedBy" ILIKE ?', [$like])
+                    ->orWhereRaw('"behavior" ILIKE ?', [$like])
+                    ->orWhereRaw('"substrate" ILIKE ?', [$like])
+                    ->orWhereRaw('"preparations" ILIKE ?', [$like])
+                    ->orWhereRaw('"associatedMedia" ILIKE ?', [$like])
+                    ->orWhereRaw('"associatedSequences" ILIKE ?', [$like])
+                    ->orWhereRaw('"associatedTaxa" ILIKE ?', [$like])
+                    ->orWhereRaw('"otherCatalogNumbers" ILIKE ?', [$like])
+                    ->orWhereRaw('"occurrenceRemarks" ILIKE ?', [$like])
+                    // FKs string (IDs externos)
+                    ->orWhereRaw('"organismID" ILIKE ?', [$like])
+                    ->orWhereRaw('"locationID" ILIKE ?', [$like])
+                    ->orWhereRaw('"taxonID" ILIKE ?', [$like])
+                    ->orWhereRaw('"identificationID" ILIKE ?', [$like])
+                    // Númericos casteados
+                    ->orWhereRaw('CAST("id_occ_bd" AS TEXT) ILIKE ?', [$like])
+                    ->orWhereRaw('CAST("individualCount" AS TEXT) ILIKE ?', [$like])
+                    ->orWhereRaw('CAST("organismQuantity" AS TEXT) ILIKE ?', [$like]);
+                })
+                // Búsqueda en record_level relacionado (ej. datasetID/datasetName si existen)
+                ->orWhereHas('recordLevelRef', function ($qr) use ($like) {
+                    $qr->whereRaw('"datasetID" ILIKE ?', [$like])
+                    ->orWhereRaw('"datasetName" ILIKE ?', [$like]);
+                });
+            })
+            ->withCount(['measurements','multimedia','extractions'])
+            ->orderByDesc('id_occ_bd')
+            ->paginate($perPage)
+            ->withQueryString();
+
+        return view('pages.occurrence.index', compact('items', 'q', 'perPage', 'allowed'));
     }
 
     public function create()
@@ -315,7 +412,13 @@ class OccurrenceController extends Controller
             DB::transaction(function () use ($occurrence, $data) {
                 $occurrence->update($data);
             });
-            return redirect()->route('occurrence.index', $occurrence)->with('ok','Occurrence actualizada');
+
+            $page = (int) $request->input('page', $request->query('page', 1));
+
+            /* return redirect()->route('occurrence.index', $occurrence)->with('ok','Occurrence actualizada'); */
+
+            return redirect()->route('occurrence.index', ['page' => max(1, $page)])->with('ok','Occurrence actualizado');
+
         } catch (QueryException $e) {
             /* Log::error('Error al actualizar Occurrence', ['error' => $e->getMessage()]); */
             return back()->withErrors('No se pudo actualizar. Revise los datos.')->withInput();
@@ -328,7 +431,7 @@ class OccurrenceController extends Controller
             'occurrenceID'         => ['required','string', Rule::unique('occurrence','occurrenceID')->ignore($occurrence?->occurrenceID,'occurrenceID')],
             /* 'record_level_id'      => ['required','integer','exists:record_level,record_level_id'], */
             /* 'record_level_id'    => ['required','integer', 'unique:occurrence,record_level_id',Rule::exists('record_level','record_level_id')], */
-            'record_level_id'    => ['required','integer', Rule::exists('record_level','record_level_id'),Rule::unique('occurrence','record_level_id')], 
+            'record_level_id'    => ['required','integer', Rule::exists('record_level','record_level_id'),Rule::unique('occurrence','record_level_id')->ignore($occurrence?->record_level_id,'record_level_id')], 
             'catalogNumber'        => ['required','string', Rule::unique('occurrence','catalogNumber')->ignore($occurrence?->catalogNumber,'catalogNumber')],
             'recordNumber'         => ['required','string'],
             'recordedBy'           => ['required','string'],
@@ -410,14 +513,19 @@ class OccurrenceController extends Controller
         return back()->with('ok', 'Occurrence y sus dependencias fueron eliminadas.');
     }  */ 
         
-    public function destroy(\App\Models\Occurrence $occurrence)
+    public function destroy(Request $request, \App\Models\Occurrence $occurrence)
     {
         // El evento deleting() del modelo hará el barrido en cadena.
         $occurrence->delete();
 
-        return redirect()
+        $page = (int) $request->input('page', $request->query('page', 1));
+
+        /* return redirect()
             ->route('occurrence.index')
-            ->with('ok','Occurrence y sus datos relacionados fueron eliminados.');
+            ->with('ok','Occurrence y sus datos relacionados fueron eliminados.'); */
+
+        return redirect()->route('occurrence.index', ['page' => max(1, $page)])->with('ok', 'Occurrence y sus datos relacionados fueron eliminados');
+
     }    
 
     // ================= Helpers =================

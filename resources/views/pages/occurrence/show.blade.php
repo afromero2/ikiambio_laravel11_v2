@@ -3,6 +3,8 @@
 @section('title','Occurrence — Detalle')
 @section('page_title','Detalle Occurrence')
 
+@php $page = request('page', 1); @endphp
+
 @section('content')
 <div class="card card-body">
   <dl class="row">
@@ -86,8 +88,8 @@
   </dl>
 
   <div class="mt-2">
-    <a class="btn btn-outline-secondary" href="{{ route('occurrence.index') }}">Volver</a>
-    <a class="btn btn-primary" href="{{ route('occurrence.edit',$item) }}">Editar</a>
+    <a class="btn btn-outline-secondary" href="{{ route('occurrence.index',['occurrence' => $item->id_occ_bd, 'page' => $page]) }}">Volver</a>
+    <a class="btn btn-primary" href="{{ route('occurrence.edit',['occurrence' => $item->id_occ_bd, 'page' => $page]) }}">Editar</a>
   </div>
 </div>
 @endsection
